@@ -22,6 +22,7 @@
 | [ADR-0009](ADR-0009-time-structure.md) | 1 プレイを「一晩を実時間 3〜5 分に圧縮した連続時間」とする | Accepted（**決め手が仮説**） |
 | [ADR-0010](ADR-0010-no-numbers.md) | 状態を数値で表示せず、粗い固定段階の見た目で表す | Accepted |
 | [ADR-0011](ADR-0011-per-play-randomness.md) | 判定用乱数の通番にプレイ回数を含める（盤面は日固定、運は毎回変わる） | Accepted |
+| [ADR-0012](ADR-0012-balance-vs-tests.md) | テストは要件が言っていることだけを検証する（バランス値を期待値に書かない） | Accepted |
 
 **Proposed は未確定。** 人間が承認した時点で `Accepted` に書き換える。
 

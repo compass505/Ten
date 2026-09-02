@@ -2,7 +2,7 @@
 
 種別: リファレンス（規約・事実）— 理由は ADR に置く
 更新トリガー: 要件が増えたとき / 依存方向を変えたとき
-状態: 2026-09-02 起草。**フェーズ 2 進行中**（screens.md / data_model.md は未着手）
+状態: 2026-09-02 起草。**フェーズ 2 進行中**（screens.md 起草済み / data_model.md は未着手）
 
 制約の出典: [ADR-0002](../10_requirements/decisions/ADR-0002-test-harness.md)（決定論の 4 条件） /
 [ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md)（Unity + Android） /
@@ -127,6 +127,5 @@
 
 | ファイル | 内容 |
 | --- | --- |
-| `screens.md` | 画面 / 状態の遷移。**遷移が閉じている**こと |
 | `data_model.md` | データ構造と、永続化するもの / しないものの線引き |
 | 数値の確定 | 覚醒度の増減量・山札の枚数・圧縮率・可動角度・段階の粗さ。**ISS-10 と衝突する場所** |
