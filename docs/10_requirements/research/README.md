@@ -18,31 +18,30 @@
 
 | テーマ | 目的 | 状態 | 決定 |
 | --- | --- | --- | --- |
-| [テストハーネス](test_harness.md) | ハーネスの条件・テストの層・期待値の書き方 | 完了 2026-08-31 | ADR-0002 (Proposed) |
-| [開発ループ](dev_loop.md) | ループの 1 周の定義・自動化の段階 | 完了 2026-08-31 | ADR-0003 (Proposed) |
-| [ドキュメント体系](documentation.md) | 何をどこに書くか・書かないか | 完了 2026-08-31 | ADR-0004 (Proposed) |
-| [既存アプリ（育児情報・父親向け）](existing_apps.md) | 既存アプリが P-5 を解いていないか。どこが空いているか | 完了 2026-09-01 | [ADR-0006](../decisions/ADR-0006-concept.md) Proposed |
+| [テストハーネス](test_harness.md) | ハーネスの条件・テストの層・期待値の書き方 | 完了 2026-08-31 | [ADR-0002](../decisions/ADR-0002-test-harness.md) Accepted |
+| [開発ループ](dev_loop.md) | ループの 1 周の定義・自動化の段階 | 完了 2026-08-31 | [ADR-0003](../decisions/ADR-0003-improvement-loop.md) Accepted |
+| [ドキュメント体系](documentation.md) | 何をどこに書くか・書かないか | 完了 2026-08-31 | [ADR-0004](../decisions/ADR-0004-documentation-policy.md) Accepted |
+| [既存アプリ（育児情報・父親向け）](existing_apps.md) | 既存アプリが P-5 を解いていないか。どこが空いているか | 完了 2026-09-01 | [ADR-0006](../decisions/ADR-0006-concept.md) Accepted |
 | [育児情報の一次情報源と法的注意](info_sources.md) | 何を根拠に情報を出すか。引用可否・加工時の義務 | 完了 2026-09-01 | **凍結**（ADR-0006 で情報提供を見送り） |
 | [AI 動画化の成否](ai_video.md) | 情報を AI 動画に加工する案が費用・権利・決定論・安全性で成立するか | 完了 2026-09-01 | **不採用**（ADR-0006 で案 C を見送り） |
-| [「わざわざ作る理由」になる一要素](hook_options.md) | 動画 / 記録連動 / ゲームのどれが差別化になるか | 完了 2026-09-01 | [ADR-0006](../decisions/ADR-0006-concept.md) Proposed |
-| [ゲーム方向の具体像](game_direction.md) | 夫婦で笑える形が通信なしで成立するか。情報を入れられるか | 完了 2026-09-01 | [ADR-0006](../decisions/ADR-0006-concept.md) Proposed |
+| [「わざわざ作る理由」になる一要素](hook_options.md) | 動画 / 記録連動 / ゲームのどれが差別化になるか | 完了 2026-09-01 | [ADR-0006](../decisions/ADR-0006-concept.md) Accepted |
+| [ゲーム方向の具体像](game_direction.md) | 夫婦で笑える形が通信なしで成立するか。情報を入れられるか | 完了 2026-09-01 | [ADR-0006](../decisions/ADR-0006-concept.md) Accepted |
 | [何をする遊びにするか](game_mechanic.md) | ISS-09。片手・暗所・無音・非同期を満たす遊びの形 | **棄却 2026-09-01**（「交互」を前提にした誤り） | — |
-| [遊びの形（第2案）](game_mechanic_2.md) | ISS-09。交互を捨て、絵以外で成立する形 | 完了 2026-09-01 | [ADR-0007](../decisions/ADR-0007-game-design.md) Proposed |
-| [M-1 / M-2 を詰める](game_mechanic_3.md) | ISS-09。乱数と笑いをどこに置くか | 完了 2026-09-01 | [ADR-0007](../decisions/ADR-0007-game-design.md) Proposed |
-| [M-2 のゲーム性を詰める](game_mechanic_4.md) | ISS-09。意味のある選択が成立するか | 完了 2026-09-02 | [ADR-0007](../decisions/ADR-0007-game-design.md) Proposed |
-| [アクション化できるか](action_game.md) | ISS-09 / ISS-02。Unity・3D・決定論・工数 | 完了 2026-09-02 | [ADR-0001](../decisions/ADR-0001-tech-stack.md) Proposed |
-| [一人称視点は成立するか](first_person.md) | ISS-09。FPS 視点の可否と、赤ちゃんの段階の選択 | 完了 2026-09-02 | [ADR-0007](../decisions/ADR-0007-game-design.md) Proposed |
+| [遊びの形（第2案）](game_mechanic_2.md) | ISS-09。交互を捨て、絵以外で成立する形 | 完了 2026-09-01 | [ADR-0007](../decisions/ADR-0007-game-design.md) Accepted |
+| [M-1 / M-2 を詰める](game_mechanic_3.md) | ISS-09。乱数と笑いをどこに置くか | 完了 2026-09-01 | [ADR-0007](../decisions/ADR-0007-game-design.md) Accepted |
+| [M-2 のゲーム性を詰める](game_mechanic_4.md) | ISS-09。意味のある選択が成立するか | 完了 2026-09-02 | [ADR-0007](../decisions/ADR-0007-game-design.md) Accepted / [ADR-0008](../decisions/ADR-0008-randomness-scope.md) / [ADR-0009](../decisions/ADR-0009-time-structure.md) Proposed |
+| [アクション化できるか](action_game.md) | ISS-09 / ISS-02。Unity・3D・決定論・工数 | 完了 2026-09-02 | [ADR-0001](../decisions/ADR-0001-tech-stack.md) Accepted |
+| [一人称視点は成立するか](first_person.md) | ISS-09。FPS 視点の可否と、赤ちゃんの段階の選択 | 完了 2026-09-02 | [ADR-0007](../decisions/ADR-0007-game-design.md) Accepted |
 | 「先回り」の粒度 | 週単位か月齢イベント単位か。届け方（通知の要否） | **凍結**（情報提供を 2026-09-01 に見送ったため） | — |
 | 医療・広告関連の法規制 | 医療広告ガイドライン / 健康増進法 / 景品表示法が個人開発アプリに及ぶか | **凍結**（情報提供を見送ったため不要になった） | — |
-| 技術スタック | ADR-0001 の材料。Android・3D・決定論が入力 | 完了 2026-09-02（action_game.md / first_person.md に統合） | [ADR-0001](../decisions/ADR-0001-tech-stack.md) Proposed |
+| 技術スタック | ADR-0001 の材料。Android・3D・決定論が入力 | 完了 2026-09-02（action_game.md / first_person.md に統合） | [ADR-0001](../decisions/ADR-0001-tech-stack.md) Accepted |
 
 ## 未着手が残っている理由
 
-2026-09-01 に取り組む困りごとを P-5（情報の後出し）に絞った。
-ただし「何を根拠に、どの粒度で情報を出すか」が未調査で、これが決まらないと
-要件（REQ-xxx）を発番できない。技術スタックはさらにその後になる
-（通知が要るかどうかで選択肢が変わるため）。
+**残っていない。** 情報提供を前提にした調査（先回りの粒度 / 法規制 / 一次情報源）は
+[ADR-0006](../decisions/ADR-0006-concept.md) で情報提供そのものを見送ったため凍結した。
 
-上の 2 件（既存アプリ / 一次情報源）は 2026-09-01 に完了した。
-残りは「先回りの粒度」と法規制で、これは**コンセプトをどちらの方向に確定させるか**が
-決まらないと調査範囲を絞れない（→ existing_apps.md の選択肢 A〜D）。
+2026-09-02 に要件（REQ-001〜028）を発番した時点で、
+調査が足りずに書けなかった要件は無い。書けなかったのは
+**調査ではなく確認が要るもの**（ISS-11 配偶者の端末 / ISS-12 遊びたいか /
+ISS-15 成功指標）で、これは机上の調査では潰せない。

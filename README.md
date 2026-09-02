@@ -1,9 +1,11 @@
 # Ten
 
-**現在のフェーズ: 1. 要件定義（調査）**
+**現在のフェーズ: 1. 要件定義（完了）→ 2. 基本設計**
 
 何を作るかは **ADR-0006 / 0007 で確定**（2026-09-02）。技術スタックは **ADR-0001**。
-次は要件（`REQ-xxx`）の発番。調査 → 要件確定 → 設計 → テスト → 実装 の順で進める。
+要件は **2026-09-02 に確定した**（REQ-001〜058 / NFR-001〜009）。
+Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済み。
+**どんなゲームかは [docs/10_requirements/game_overview.md](docs/10_requirements/game_overview.md)。**
 ドキュメントの地図は [docs/README.md](docs/README.md)。
 進め方の理由は [docs/00_process/rationale.md](docs/00_process/rationale.md)。
 
@@ -11,7 +13,9 @@
 | --- | --- |
 | コンセプト | **確定** → [ADR-0006](docs/10_requirements/decisions/ADR-0006-concept.md) |
 | ゲームの中身 | **確定** → [ADR-0007](docs/10_requirements/decisions/ADR-0007-game-design.md) |
-| 要件 | 未確定 → [requirements.md](docs/10_requirements/requirements.md) |
+| 要件 | **確定**（2026-09-02） → [requirements.md](docs/10_requirements/requirements.md) |
+| 乱数の適用範囲 | **確定**（用途別ストリーム） → [ADR-0008](docs/10_requirements/decisions/ADR-0008-randomness-scope.md) |
+| 1 プレイの時間構造 | **確定**（決め手は仮説） → [ADR-0009](docs/10_requirements/decisions/ADR-0009-time-structure.md) |
 | 技術スタック | **確定**（Unity + Android） → [ADR-0001](docs/10_requirements/decisions/ADR-0001-tech-stack.md) |
 | テストファースト / ハーネス | **確定** → [ADR-0002](docs/10_requirements/decisions/ADR-0002-test-harness.md) |
 | 改善ループ | **確定** → [ADR-0003](docs/10_requirements/decisions/ADR-0003-improvement-loop.md) |
@@ -41,7 +45,7 @@ scratch/    技術検証プロトタイプ。本番コードから import しな
 
 ## 次にやること
 
-要件（`REQ-xxx`）の発番。
+フェーズ 2（基本設計）。全 Must 要件をモジュールに割り当て、画面と状態遷移を閉じる。
 
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](docs/50_review/issues.md)の指摘 18 件を
 **未解決のまま受容して**確定させている。各 ADR 末尾の「承認時に受容したリスク」を先に読むこと。
