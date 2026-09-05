@@ -77,5 +77,5 @@ public static class Sim {
 | ID | 論点 |
 | --- | --- |
 | SIM-01 | 長押しの強度（`ActStrengthMilli`）を入れるか。**[ISS-19](../10_requirements/open_issues.md) の承認待ち。**入らない場合は常に 1000 として扱う |
-| SIM-02 | 「寝入りばな」の窓を入れるか。同じく ISS-19 |
+| SIM-02 | 「寝入りばな」を入れるか。同じく ISS-19 |
 | SIM-03 | `Advance` を 1 本にするか、順ごとに分けた internal メソッドにするか。テストは 1 本しか見ない |
