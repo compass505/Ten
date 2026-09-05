@@ -11,7 +11,7 @@ tick レートを変えたとき
 > ここの具体値ではない。**だからこの表は自由に動かせる。**
 
 出典: [ADR-0009](../10_requirements/decisions/ADR-0009-time-structure.md)（時間構造） /
-[ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（寝たふり・**Proposed**） /
+[ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（寝たふり） /
 [screens.md](screens.md)（時計と判定）
 
 ## 1. 時間の骨格（これだけは動かしにくい）

@@ -2,7 +2,7 @@
 
 種別: リファレンス（事実）— **理由はここに書かない。**理由は各 ADR にある
 更新トリガー: ゲームの中身に関わる決定（ADR）が増えたとき / 要件が増えたとき
-状態: **2026-09-04 更新。**[requirements.md](requirements.md) REQ-001〜058 確定 + REQ-059 暫定。
+状態: **2026-09-06 更新。**[requirements.md](requirements.md) REQ-001〜059 確定 + REQ-060 / 061 暫定。
 基本設計（[screens.md](../20_basic_design/screens.md) / [balance.md](../20_basic_design/balance.md)）を反映
 
 決定の出典: [ADR-0006](decisions/ADR-0006-concept.md)（なぜ作るか） /
@@ -11,8 +11,8 @@
 [ADR-0009](decisions/ADR-0009-time-structure.md)（時間） /
 [ADR-0010](decisions/ADR-0010-no-numbers.md)（状態の見せ方） /
 [ADR-0011](decisions/ADR-0011-per-play-randomness.md)（プレイごとに運が変わる） /
-[ADR-0013](decisions/ADR-0013-pretend-requires-closed-eyes.md)（寝たふりは閉眼中だけ・**Proposed**） /
-[ADR-0014](decisions/ADR-0014-closed-eyes-information.md)（閉眼中は何も分からない・**Proposed**）
+[ADR-0013](decisions/ADR-0013-pretend-requires-closed-eyes.md)（寝たふりは閉眼中だけ） /
+[ADR-0014](decisions/ADR-0014-closed-eyes-information.md)（閉眼中は何も分からない）
 
 ## 1. 一行で言うと
 

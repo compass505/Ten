@@ -5,7 +5,7 @@
 対応要件: REQ-006 / 008 / 016 / 044 / 045 / 058
 
 出典: [ADR-0010](../10_requirements/decisions/ADR-0010-no-numbers.md) /
-[ADR-0014](../10_requirements/decisions/ADR-0014-closed-eyes-information.md)（**Proposed**） /
+[ADR-0014](../10_requirements/decisions/ADR-0014-closed-eyes-information.md) /
 [setting.md](../20_basic_design/setting.md)（各段階の見た目） /
 [balance.md](../20_basic_design/balance.md) 8 節（境界値）
 

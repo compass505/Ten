@@ -4,7 +4,7 @@
 更新トリガー: 画面が増減したとき / 夜の終わり方・中断復帰の仕様が変わったとき /
 Android の戻る操作の扱いを変えたとき
 状態: 2026-09-02 起草 / **2026-09-04 全面改訂**（Codex レビュー 2 周・計 32 件を反映。採用案は A → F → A と往復し、A に確定。D-01〜D-10）。
-**フェーズ 2 進行中**（data_model.md は未着手）。D-01〜D-07 の出典は [ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（**承認待ち**）。
+**フェーズ 2 完了。**D-01〜D-07 の出典は [ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（**2026-09-06 Accepted**）。
 末尾の「決めきれていないこと」が残っている間、全体としては確定ではない
 
 出典: [requirements.md](../10_requirements/requirements.md)（REQ-001〜058） /
@@ -13,7 +13,7 @@ Android の戻る操作の扱いを変えたとき
 [ADR-0009](../10_requirements/decisions/ADR-0009-time-structure.md)（固定 tick・任意時点の中断） /
 [ADR-0010](../10_requirements/decisions/ADR-0010-no-numbers.md)（数値を出さない） /
 [ADR-0011](../10_requirements/decisions/ADR-0011-per-play-randomness.md)（プレイ回数） /
-[ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（寝たふりは閉眼中にだけ成立する・**Proposed**）
+[ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（寝たふりは閉眼中にだけ成立する）
 
 ## 0. 2 階層に分ける
 
@@ -115,13 +115,12 @@ Android の戻る操作の扱いを変えたとき
 
 ## 4. 夜の内側（`SCR-Night`）
 
-### 4.0 この設計が置いている前提（**ADR-0013 の承認待ち**）
+### 4.0 この設計で確定させたこと
 
-出典は [ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（**Proposed**）と
+出典は [ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md)（Accepted）と
 [ADR-0008](../10_requirements/decisions/ADR-0008-randomness-scope.md)。
 
-> **D-01〜D-07 は確定していない。**ADR-0013 が承認されるまで、この節は「採用予定の案」である。
-> D-08〜D-10（2.1 節）は ADR-0013 に依存しないので、この保留の対象外。
+> **D-01〜D-07 は 2026-09-06 に確定した**（ADR-0013 承認）。D-08〜D-10（2.1 節）は ADR-0013 に依存しない。
 
 | ID | 決定 | 根拠 | 影響する要件 |
 | --- | --- | --- | --- |
@@ -344,7 +343,7 @@ ST-B-Open ──目を閉じる──▶ ST-B-Closed （ここから先は何も
 
 | 指摘 | 対応 |
 | --- | --- |
-| ADR だけで確定要件の適用範囲を狭めている（ADR-0010 は REQ-058 を発番している） | **REQ-059 を起案**（D-01）。ADR-0013 が Proposed の間は REQ-059 も暫定 |
+| ADR だけで確定要件の適用範囲を狭めている（ADR-0010 は REQ-058 を発番している） | **REQ-059 を発番**（D-01）。2026-09-06 に ADR-0013 とともに確定 |
 | 閉眼中に REQ-006 を満たせない | D-07 で主要ループを塞ぎ、残りを **ISS-18** として起票 |
 | 実機でしか判定できない条件を確定前に検証できない | **O-09** として最優先で残した |
 | `sleep_pretend` / `fall_asleep` の判定が tick 処理順に無い | 4.3 / 4.5 に追加（D-04） |

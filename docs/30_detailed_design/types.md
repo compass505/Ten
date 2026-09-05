@@ -2,9 +2,9 @@
 
 種別: リファレンス（規約・事実）— 理由は ADR に置く
 更新トリガー: 状態が増減したとき / 乱数の用途が増えたとき / 保存形式を変えたとき
-状態: **2026-09-05 起草。**[ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md) /
-[ADR-0014](../10_requirements/decisions/ADR-0014-closed-eyes-information.md) が **Proposed** のため、
-`EyesClosed` まわりは承認まで暫定
+状態: **2026-09-05 起草 / 2026-09-06 更新。**ADR-0013 / 0014 の承認により `EyesClosed` まわりは確定。
+[ADR-0015](../10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) が **Proposed** のため、
+`ActStrengthMilli` だけ暫定
 
 出典: [architecture.md](../20_basic_design/architecture.md)（層と依存方向） /
 [screens.md](../20_basic_design/screens.md)（状態と遷移） /

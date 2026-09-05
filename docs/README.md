@@ -13,8 +13,8 @@
 | [10_requirements/](10_requirements/) | 成果物 | 要件・スコープ・調査・決定 | **フェーズ 1 完了**（2026-09-02 確定） |
 | [10_requirements/game_overview.md](10_requirements/game_overview.md) | リファレンス | **どんなゲームかの全体像**（散らばった決定の集約） | 2026-09-02 |
 | [10_requirements/research/](10_requirements/research/) | 材料 | 調査ノート（出典つき） | 13 本 完了 / 1 本 棄却 |
-| [10_requirements/decisions/](10_requirements/decisions/) | 決定 | ADR | 12 件 Accepted（うち 3 件はリスク受容あり）+ **ADR-0013 / 0014 が承認待ち** |
-| [20_basic_design/](20_basic_design/) | 成果物 | モジュール分割・遷移・数値・データ・設定 | **5 本 起草済み**（architecture / screens / balance / data_model / setting）。**ADR-0013 / 0014 の承認待ち** |
+| [10_requirements/decisions/](10_requirements/decisions/) | 決定 | ADR | **14 件 Accepted**（うち 3 件はリスク受容あり）+ **ADR-0015 が承認待ち** |
+| [20_basic_design/](20_basic_design/) | 成果物 | モジュール分割・遷移・数値・データ・設定 | **完了**（architecture / screens / balance / data_model / setting） |
 | [30_detailed_design/](30_detailed_design/) | 成果物 | 公開 IF・型 | **進行中**（types + 純粋層 7 件 起草済み / 境界 6・表示 3 が未着手） |
 | [40_test/](40_test/) | 成果物 | テストケース・トレーサビリティ | REQ 側のみ記入。TC は未発番 |
 | [50_review/](50_review/) | 記録 | 改善ループの周回記録・課題 | Codex レビュー 18 + 28 + 24 件を記録 |

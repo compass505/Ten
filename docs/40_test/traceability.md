@@ -3,7 +3,7 @@
 要件がテストで担保されているかを一覧で見る表。要件を足したら必ずここを更新する。
 
 > 要件は **2026-09-02 に確定した**（REQ-001〜058 / NFR-001〜009）。
-> **REQ-059 / 060 / 061 は暫定**（2026-09-04 / 05 起案）。ADR-0013 / 0015 が Proposed のため確定していない。
+> **REQ-059 は確定**（2026-09-06）。**REQ-060 / 061 は暫定**（ADR-0015 が Proposed のため）。
 > **2026-09-05: TC を発番した**（TC-001〜158）。ケースは [cases/](cases/) にある。
 > **テストコードはまだ無い。**フェーズ 4 の DoD「全て落ちる」はコードを書いてから。
 
@@ -81,7 +81,7 @@
 | [REQ-056](../10_requirements/requirements.md) | Must | TC-069 | 未作成 | 起票済み |
 | [REQ-057](../10_requirements/requirements.md) | Must | TC-068 | 未作成 | 起票済み |
 | [REQ-058](../10_requirements/requirements.md) | Must | TC-091 | 未作成 | 起票済み |
-| [REQ-059](../10_requirements/requirements.md) | Must | TC-026 / 027 | 未作成 | **暫定**（ADR 承認待ち） |
+| [REQ-059](../10_requirements/requirements.md) | Must | TC-026 / 027 | 未作成 | 起票済み |
 | [REQ-060](../10_requirements/requirements.md) | Must | TC-152 / 153 | 未作成 | **暫定**（ADR 承認待ち） |
 | [REQ-061](../10_requirements/requirements.md) | Must | TC-154 / 155 / 156 | 未作成 | **暫定**（ADR 承認待ち） |
 
