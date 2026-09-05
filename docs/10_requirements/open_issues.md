@@ -20,6 +20,8 @@
 | ISS-15 | 想定利用期間と成功指標（何日遊べれば成功か。ISU-16） | **未解決 / 中**。要件に成功指標を書けていない | — |
 | ISS-16 | 状態の見せ方（数値を出すか / 見た目で表すか） | **解決** | → [ADR-0010](decisions/ADR-0010-no-numbers.md) Accepted |
 | ISS-17 | 何度でも遊べることと日固定の乱数の衝突（ISU-44） | **解決** | → [ADR-0011](decisions/ADR-0011-per-play-randomness.md) Accepted |
+| ISS-18 | 目を閉じている間、REQ-006「親が今している対処を画面から知る」を満たす経路が無い（REQ-004 が寝室の像を失うと定めているため） | **解決**（承認待ち） | → [ADR-0014](decisions/ADR-0014-closed-eyes-information.md) Proposed |
+| ISS-19 | 操作系の拡張（長押しで強度 / 寝入りばなの窓）を要件に入れるか | **解決**（承認待ち） | → [ADR-0015](decisions/ADR-0015-input-intensity-and-timing.md) Proposed |
 | ISS-07 | 実行ループの自動化をどこまで上げるか | 保留（実装フェーズで判断） | — |
 | ISS-08 | 誰が検めるか（役割分担） | **解決** | → [ADR-0005](decisions/ADR-0005-agent-roles.md) Accepted |
 

@@ -12,3 +12,7 @@ playwright-report/
 .venv/
 __pycache__/
 .claude/settings.local.json
+
+# モデル制作の中間ファイル（248MB）。Git に入れると後から取り除けない
+# 必要になったら Git LFS を検討する
+scratch/visual/
