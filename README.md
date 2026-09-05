@@ -1,6 +1,9 @@
 # Ten
 
-**現在のフェーズ: 1. 要件定義（完了）→ 2. 基本設計**
+**現在のフェーズ: 4. テスト作成（ケース発番済み / コードは承認待ち）**
+
+> **戻ってきたら [docs/00_process/decisions_pending.md](docs/00_process/decisions_pending.md) を先に読む。**
+> 承認待ち 3 件（ADR-0013 / 0014 / 0015）以外は片付いている。
 
 何を作るかは **ADR-0006 / 0007 で確定**（2026-09-02）。技術スタックは **ADR-0001**。
 要件は **2026-09-02 に確定した**（REQ-001〜058 / NFR-001〜009）。
@@ -20,6 +23,10 @@ Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済�
 | テストファースト / ハーネス | **確定** → [ADR-0002](docs/10_requirements/decisions/ADR-0002-test-harness.md) |
 | 改善ループ | **確定** → [ADR-0003](docs/10_requirements/decisions/ADR-0003-improvement-loop.md) |
 | ドキュメント体系 | **確定** → [ADR-0004](docs/10_requirements/decisions/ADR-0004-documentation-policy.md) |
+| 状態の見せ方 | **確定** → [ADR-0010](docs/10_requirements/decisions/ADR-0010-no-numbers.md) |
+| テストとバランス調整の衝突 | **確定** → [ADR-0012](docs/10_requirements/decisions/ADR-0012-balance-vs-tests.md) |
+| 寝たふりの成立条件 | **承認待ち** → [ADR-0013](docs/10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md) |
+| 閉眼中に何が分かるか | **承認待ち** → [ADR-0014](docs/10_requirements/decisions/ADR-0014-closed-eyes-information.md) |
 
 未解決の論点は [open_issues.md](docs/10_requirements/open_issues.md) に一覧がある。
 
@@ -45,7 +52,18 @@ scratch/    技術検証プロトタイプ。本番コードから import しな
 
 ## 次にやること
 
-フェーズ 2（基本設計）。全 Must 要件をモジュールに割り当て、画面と状態遷移を閉じる。
+**フェーズ 2 の成果物 4 本は起草済み**（[architecture](docs/20_basic_design/architecture.md) /
+[screens](docs/20_basic_design/screens.md) / [balance](docs/20_basic_design/balance.md) /
+[data_model](docs/20_basic_design/data_model.md)）。全 Must 要件が割り当て済みで、
+画面と状態遷移は閉じている（行き止まり 0 件）。
+
+**残っているのは 2 つ。**
+
+1. **ADR-0013 / 0014 / 0015 の承認**（人間の判断。ADR-0005 でエージェントは承認しない）。
+   REQ-059 / 060 / 061 と screens.md の D-01〜D-07 は、承認まで暫定。
+   **承認が下りるまでテストコードを書き始められない**
+2. **`scratch/mvp/` を実機で触る**（screens.md O-09）。
+   **盲目でいる 7 秒が苦痛かどうかは、触るまで判定できない**
 
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](docs/50_review/issues.md)の指摘 18 件を
 **未解決のまま受容して**確定させている。各 ADR 末尾の「承認時に受容したリスク」を先に読むこと。
