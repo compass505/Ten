@@ -1,0 +1,2375 @@
+{
+ "note": "MOD-Rng の参照ベクタ。C# 実装はこれと完全一致すること（NFR-004）",
+ "spec": "FNV-1a 32bit + 最終撹拌。入力は `seed|purposeInt|ordinal` の ASCII",
+ "hash": [
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 1051383866
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 1598407827
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 3153875489
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 2247798892
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 390460453
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 151139420
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 3448086145
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 387086011
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 198371245
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 1509581122
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 1068163977
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 3505835394
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 2169018987
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 2898648807
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 1259008787
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 1782256284
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 318264869
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 4280000371
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 3471607526
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 2290181102
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 3483547623
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 2522500499
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 1208046127
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 3102804296
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 3619673160
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 2967282985
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 129344789
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 1364791766
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 119698377
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 3175391595
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 2390141003
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 1435959214
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 3449224831
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 1122093016
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 2709312118
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 2903449470
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 11802780
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 3373278396
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 2441089222
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 2585329264
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 2449477534
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 2302129984
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 2632950466
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 2963604605
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 2675242753
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 362686314
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 3589140525
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 3169040802
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 1686675160
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 96692292
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 1382949067
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 597449517
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 3571671690
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 1177626313
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 1035926104
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 754346457
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 971302361
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 3831974896
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 2541797022
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 3841724291
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 3797508699
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 967332597
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 2287258166
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 1291426288
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 3832332554
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 1305605621
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 1015633889
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 3822451900
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 1470127805
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 543690390
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 1957477148
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 3323095415
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 1262038029
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 1523948809
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 3707672042
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 2042084944
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 3206556384
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 4025563795
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 754908860
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 896348605
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 1250227057
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 1215091741
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 2423445204
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 3803655310
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 1540678377
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 3186918043
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 1119102332
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 2009763623
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 1740951576
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 1862826073
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 1443007632
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 3427614106
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 3069900029
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 2778385453
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 2352425622
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 3801768131
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 2453491991
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 2354404367
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 3264525222
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 2116207006
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 3175689227
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 386972296
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 2507162092
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 3881812973
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 4287791748
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 1540458582
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 1307851183
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 1711017139
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 1831378848
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 1658142552
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 150103737
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 2631592393
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 1380151293
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 944577545
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 1804535788
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 2419100382
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 1310558576
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 611807282
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 1652722841
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 4098635103
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 2903084423
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 1826550897
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 1007468835
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 2715917263
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 4152075880
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 2232944867
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 77525969
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 1433555619
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 3071522173
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 3893275226
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 3843923610
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 363635178
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 1909991876
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 1219957394
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 858229514
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 1983832611
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 121815323
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 3178308701
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 1865831283
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 1630174444
+  }
+ ],
+ "milli": [
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 244
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 372
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 734
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 523
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 90
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 35
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 802
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 90
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 46
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 351
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 248
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 816
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 505
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 674
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 293
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 414
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 74
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 996
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 808
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 533
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 811
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 587
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 281
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 722
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 842
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 690
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 30
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 317
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 27
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 739
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 556
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 334
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 803
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 261
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 630
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 676
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 2
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 785
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 568
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 601
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 570
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 536
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 613
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 690
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 622
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 84
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 835
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 737
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 392
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 22
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 321
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 139
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 831
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 274
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 241
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 175
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 226
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 892
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 591
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 894
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 884
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 225
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 532
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 300
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 892
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 303
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 236
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 889
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 342
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 126
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 455
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 773
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 293
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 354
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 863
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 475
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 746
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 937
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 175
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 208
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 291
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 282
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 564
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 885
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 358
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 742
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 260
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 467
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 405
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 433
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 335
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 798
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 714
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 646
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 547
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 885
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 571
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 548
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 760
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 492
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 739
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 90
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 583
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 903
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 998
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 0,
+   "expected": 358
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 1,
+   "expected": 304
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 2,
+   "expected": 398
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 7,
+   "expected": 426
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 0,
+   "ordinal": 99,
+   "expected": 386
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "expected": 34
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "expected": 612
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 2,
+   "expected": 321
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 7,
+   "expected": 219
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 99,
+   "expected": 420
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 0,
+   "expected": 563
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 1,
+   "expected": 305
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 2,
+   "expected": 142
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 7,
+   "expected": 384
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 2,
+   "ordinal": 99,
+   "expected": 954
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 0,
+   "expected": 675
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 1,
+   "expected": 425
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 2,
+   "expected": 234
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 7,
+   "expected": 632
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 3,
+   "ordinal": 99,
+   "expected": 966
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 0,
+   "expected": 519
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 1,
+   "expected": 18
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 2,
+   "expected": 333
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 7,
+   "expected": 715
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 4,
+   "ordinal": 99,
+   "expected": 906
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 0,
+   "expected": 894
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 1,
+   "expected": 84
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 2,
+   "expected": 444
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 7,
+   "expected": 284
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 5,
+   "ordinal": 99,
+   "expected": 199
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 0,
+   "expected": 461
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 1,
+   "expected": 28
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 2,
+   "expected": 740
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 7,
+   "expected": 434
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 6,
+   "ordinal": 99,
+   "expected": 379
+  }
+ ],
+ "range": [
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 2,
+   "expected": 0
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 2,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 2,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 3,
+   "expected": 2
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 4,
+   "expected": 0
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 4,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 4,
+   "expected": 3
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 5,
+   "expected": 0
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 5,
+   "expected": 0
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 5,
+   "expected": 2
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 6,
+   "expected": 2
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 6,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 6,
+   "expected": 1
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 7,
+   "expected": 5
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 7,
+   "expected": 0
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 7,
+   "expected": 2
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 10,
+   "expected": 0
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 10,
+   "expected": 5
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 10,
+   "expected": 7
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 100,
+   "expected": 20
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 100,
+   "expected": 45
+  },
+  {
+   "seed": "2026-09-06",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 100,
+   "expected": 67
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 2,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 2,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 2,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 4,
+   "expected": 2
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 4,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 4,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 5,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 5,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 5,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 6,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 6,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 6,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 7,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 7,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 7,
+   "expected": 2
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 10,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 10,
+   "expected": 4
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 10,
+   "expected": 0
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 100,
+   "expected": 34
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 100,
+   "expected": 84
+  },
+  {
+   "seed": "2026-01-01",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 100,
+   "expected": 80
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 2,
+   "expected": 0
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 2,
+   "expected": 0
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 2,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 3,
+   "expected": 0
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 4,
+   "expected": 0
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 4,
+   "expected": 0
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 4,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 5,
+   "expected": 4
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 5,
+   "expected": 4
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 5,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 6,
+   "expected": 4
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 6,
+   "expected": 0
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 6,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 7,
+   "expected": 4
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 7,
+   "expected": 3
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 7,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 10,
+   "expected": 4
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 10,
+   "expected": 4
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 10,
+   "expected": 1
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 100,
+   "expected": 44
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 100,
+   "expected": 84
+  },
+  {
+   "seed": "2026-12-31",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 100,
+   "expected": 21
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 2,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 2,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 2,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 3,
+   "expected": 0
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 3,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 3,
+   "expected": 0
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 4,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 4,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 4,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 5,
+   "expected": 2
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 5,
+   "expected": 3
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 5,
+   "expected": 2
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 6,
+   "expected": 3
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 6,
+   "expected": 1
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 6,
+   "expected": 3
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 7,
+   "expected": 0
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 7,
+   "expected": 3
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 7,
+   "expected": 6
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 10,
+   "expected": 7
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 10,
+   "expected": 3
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 10,
+   "expected": 7
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 0,
+   "max": 100,
+   "expected": 37
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 1,
+   "max": 100,
+   "expected": 93
+  },
+  {
+   "seed": "TUTORIAL",
+   "purpose": 1,
+   "ordinal": 5,
+   "max": 100,
+   "expected": 57
+  }
+ ],
+ "uniformityCheck": {
+  "max": 6,
+  "n": 120000,
+  "counts": [
+   19918,
+   19820,
+   19929,
+   20100,
+   20199,
+   20034
+  ],
+  "expectedEach": 20000
+ }
+}

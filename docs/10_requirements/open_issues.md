@@ -11,7 +11,7 @@
 | ISS-03 | テストハーネスの形 | **解決** | → [ADR-0002](decisions/ADR-0002-test-harness.md) Accepted |
 | ISS-04 | 改善ループの回し方 | **解決** | → [ADR-0003](decisions/ADR-0003-improvement-loop.md) Accepted |
 | ISS-05 | ドキュメント体系 | **解決** | → [ADR-0004](decisions/ADR-0004-documentation-policy.md) Accepted |
-| ISS-06 | ハーネスの実装詳細（ランナー・乱数・入力列の記法） | **未着手**（ADR-0001 承認済みのため着手可能） | — |
+| ISS-06 | ハーネスの実装詳細（ランナー・乱数・入力列の記法） | **解決** | → [40_test/harness.md](../40_test/harness.md)（2026-09-06）。後戻りコストが 1 日を超えないため ADR にしていない |
 | ISS-10 | ADR-0002 の「テスト書き換え禁止」とゲームバランス調整の衝突（ISU-08） | **解決** | → [ADR-0012](decisions/ADR-0012-balance-vs-tests.md) Accepted |
 | ISS-11 | 配偶者の端末（iOS / Android）が未確認（ISU-06） | **未解決 / 高**。ユーザー判断 2026-09-02：**聞ける時に聞く**（ネタバレなしで確認できる） | — |
 | ISS-12 | 本人・配偶者が「育児をネタにしたゲーム」を遊びたいか未確認（ISU-01） | **未解決 / 高**。ユーザー判断 2026-09-02：**聞ける時に聞く**。直接聞くと誘導になるため周辺の質問で確かめる | — |

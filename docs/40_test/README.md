@@ -4,9 +4,10 @@
 
 | 置き場 | 内容 |
 | --- | --- |
+| [harness.md](harness.md) | **ランナー・乱数・入力列の記法・失敗時の出力** |
 | [cases/](cases/) | 日本語のテストケース `TC-xxx` |
 | [traceability.md](traceability.md) | REQ ↔ TC ↔ テストコードの対応表 |
-| `../../tests/` | 実際のテストコード（unit / harness / e2e） |
+| `../../tests/` | 実際のテストコード（unit / harness / e2e）と `vectors/` |
 
 ## DoD（フェーズ 4）
 
