@@ -2,7 +2,7 @@
 
 種別: リファレンス（規約・事実）— 理由は ADR に置く
 更新トリガー: 要件が増えたとき / 依存方向を変えたとき
-状態: 2026-09-02 起草。**フェーズ 2 進行中**（screens.md 起草済み / data_model.md は未着手）
+状態: 2026-09-02 起草 / 2026-09-04 更新。**フェーズ 2 の 4 本すべて起草済み**（screens.md / balance.md / data_model.md）
 
 制約の出典: [ADR-0002](../10_requirements/decisions/ADR-0002-test-harness.md)（決定論の 4 条件） /
 [ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md)（Unity + Android） /
@@ -79,7 +79,7 @@
 
 ## 要件の割り当て（DoD）
 
-全 58 要件の割り当て先。**未割り当ては 0 件。**
+全 61 要件の割り当て先。**未割り当ては 0 件。**REQ-059〜061 は ADR-0013 / 0015 の承認待ちで暫定。
 
 | REQ | モジュール | REQ | モジュール |
 | --- | --- | --- | --- |
@@ -112,6 +112,8 @@
 | REQ-027 | Share | REQ-056 | Sim |
 | REQ-028 | Result | REQ-057 | Sim |
 | REQ-029 | Sim | REQ-058 | Display |
+| REQ-059（**暫定**） | Input / Sim | REQ-060（**暫定**） | Input / Sim |
+| REQ-061（**暫定**） | Sim / Display / View | | |
 
 非機能要件:
 
@@ -128,4 +130,4 @@
 | ファイル | 内容 |
 | --- | --- |
 | `data_model.md` | データ構造と、永続化するもの / しないものの線引き |
-| 数値の確定 | 覚醒度の増減量・山札の枚数・圧縮率・可動角度・段階の粗さ。**ISS-10 と衝突する場所** |
+| （数値の確定は [balance.md](balance.md) に移した。**全て仮の初期値**） | |
