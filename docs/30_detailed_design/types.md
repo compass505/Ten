@@ -1,0 +1,209 @@
+# 共有する型
+
+種別: リファレンス（規約・事実）— 理由は ADR に置く
+更新トリガー: 状態が増減したとき / 乱数の用途が増えたとき / 保存形式を変えたとき
+状態: **2026-09-05 起草。**[ADR-0013](../10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md) /
+[ADR-0014](../10_requirements/decisions/ADR-0014-closed-eyes-information.md) が **Proposed** のため、
+`EyesClosed` まわりは承認まで暫定
+
+出典: [architecture.md](../20_basic_design/architecture.md)（層と依存方向） /
+[screens.md](../20_basic_design/screens.md)（状態と遷移） /
+[data_model.md](../20_basic_design/data_model.md)（保存対象） /
+[ADR-0008](../10_requirements/decisions/ADR-0008-randomness-scope.md)（乱数の用途）
+
+## 0. 全体の規約
+
+言語は C#（[ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md)）。
+
+- **純粋層の型は `UnityEngine` を参照しない。**別アセンブリに分け、参照を機械的に禁止する
+- 状態は**すべて不変（`readonly record struct` / `readonly struct`）**。
+  更新は新しい値を返す。これが決定論（D1〜D4）の前提
+- **浮動小数点を状態に持たない。**`int` と固定小数（1/1000 単位の `int`）だけを使う。
+  端末間で結果がずれる経路を塞ぐ（NFR-004）
+- `null` を状態に使うのは「無い」が意味を持つ場所だけ（`CareKind?` など）
+
+## 1. 列挙
+
+```csharp
+/// 赤ちゃんの行動。目を閉じる/開けるは行動ではなく眼の操作（screens.md D-03）
+public enum ActionKind { Cry, Fuss, Kick }
+
+/// 親の対処。山札の札種でもある（REQ-041）
+public enum CareKind { PatPat, Milk, Hold, DiaperChange }
+
+/// 赤ちゃんの状態（screens.md 4.1）
+public enum BabyPhase { Open, Charging, Acting, EyesClosed }
+
+/// 親の状態（screens.md 4.2）
+public enum ParentPhase { Sleeping, Caring, Settling, Grace, Up }
+
+/// 夜の終わり方（REQ-054）。判定順もこの並び（screens.md 4.5 順 10）
+public enum EndKind { Dawn, FellAsleep, HandEmpty }
+
+/// その夜の出来事（REQ-043 / 055）
+public enum NightEventKind { DiaperSoiled, PartnerWakes, PhoneRings, ParentRolls, GetsHungry }
+
+/// 乱数の用途（ADR-0008 の一覧 + DozeOff）
+public enum RngPurpose {
+    ParentInitial,   // 親の初期覚醒度。通番なし
+    ParentHand,      // 山札の内訳。通番＝配る順
+    NightEvent,      // 出来事。通番＝出来事の順
+    SleepPretend,    // 寝たふりの成否。通番＝その夜で何回目の寝たふりか
+    FallAsleep,      // 寝たふり中の寝落ち。通番＝同上
+    ParentChoice,    // 親がどの対処を選ぶか。通番＝その夜で何回目の対処か
+    DozeOff,         // 待機中の寝落ち。通番＝その夜で何回目の刻み判定か（screens.md D-05）
+}
+```
+
+**`DozeOff` は ADR-0008 の一覧に無かった用途。**REQ-047 に対応するために足した。
+ADR-0008 は「用途を後から足すのは安全（既存の値が動かない）」と明記している。
+
+## 2. 盤面（その日固定。REQ-019 / 048）
+
+```csharp
+public readonly record struct HandCount(int PatPat, int Milk, int Hold, int DiaperChange) {
+    public int Total => PatPat + Milk + Hold + DiaperChange;
+    public int Of(CareKind k);
+    public HandCount Minus(CareKind k);   // 0 を下回らない
+    public HandCount Plus(CareKind k, int n);
+}
+
+public readonly record struct ScheduledEvent(int Tick, NightEventKind Kind);
+
+/// 日付シードから決まる、その日の盤面。プレイ回数では変わらない（ADR-0011）
+public readonly record struct BoardSpec(
+    int SpecVersion,                       // 盤面仕様の版（REQ-040）
+    string Seed,                           // 端末ローカル日付（正午境界）から作る
+    int InitialArousal,
+    HandCount Hand,
+    IReadOnlyList<ScheduledEvent> Events
+);
+```
+
+- **`Seed` は文字列。**日付を `yyyy-MM-dd` に正規化したもの。
+  チュートリアル専用盤面（screens.md D-09）は別の接頭辞を付け、`SpecVersion` も別枠にする
+- `Events` は `Tick` の昇順。同じ tick に 2 件は置かない
+
+## 3. 夜の状態（`MOD-Sim` が持つ。data_model.md 4 節と 1 対 1）
+
+```csharp
+public readonly record struct NightState(
+    // 同一性
+    int PlayIndex,                 // その日の何回目のプレイか（REQ-048）
+    // 時刻
+    int Tick,                      // 0〜5400
+    // 赤ちゃん
+    BabyPhase Baby,
+    ActionKind? ActKind,
+    int ActRemain,
+    int ActStrengthMilli,          // 0〜1000。長押しの強度（ISS-19。承認まで暫定）
+    bool ActFired,                 // この行動が既に発火したか
+    int Vigor,                     // 0〜100
+    // 親
+    ParentPhase Parent,
+    int Arousal,                   // 0〜100
+    CareKind? ActiveCare,
+    int CareRemain,
+    CareKind? PendingCare,         // 予告中の対処（REQ-046 / 049）
+    int CareDelay,
+    Habit Habit,
+    HandCount Hand,
+    // 時計（screens.md 4.3）
+    int TIdle, int TClosed, int TSettle, int TGrace,
+    // 乱数の通番（引き直さないために保存する。REQ-020 / 032）
+    int PretendN, int DozeN, int ChoiceN,
+    // 出来事とその後遺症
+    int EventsFired,
+    int RollUntil, int HungryUntil, bool PartnerHere,
+    int LockUntil, ActionKind LockedKinds, int DampUntil, int DampMilli,
+    // 得点
+    int Score,
+    bool ScoredEdge,               // 加点済みか（REQ-052 のエッジ検出）
+    bool PretendPrimed,            // 猶予中に泣いた（順 7 で解決する予約）
+    int CalmBlock,                 // 起きている親が落ち着くのを止めている残り
+    // 終了
+    EndKind? Over
+);
+
+public readonly record struct Habit(int PatPat, int Milk, int Hold, int DiaperChange) {
+    public int Of(CareKind k);
+    public int Max { get; }
+    public Habit Plus(CareKind k, int n);   // 0〜100 に丸める
+    public Habit Decay(int n);
+}
+```
+
+### 不変条件（`MOD-Sim` が常に守る。テストはここを見る）
+
+| # | 不変条件 |
+| --- | --- |
+| I-1 | `0 <= Arousal <= 100`、`0 <= Vigor <= 100`、`Habit` の各値が `0〜100` |
+| I-2 | `0 <= Tick <= 5400`。`Over != null` のとき `Tick` は進まない |
+| I-3 | `Baby == Acting` ⟺ `ActKind != null && ActRemain > 0` |
+| I-4 | `Baby == Charging` ⟺ `ActKind != null && ActRemain == 0` |
+| I-5 | `Parent == Caring` ⟺ `ActiveCare != null && CareRemain > 0` |
+| I-6 | `PendingCare != null` のとき `Parent` は `Sleeping` か `Up` |
+| I-7 | `Hand` の各値 `>= 0`。`Hand.Total == 0` のとき `Parent != Caring` なら `Over == HandEmpty` |
+| I-8 | `Baby == EyesClosed` のとき `TClosed > 0`、それ以外で `TClosed == 0` |
+| I-9 | `Parent == Settling` のとき `Baby == EyesClosed`（開眼したら `Caring` へ落ちる。D-06） |
+| I-10 | `ScoredEdge == true` ⟺ 直近で `Arousal` が 100 に達してから 40 まで下がっていない |
+| I-11 | `PretendN`・`DozeN`・`ChoiceN` は単調非減少 |
+
+**テストは I-1〜I-11 を性質ベースで、それ以外を例示ベースで検証する**
+（[ADR-0002](../10_requirements/decisions/ADR-0002-test-harness.md) の規約 3）。
+
+## 4. 入力（1 tick 1 件。screens.md 4.5 順 1）
+
+```csharp
+/// その tick に割り付いた入力。複数来たら先着 1 件だけを採り、残りは捨てる
+public readonly record struct TickInput(
+    ActionKind? Held,      // 押しっぱなしの行動（ISS-19。承認まで暫定）
+    bool ToggleEyes        // 目を閉じる / 開ける
+);
+
+/// ハーネスが再生する入力列。REQ-020 の「入力列」の実体
+public readonly record struct InputTrace(
+    string Seed,
+    int PlayIndex,
+    IReadOnlyList<(int Tick, TickInput Input)> Entries
+);
+```
+
+- **`Entries` は `Tick` の昇順で、同じ tick は 1 件まで。**
+  この正規化を `MOD-Input` が行い、純粋層は正規化済みしか受け取らない
+- `InputTrace` はテキストで保存でき、失敗時にそのまま出力する（D4）
+
+## 5. 調整値
+
+**数値は型に埋め込まず、`Tuning` として外から渡す**
+（[README](README.md) の「調整値・定数の表（コードに直書きしない）」）。
+
+```csharp
+public readonly record struct Tuning( /* balance.md の全項目 */ );
+```
+
+**値の実体は [balance.md](../20_basic_design/balance.md)。ここには複製しない**
+（documentation.md 8 節: 頻繁に変わる数値をハードコードした説明を書かない）。
+[ADR-0012](../10_requirements/decisions/ADR-0012-balance-vs-tests.md) により、
+**テストの期待値に `Tuning` の具体値を書かない。**
+
+## 6. 保存（`MOD-Storage` が扱う）
+
+```csharp
+public readonly record struct DeviceData(int SchemaVersion, int BoardSpecVersion, bool TutorialDone);
+public readonly record struct BestPlay(int Score, int PlayIndex, EndKind EndKind, string Commentary);
+public readonly record struct TodayData(string BoardDate, int PlayCount, BestPlay? Best);
+public readonly record struct SavedRun(string BoardDate, NightState State);
+```
+
+`NightState` をそのまま保存する。**別の保存用の型を作らない**
+（2 つの型がずれると、復元後に状態列が変わって REQ-020 が壊れる）。
+
+## 7. 決めていないこと
+
+| ID | 論点 |
+| --- | --- |
+| T-01 | `record struct` のサイズ。`NightState` が大きいので、値渡しのコストを実測して決める |
+| T-02 | 固定小数の単位（1/1000）で足りるか。慣れと強度の丸め誤差が蓄積しないか |
+| T-03 | `Tuning` をどこから読むか（`ScriptableObject` / JSON / 定数クラス） |
+| T-04 | `LockedKinds` を `ActionKind` のビットフラグにするか、配列にするか |
