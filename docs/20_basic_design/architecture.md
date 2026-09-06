@@ -75,6 +75,25 @@
 
 - **循環なし。**右端の `MOD-Rng` は何にも依存しない
 - 純粋層（右 7 件）は Unity API を参照しない。**別アセンブリに分けて、参照を機械的に禁止する**
+
+### アセンブリの分け方（2026-09-06 追記）
+
+**境界層も `UnityEngine` を参照しない。**Unity API を直接叩く実装
+（タッチの読み取り・端末の保存先・画面消灯抑止）は**さらに外側**に置き、
+境界層は**口（インターフェース）と、環境から受け取った値だけで完結する処理**を持つ。
+
+| アセンブリ | 中身 | `dotnet test` で走るか |
+| --- | --- | --- |
+| `Ten.Pure` | 純粋層 7 件 + `BoardDateRule` | **走る** |
+| `Ten.Boundary` | 境界層の口と、値だけで完結する処理（時間の蓄積・保存の往復・日付の規則の呼び出し） | **走る** |
+| Unity 側（未作成） | `UnityEngine` を直接叩く実装、表示層 3 件 | Unity Test Runner |
+
+**この分け方が効いた例。**`IClock.Consume(double deltaSeconds)` は経過時間を引数で
+受け取るので、`RealClock` の蓄積と上限（C-2 / C-3）は Unity なしで検証できる。
+Unity 側は `Update` で `Time.deltaTime` を渡すだけになる。
+`MOD-Calendar` も同じ形にした（→ [decisions_pending.md](../00_process/decisions_pending.md) G-01）。
+
+**Unity が本当に要るのは、タッチ・描画・権限・実機の 4 つだけ。**
 - `MOD-End` → `MOD-Score` の向きは REQ-051（最後の 1 枚の得点は終了判定より先）から決まる
 
 ## 要件の割り当て（DoD）

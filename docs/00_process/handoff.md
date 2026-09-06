@@ -53,15 +53,22 @@
 | --- | --- |
 | `tests/unit` | 12 赤 / 1 green（TC-006。静的検査なので DoD の例外） |
 | `tests/unit` | 31 赤 / 2 green |
-| `tests/harness` | 74 赤 / 21 green |
+| `tests/harness` | 86 赤 / 23 green |
 
-green は道具自身のテスト 18 件と、型・静的検査の 5 件（TC-006 / 024 / 113 の一部 /
-114 の一部 / 156）。例外の理由は [traceability.md](../40_test/traceability.md) の表に残してある。
+green は道具自身のテスト 18 件と、型・静的検査・差し替えの 5 件。
+例外の理由は [traceability.md](../40_test/traceability.md) の表に残してある。
 
-**純粋層の TC はすべてコード化した。**Rng / Board / Sim / Score / End / Result / Display /
-BoardDateRule と、TC-152〜156 / 159〜164。
+**純粋層に加えて、境界層のうち Unity を要さないものまでコード化した**
+（Clock / Storage / Calendar）。
 
-**残りはすべて Unity か実機が要る。紙の上で潰せる穴は無い。**
+**Unity が本当に要るのは 4 つだけ**（architecture.md のアセンブリの分け方）。
+
+| 要るもの | 該当 TC |
+| --- | --- |
+| タッチ | TC-103〜107 |
+| 描画 | TC-120〜130 |
+| 権限・通信・画面 | TC-115〜119 |
+| 実機 | TC-145〜151 |
 
 ## 3. 会話でだけ決まっていること（**最重要**）
 

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Ten.Pure/Ten.Pure.csproj" />
+    <ProjectReference Include="../../src/Ten.Boundary/Ten.Boundary.csproj" />
   </ItemGroup>
 
 </Project>
