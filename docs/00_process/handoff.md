@@ -52,16 +52,16 @@
 | | 赤 / green |
 | --- | --- |
 | `tests/unit` | 12 赤 / 1 green（TC-006。静的検査なので DoD の例外） |
-| `tests/unit` | 26 赤 / 1 green（TC-006） |
-| `tests/harness` | 73 赤 / 20 green（道具 18 件と TC-024 / TC-156） |
+| `tests/unit` | 31 赤 / 2 green |
+| `tests/harness` | 74 赤 / 21 green |
 
-例外の理由は [traceability.md](../40_test/traceability.md) の表に残してある。
-**純粋層の TC はすべてコード化した**（Rng / Board / Sim / Score / End / Result / Display と
-TC-152〜156 / 159〜164）。
+green は道具自身のテスト 18 件と、型・静的検査の 5 件（TC-006 / 024 / 113 の一部 /
+114 の一部 / 156）。例外の理由は [traceability.md](../40_test/traceability.md) の表に残してある。
 
-**残りは境界層・表示層・e2e で、Unity か実機が要る。**
-ただし **TC-113 / 114（正午境界）だけは IF の問題**で、Unity とは無関係に書けない
-（→ [decisions_pending.md](decisions_pending.md) D2 節 G-01）。
+**純粋層の TC はすべてコード化した。**Rng / Board / Sim / Score / End / Result / Display /
+BoardDateRule と、TC-152〜156 / 159〜164。
+
+**残りはすべて Unity か実機が要る。紙の上で潰せる穴は無い。**
 
 ## 3. 会話でだけ決まっていること（**最重要**）
 

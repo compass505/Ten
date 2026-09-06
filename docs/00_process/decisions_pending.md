@@ -71,12 +71,12 @@ export PATH="$HOME/.dotnet:$PATH"
 
 | # | 穴 | 影響 |
 | --- | --- | --- |
-| **G-01** | **`ICalendar` が時刻を注入できない。**[MOD-Calendar](../30_detailed_design/MOD-Calendar.md) の公開 IF は `BoardDate` プロパティだけで、端末時計を直接読む形になっている | **TC-113 / 114（正午境界。REQ-019）がテストから作れない。**決定論の条件 D2（時間は引数で進む）にも反する。時刻を引数で受ける形にすれば純粋層で検証できる |
-| **G-02** | **`DiagnosisEntry` の定義がどこにも無い。**[MOD-Result](../30_detailed_design/MOD-Result.md) の `Diagnose` の戻り値として名前だけ現れる | diagnosis.md 4 節の表（ID / 名前 / 文 / プロファイル）から起こして [src/Ten.Pure/Result.cs](../../src/Ten.Pure/Result.cs) に置いた。**types.md に無いので、そこに載せるかの判断が要る** |
-| **G-03** | **「濃さ」（うっすら / どっぷり）の置き場が無い。**[diagnosis.md](../20_basic_design/diagnosis.md) 2 節が合計値の大きさで修飾語を付けると定めているが、`Diagnose` は `DiagnosisEntry` しか返さない | 濃さを `DiagnosisEntry` に持たせるか、`Compose` 側で付けるか。**カタログの 1 件は濃さを持たない**（同じ診断が薄くも濃くもなる）ので、エントリに混ぜると意味がずれる |
+| ~~G-01~~ | ~~`ICalendar` が時刻を注入できない~~ | **解決（2026-09-06。本人承認）。**規則を `BoardDateRule` として純粋層に出し、時刻を引数で受ける形にした。端末時計を読む役だけが `ICalendar` に残る。TC-113 / 114 はコード化済み |
+| ~~G-02~~ | ~~`DiagnosisEntry` の定義がどこにも無い~~ | **解決（2026-09-06）。**diagnosis.md 4 節の表から起こして [types.md](../30_detailed_design/types.md) 3 節に載せた。実体は [src/Ten.Pure/Result.cs](../../src/Ten.Pure/Result.cs) |
+| **G-03** | **「濃さ」（うっすら / どっぷり）の置き場が無い。**[diagnosis.md](../20_basic_design/diagnosis.md) 2 節が合計値の大きさで修飾語を付けると定めているが、`Diagnose` は `DiagnosisEntry` しか返さない | **未解決。**濃さを `DiagnosisEntry` に持たせるか、`Compose` 側で付けるか。**カタログの 1 件は濃さを持たない**（同じ診断が薄くも濃くもなる）ので、エントリに混ぜると意味がずれる → [types.md](../30_detailed_design/types.md) T-05 |
 
-**G-01 は放置すると REQ-019（日替わりの盤面）が無検証のまま実装に入る。**
-正午境界は「昨日の盤面で遊べてしまう」事故に直結する。
+**G-03 は急がない。**診断そのものは TC-159〜163 で検証できており、
+濃さは**結果テキストの見せ方**の話。**カタログ 50 件の文言を書き直すとき（H-02）に一緒に決めるのが自然。**
 
 ## E. こちらで決めてよいもの（決定待ちではない）
 

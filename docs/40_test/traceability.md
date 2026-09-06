@@ -103,6 +103,8 @@
 | TC-006 | `src/` を走査して禁止語が**無いこと**を見る静的検査。空実装の時点で条件を満たす。見張っているのは「実装が環境に触っていないこと」であって「実装があること」ではない |
 | TC-024 | 「首の向きが状態列に影響しない」を、`TickInput` が首の向きを**持たないこと**で機械的に保証している（types.md 4 節 / data_model.md 5 節）。型の形を見る検査なので、実装の有無に関係なく成り立つ |
 | TC-156 | 同じ形。「予兆は顔を見ているときだけ分かる」（REQ-061）を、`NightState` が予兆を**持たないこと**で保証している。状態に入れると首の向きに関係なく出せてしまう。**表示側の検証は e2e（TC-121）** |
+| TC-113 の「規則が環境に触っていない」 | `BoardDateRule.cs` を走査して `DateTime.Now` / `UnityEngine` が**無いこと**を見る静的検査（CA-6）。TC-006 と同じ形 |
+| TC-114 の「盤面は再生しても書き換わらない」 | `NightState` が seed も日付も**持たないこと**で、プレイ中に盤面が変わりえないことを保証している（CA-3 / REQ-036） |
 | （TC 無し）[tests/harness/HarnessSelfTests.cs](../../tests/harness/HarnessSelfTests.cs) の `TraceFileTests` 18 件 | **ハーネス自身のテスト。**検証対象が製品（`src/`）ではなく、入力列の読み書きと失敗報告という**道具**。道具は既に実装されているので green が正しい。道具が壊れているとその先の全テストが信用できなくなるため、テストは要る |
 
 **ここに足すときは理由を書く。**書けないなら、それは DoD の例外ではなく空振りしているテスト。
@@ -111,8 +113,8 @@
 
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
-| [tests/unit/](../../tests/unit/) | TC-001〜007 / 084〜097 / 165 | **27 件中 26 件が赤 / TC-006 のみ green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | TC-020〜083 / 152〜156 / 159〜164 | **93 件中 73 件が赤 / 20 件が green**。green は道具自身の 18 件と TC-024 / TC-156 |
+| [tests/unit/](../../tests/unit/) | TC-001〜007 / 084〜097 / **113** / 165 | **33 件中 31 件が赤 / 2 件が green**（上の例外） |
+| [tests/harness/](../../tests/harness/) | TC-020〜083 / **114** / 152〜156 / 159〜164 | **95 件中 74 件が赤 / 21 件が green**。green は道具自身の 18 件と型・静的検査の 3 件 |
 | `tests/e2e/` | — | **未着手**（Unity が要る） |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
@@ -127,11 +129,12 @@ ADR-0015 / 0016 / 0017 で足した TC-152〜156 / 159〜164。
 | TC-098〜102 | Clock | `IClock` の実装（`RealClock`）が Unity 側。`StepClock` はテスト用の差し替えで、それ自体は検証対象でない |
 | TC-103〜107 | Input | `TouchInput` が Unity のタッチを受ける。`Look` の丸めも Unity 側 |
 | TC-108〜112 | Storage | 保存形式が未決（[STO-01](../30_detailed_design/MOD-Storage.md)）。原子的書き込みと破損検知は実装依存 |
-| TC-113 / 114 | Calendar | **`ICalendar` が時刻を注入できない**（`BoardDate` プロパティのみ）。正午境界を試すには時刻を引数で受ける形が要る → 下記 |
+| ~~TC-113 / 114~~ | ~~Calendar~~ | **解決（2026-09-06）。**規則を `BoardDateRule` として純粋層に出し、時刻を引数で受ける形にした（G-01）。コード化済み |
 | TC-115〜119 | Share / Power | 権限・通信・画面抑止。**ビルドと実機を見る検査** |
 | TC-120〜151 | View / Tutorial / Shell / NFR | e2e と実機。Unity が要る |
 
-**TC-113 / 114 は IF の問題で、Unity の有無とは別。**
-`ICalendar.BoardDate` が端末時計を直接読む形だと、正午境界（REQ-019）を
-テストから作れない。**時刻を引数で受ける形にすれば純粋層で検証できる**（D2）。
-→ [decisions_pending.md](../00_process/decisions_pending.md)
+**残りはすべて Unity か実機が要る。**紙の上で潰せる穴は無くなった。
+
+TC-113 / 114 は IF の問題だったので、[MOD-Calendar](../30_detailed_design/MOD-Calendar.md) の
+公開 IF を変えて解決した（2026-09-06。本人承認）。
+**規則（`BoardDateRule`）を純粋層に出し、端末時計を読む役だけを `ICalendar` に残した。**
