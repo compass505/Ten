@@ -123,20 +123,24 @@ FAILED TC-031  期待: 上昇量が単調非増加  実際: ar=30 で +12, ar=60
 - 生成した列は、落ちたときだけ `tests/traces/` に保存する
 - **通ったときは保存しない。**保存すると承認テストになり、ADR-0002 が禁じている
 
-## 6. まだ動かせないこと
+## 6. 動かし方（2026-09-06 時点）
 
-**この環境には .NET SDK / Unity のいずれも無い。**
+**.NET SDK 8.0.424 を `~/.dotnet` に導入済み**（Microsoft 公式 `dotnet-install.sh`。sudo 不要）。
+**PATH はシェルの設定に入れていない**ので、毎回これが要る。
 
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+cd tests/unit && dotnet test
 ```
-dotnet: not found    mono: not found    Unity: not found
-```
 
-そのため、次はできていない。
-
-| できていないこと | 必要なもの |
+| できること | 状態 |
 | --- | --- |
-| テストコードを書いて**落ちることを確認する**（フェーズ 4 の DoD） | .NET SDK（純粋層だけなら Unity 不要） |
-| Unity プロジェクトの雛形と assembly definition | Unity |
+| 純粋層のテストを書いて**落ちることを確認する** | **できる。**TC-001〜007 / 165 は確認済み |
+| Unity プロジェクトの雛形と assembly definition | **できない**（Unity 未導入）。**view / shell 層に入るまで不要** |
+| e2e / 実機の NFR 計測 | **できない**（Unity + 実機）。→ [decisions_pending.md](../00_process/decisions_pending.md) C 節 |
+
+**モデル（3D モデル・アセット）の作成は Codex 側で行う**（本人判断 2026-09-06）。
+このリポジトリの作業範囲に含めない。
 
 **純粋層のテストは Unity なしで書き始められる**ので、.NET SDK が入れば
 承認待ちの 3 件に依存しない TC（TC-001〜022 / 030〜049 / 070〜083 など）から着手できる。

@@ -44,5 +44,4 @@ public sealed class TraceInput : IInputSource { }   // 入力列を再生（ハ�
 
 | ID | 論点 |
 | --- | --- |
-| INP-01 | 押しっぱなしを入れるか（**[ISS-19](../10_requirements/open_issues.md) の承認待ち**）。入らない場合 `TickInput.Held` は「その tick に押された」の意味になる |
 | INP-02 | 首振りをドラッグの相対量にするか、絶対位置にするか。相対だと指を持ち替えられる |

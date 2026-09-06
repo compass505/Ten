@@ -2,9 +2,8 @@
 
 種別: リファレンス（規約・事実）— 理由は ADR に置く
 更新トリガー: 状態が増減したとき / 乱数の用途が増えたとき / 保存形式を変えたとき
-状態: **2026-09-05 起草 / 2026-09-06 更新。**ADR-0013 / 0014 の承認により `EyesClosed` まわりは確定。
-[ADR-0015](../10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) が **Proposed** のため、
-`ActStrengthMilli` だけ暫定
+状態: **2026-09-05 起草 / 2026-09-06 更新。ADR-0013〜0017 の承認により全て確定。暫定の箇所は無い。**
+`ActStrengthMilli`（ADR-0015）と `ParentPhase.Feint`（ADR-0017）はこの日に入った
 
 出典: [architecture.md](../20_basic_design/architecture.md)（層と依存方向） /
 [screens.md](../20_basic_design/screens.md)（状態と遷移） /
@@ -35,7 +34,8 @@ public enum CareKind { PatPat, Milk, Hold, DiaperChange }
 public enum BabyPhase { Open, Charging, Acting, EyesClosed }
 
 /// 親の状態（screens.md 4.2）
-public enum ParentPhase { Sleeping, Caring, Settling, Grace, Up }
+/// **`Feint` は `Settling` の失敗側の双子**（ADR-0017）。観測上、両者は区別できてはならない
+public enum ParentPhase { Sleeping, Caring, Settling, Feint, Grace, Up }
 
 /// 夜の終わり方（REQ-054）。判定順もこの並び（screens.md 4.5 順 10）
 public enum EndKind { Dawn, FellAsleep, HandEmpty }
@@ -97,7 +97,7 @@ public readonly record struct NightState(
     BabyPhase Baby,
     ActionKind? ActKind,
     int ActRemain,
-    int ActStrengthMilli,          // 0〜1000。長押しの強度（ISS-19。承認まで暫定）
+    int ActStrengthMilli,          // 0〜1000。長押しの強度（ADR-0015 / REQ-060）
     bool ActFired,                 // この行動が既に発火したか
     int Vigor,                     // 0〜100
     // 親
@@ -117,7 +117,7 @@ public readonly record struct NightState(
     int EventsFired,
     int RollUntil, int HungryUntil, bool PartnerHere,
     int LockUntil, ActionKind LockedKinds, int DampUntil, int DampMilli,
-    // 診断（ADR-0016。承認まで暫定）
+    // 診断（ADR-0016 / REQ-062）
     Diagnosis Diag,
     // 得点
     int Score,
@@ -158,10 +158,14 @@ public readonly record struct Habit(int PatPat, int Milk, int Hold, int DiaperCh
 | I-6 | `PendingCare != null` のとき `Parent` は `Sleeping` か `Up` |
 | I-7 | `Hand` の各値 `>= 0`。`Hand.Total == 0` のとき `Parent != Caring` なら `Over == HandEmpty` |
 | I-8 | `Baby == EyesClosed` のとき `TClosed > 0`、それ以外で `TClosed == 0` |
-| I-9 | `Parent == Settling` のとき `Baby == EyesClosed`（開眼したら `Caring` へ落ちる。D-06） |
+| I-9 | `Parent == Settling` **または `Feint`** のとき `Baby == EyesClosed`（開眼したら `Caring` へ落ちる。D-06 / ADR-0017） |
 | I-10 | `ScoredEdge == true` ⟺ 直近で `Arousal` が 100 に達してから 40 まで下がっていない |
 | I-11 | `PretendN`・`DozeN`・`ChoiceN` は単調非減少 |
 | I-12 | `Diag` の各値は**単調非減少**（減ることがない） |
+| I-13 | **`Settling` と `Feint` は観測上区別できない**（ADR-0017 / REQ-016）。`TSettle` の進み方と満了長、`Hand` を消費しないこと、開眼したときの遷移先（`Caring` / `Hand` −1）、`DozeN` を進めないことが**すべて一致する。**違うのは満了後の行き先だけ（`Grace` / `Sleeping`） |
+
+**I-13 は「どこにも差が出ない」という形の不変条件で、他とは検証の向きが逆。**
+差が 1 つでもあれば、そこから寝たふりの成否が逆算できる（→ TC-164）。
 
 **テストは I-1〜I-11 を性質ベースで、それ以外を例示ベースで検証する**
 （[ADR-0002](../10_requirements/decisions/ADR-0002-test-harness.md) の規約 3）。
@@ -171,7 +175,7 @@ public readonly record struct Habit(int PatPat, int Milk, int Hold, int DiaperCh
 ```csharp
 /// その tick に割り付いた入力。複数来たら先着 1 件だけを採り、残りは捨てる
 public readonly record struct TickInput(
-    ActionKind? Held,      // 押しっぱなしの行動（ISS-19。承認まで暫定）
+    ActionKind? Held,      // 押しっぱなしの行動（ADR-0015 / REQ-060）
     bool ToggleEyes        // 目を閉じる / 開ける
 );
 

@@ -2,9 +2,9 @@
 
 > フェーズ 3。**2026-09-05 着手。**基本設計 5 本（architecture / screens / balance /
 > data_model / setting）を前提にしている。
-> ADR-0013 / 0014 は **2026-09-06 に承認**され、閉眼まわりの IF は確定した。
-> [ADR-0015](../10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) は **Proposed** のため、
-> 長押し（`ActStrengthMilli`）まわりだけ暫定。
+> **ADR-0013〜0017 はすべて 2026-09-06 に承認済み。暫定の箇所は無い。**
+> ADR-0015 により `ActStrengthMilli` と寝入りばなが確定し、
+> ADR-0017 により `ParentPhase` に **`Feint`** が加わった（`Settling` の失敗側の双子）。
 
 ## 進捗
 

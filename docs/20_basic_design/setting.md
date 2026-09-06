@@ -91,7 +91,7 @@
 
 **端点は正確に分かる**（REQ-045）: 覚醒度 100 に達した瞬間、**親はベッドを出て視界から消える**。
 
-### 4.2 寝入りばな（[ADR-0015](../10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) **承認待ち**）
+### 4.2 寝入りばな（[ADR-0015](../10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) / REQ-061）
 
 | | 見え方 |
 | --- | --- |

@@ -113,8 +113,8 @@ REQ-060〜062 は **2026-09-06 に確定**（ADR-0015 / 0016 承認）。
 | REQ-027 | Share | REQ-056 | Sim |
 | REQ-028 | Result | REQ-057 | Sim |
 | REQ-029 | Sim | REQ-058 | Display |
-| REQ-059 | Input / Sim | REQ-060（**暫定**） | Input / Sim |
-| REQ-061（**暫定**） | Sim / Display / View | REQ-062（**暫定**） | Sim / Result |
+| REQ-059 | Input / Sim | REQ-060 | Input / Sim |
+| REQ-061 | Sim / Display / View | REQ-062 | Sim / Result |
 
 非機能要件:
 
