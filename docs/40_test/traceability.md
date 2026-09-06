@@ -101,6 +101,7 @@
 | TC | なぜ green になるか |
 | --- | --- |
 | TC-006 | `src/` を走査して禁止語が**無いこと**を見る静的検査。空実装の時点で条件を満たす。見張っているのは「実装が環境に触っていないこと」であって「実装があること」ではない |
+| TC-024 | 「首の向きが状態列に影響しない」を、`TickInput` が首の向きを**持たないこと**で機械的に保証している（types.md 4 節 / data_model.md 5 節）。型の形を見る検査なので、実装の有無に関係なく成り立つ |
 | （TC 無し）[tests/harness/HarnessSelfTests.cs](../../tests/harness/HarnessSelfTests.cs) の `TraceFileTests` 18 件 | **ハーネス自身のテスト。**検証対象が製品（`src/`）ではなく、入力列の読み書きと失敗報告という**道具**。道具は既に実装されているので green が正しい。道具が壊れているとその先の全テストが信用できなくなるため、テストは要る |
 
 **ここに足すときは理由を書く。**書けないなら、それは DoD の例外ではなく空振りしているテスト。
@@ -110,13 +111,13 @@
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
 | [tests/unit/RngTests.cs](../../tests/unit/RngTests.cs) | TC-001〜007 / TC-165 | **13 件中 12 件が赤 / TC-006 のみ green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | **TC-020 / 021 / 022** | **24 件中 6 件が赤 / 18 件が green**（上の例外）。赤は TC-020〜022 と `TraceGenerator` の 3 件 |
+| [tests/harness/](../../tests/harness/) | **TC-020〜069 / TC-164** | **69 件中 50 件が赤 / 19 件が green**。green は道具自身の 18 件と TC-024（上の例外） |
 | `tests/e2e/` | — | 未着手 |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
 
-**ハーネスは通しで動く形になった。**道具（入力列の記法・失敗時の出力・ランダム列）に加えて、
-`Sim` → `Score` → `NightEnd` の順で再生する [SimRunner](../../tests/harness/SimRunner.cs) と、
-不変条件 I-1〜I-11 の検査（[Invariants](../../tests/harness/Invariants.cs)）が入った。
+**`MOD-Sim` の TC はすべてコード化した**（TC-020〜069。欠番 039 / 044 / 061 を除く 47 件）。
+判別不能性の TC-164 も、純粋層で見られる 3 点をここに置いた。
 
-**TC-023 以降は、この上に乗せていくだけ。**
+**残りは境界層・表示層（TC-070 以降）と e2e。**
+`MOD-Storage` / `MOD-Display` / `MOD-View` / `MOD-Shell` の IF に沿って足していく。

@@ -20,7 +20,14 @@
 | [TraceGenerator.cs](TraceGenerator.cs) | ランダム入力列。**生成も決定論** | 同 5 節 |
 | [SimRunner.cs](SimRunner.cs) | 入力列を流し込んで状態列を取る。**`Sim` → `Score` → `NightEnd` の順序をここ 1 か所に閉じ込める**（REQ-051） | [MOD-Sim](../../docs/30_detailed_design/MOD-Sim.md) |
 | [Invariants.cs](Invariants.cs) | 不変条件 I-1〜I-11 の検査 | [types.md](../../docs/30_detailed_design/types.md) 3 節 |
-| [SimTests.cs](SimTests.cs) | **TC-020 / 021 / 022** | [TC-pure-sim.md](../../docs/40_test/cases/TC-pure-sim.md) |
+| [SimProbe.cs](SimProbe.cs) | 状態を作る・進める・測る道具 | — |
+| [SimTests.cs](SimTests.cs) | **TC-020 / 021 / 022**（不変条件・決定論） | [TC-pure-sim.md](../../docs/40_test/cases/TC-pure-sim.md) |
+| [OperationTests.cs](OperationTests.cs) | **TC-023〜029**（操作と排他） | 同上 |
+| [ArousalTests.cs](ArousalTests.cs) | **TC-030〜043**（覚醒度・慣れ・元気） | 同上 |
+| [CareTests.cs](CareTests.cs) | **TC-045〜049**（対処と山札） | 同上 |
+| [PretendTests.cs](PretendTests.cs) | **TC-050〜060 / TC-164**（寝たふり・判別不能性） | 同上 |
+| [DozeAndEventTests.cs](DozeAndEventTests.cs) | **TC-062〜067**（寝落ちと出来事） | 同上 |
+| [StrategyTests.cs](StrategyTests.cs) | **TC-068 / 069**（支配戦略と得点差） | 同上 |
 | [HarnessSelfTests.cs](HarnessSelfTests.cs) | **道具自身のテスト**（TC-xxx ではない） | — |
 
 ## 満たすこと
@@ -50,10 +57,20 @@ export PATH="$HOME/.dotnet:$PATH"
 cd tests/harness && dotnet test
 ```
 
-**いまは 24 件中 18 件が green、6 件が赤。**
-赤は TC-020 / 021 / 022 と `TraceGenerator` の 3 件（いずれも空実装を踏む）。
-green 18 件は道具自身のテストで、**フェーズ 4 の DoD「全て落ちる」は適用しない**
-（→ [traceability.md](../../docs/40_test/traceability.md)）。
+**いまは 69 件中 50 件が赤、19 件が green。**
+green は道具自身のテスト 18 件と TC-024（型の形を見る検査）。
+どちらも**フェーズ 4 の DoD「全て落ちる」は適用しない**
+（→ [traceability.md](../../docs/40_test/traceability.md) の例外表）。
+
+## 前提の状態の作り方
+
+**`Sim.Begin` から作り、変えたい 1 つだけを `with` で差し替える**（[SimProbe](SimProbe.cs)）。
+
+「覚醒度 A &lt; B（他は同一）」のような前提は入力列だけでは作れない。
+かといって `NightState` を丸ごと手で組むと、**バランス値を書くことになる**（ADR-0012 違反）。
+`Begin` を土台にすれば、書くのは比較したい 1 つだけで済む。
+
+**上昇量は比較にしか使わない。**絶対値を期待値に書かない。
 
 ## 順序を 1 か所に閉じ込めている
 
@@ -65,7 +82,6 @@ green 18 件は道具自身のテストで、**フェーズ 4 の DoD「全て�
 
 ## まだ無いもの
 
-**TC-023 以降**（操作と排他・覚醒度・対処・寝たふり・出来事）。
-土台はできているので、`SimTests.cs` に足していく形になる。
+**TC-070 以降**（境界層・表示層）。`MOD-Storage` / `MOD-Display` / `MOD-View` / `MOD-Shell`。
 
 `tests/e2e/` は Unity が要るので手つかず。
