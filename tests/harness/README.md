@@ -18,6 +18,9 @@
 | [TraceHeader.cs](TraceHeader.cs) | `# seed=... play=... spec=... tuning=...` | 同 3 節 |
 | [FailureReport.cs](FailureReport.cs) | 落ちたときの出力と、入力列の保存（**D4**） | 同 4 節 |
 | [TraceGenerator.cs](TraceGenerator.cs) | ランダム入力列。**生成も決定論** | 同 5 節 |
+| [SimRunner.cs](SimRunner.cs) | 入力列を流し込んで状態列を取る。**`Sim` → `Score` → `NightEnd` の順序をここ 1 か所に閉じ込める**（REQ-051） | [MOD-Sim](../../docs/30_detailed_design/MOD-Sim.md) |
+| [Invariants.cs](Invariants.cs) | 不変条件 I-1〜I-11 の検査 | [types.md](../../docs/30_detailed_design/types.md) 3 節 |
+| [SimTests.cs](SimTests.cs) | **TC-020 / 021 / 022** | [TC-pure-sim.md](../../docs/40_test/cases/TC-pure-sim.md) |
 | [HarnessSelfTests.cs](HarnessSelfTests.cs) | **道具自身のテスト**（TC-xxx ではない） | — |
 
 ## 満たすこと
@@ -47,13 +50,22 @@ export PATH="$HOME/.dotnet:$PATH"
 cd tests/harness && dotnet test
 ```
 
-**いまは 21 件中 18 件が green、3 件が赤。**
-赤 3 件は `TraceGenerator`（`Rng` の空実装を踏む）。
+**いまは 24 件中 18 件が green、6 件が赤。**
+赤は TC-020 / 021 / 022 と `TraceGenerator` の 3 件（いずれも空実装を踏む）。
 green 18 件は道具自身のテストで、**フェーズ 4 の DoD「全て落ちる」は適用しない**
 （→ [traceability.md](../../docs/40_test/traceability.md)）。
 
+## 順序を 1 か所に閉じ込めている
+
+`Sim.Advance` → `Score.Apply` → `NightEnd.Evaluate` の順は **REQ-051** で決まっていて、
+**型で強制できない唯一の場所**（[handoff.md](../../docs/00_process/handoff.md) 6 節）。
+
+そこで [SimRunner.Step](SimRunner.cs) だけがこの順を持ち、各テストは自分で組み立てない。
+**入れ替えると、山札の最後の 1 枚で得た点が消える**（TC-080）。
+
 ## まだ無いもの
 
-**`Sim` を実際に駆動する再生系。**`Sim.Begin` / `Advance` を呼んで状態列を取る部分は、
-`BoardSpec` / `Tuning` / `NightState` の型が要るのでこれから。
-TC-020 以降がそこに乗る。
+**TC-023 以降**（操作と排他・覚醒度・対処・寝たふり・出来事）。
+土台はできているので、`SimTests.cs` に足していく形になる。
+
+`tests/e2e/` は Unity が要るので手つかず。

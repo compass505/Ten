@@ -110,11 +110,13 @@
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
 | [tests/unit/RngTests.cs](../../tests/unit/RngTests.cs) | TC-001〜007 / TC-165 | **13 件中 12 件が赤 / TC-006 のみ green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | **TC はまだ無い**（道具のみ） | **21 件中 3 件が赤 / 18 件が green**（上の例外）。赤 3 件は `TraceGenerator`（`Rng` の空実装を踏む） |
+| [tests/harness/](../../tests/harness/) | **TC-020 / 021 / 022** | **24 件中 6 件が赤 / 18 件が green**（上の例外）。赤は TC-020〜022 と `TraceGenerator` の 3 件 |
 | `tests/e2e/` | — | 未着手 |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
 
-**ハーネスの道具は揃った**（入力列の記法・失敗時の出力・ランダム列の生成）。
-**まだ無いのは `Sim` を駆動する再生系**で、`BoardSpec` / `Tuning` / `NightState` の型が要る。
-TC-020 以降はそこに乗る。
+**ハーネスは通しで動く形になった。**道具（入力列の記法・失敗時の出力・ランダム列）に加えて、
+`Sim` → `Score` → `NightEnd` の順で再生する [SimRunner](../../tests/harness/SimRunner.cs) と、
+不変条件 I-1〜I-11 の検査（[Invariants](../../tests/harness/Invariants.cs)）が入った。
+
+**TC-023 以降は、この上に乗せていくだけ。**

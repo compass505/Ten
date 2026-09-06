@@ -52,11 +52,11 @@
 | | 赤 / green |
 | --- | --- |
 | `tests/unit` | 12 赤 / 1 green（TC-006。静的検査なので DoD の例外） |
-| `tests/harness` | 3 赤 / 18 green（道具自身のテストなので DoD の例外） |
+| `tests/harness` | 6 赤 / 18 green（green は道具自身のテストなので DoD の例外） |
 
 例外の理由は [traceability.md](../40_test/traceability.md) 末尾に表で残してある。
-**次は `Sim` を駆動する再生系**（`BoardSpec` / `Tuning` / `NightState` の型が要る）。
-TC-020 以降がそこに乗る。
+**ハーネスは通しで動く形になった**（記法・失敗報告・ランダム列・再生系・不変条件）。
+**次は TC-023 以降**を `tests/harness/SimTests.cs` に足していくだけ。
 
 ## 3. 会話でだけ決まっていること（**最重要**）
 
