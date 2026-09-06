@@ -101,6 +101,7 @@
 | TC | なぜ green になるか |
 | --- | --- |
 | TC-006 | `src/` を走査して禁止語が**無いこと**を見る静的検査。空実装の時点で条件を満たす。見張っているのは「実装が環境に触っていないこと」であって「実装があること」ではない |
+| （TC 無し）[tests/harness/HarnessSelfTests.cs](../../tests/harness/HarnessSelfTests.cs) の `TraceFileTests` 18 件 | **ハーネス自身のテスト。**検証対象が製品（`src/`）ではなく、入力列の読み書きと失敗報告という**道具**。道具は既に実装されているので green が正しい。道具が壊れているとその先の全テストが信用できなくなるため、テストは要る |
 
 **ここに足すときは理由を書く。**書けないなら、それは DoD の例外ではなく空振りしているテスト。
 
@@ -109,7 +110,11 @@
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
 | [tests/unit/RngTests.cs](../../tests/unit/RngTests.cs) | TC-001〜007 / TC-165 | **13 件中 12 件が赤 / TC-006 のみ green**（上の例外） |
-| `tests/harness/` | — | 未着手 |
+| [tests/harness/](../../tests/harness/) | **TC はまだ無い**（道具のみ） | **21 件中 3 件が赤 / 18 件が green**（上の例外）。赤 3 件は `TraceGenerator`（`Rng` の空実装を踏む） |
 | `tests/e2e/` | — | 未着手 |
 
-`export PATH="$HOME/.dotnet:$PATH"` のうえ `cd tests/unit && dotnet test` で走る。
+`export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
+
+**ハーネスの道具は揃った**（入力列の記法・失敗時の出力・ランダム列の生成）。
+**まだ無いのは `Sim` を駆動する再生系**で、`BoardSpec` / `Tuning` / `NightState` の型が要る。
+TC-020 以降はそこに乗る。

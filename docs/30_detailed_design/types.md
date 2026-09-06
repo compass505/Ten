@@ -189,7 +189,13 @@ public readonly record struct InputTrace(
 
 - **`Entries` は `Tick` の昇順で、同じ tick は 1 件まで。**
   この正規化を `MOD-Input` が行い、純粋層は正規化済みしか受け取らない
-- `InputTrace` はテキストで保存でき、失敗時にそのまま出力する（D4）
+- `InputTrace` はテキストで保存でき、失敗時にそのまま出力する（D4）。
+  読み書きは [tests/harness/TraceFile.cs](../../tests/harness/TraceFile.cs)
+- **`InputTrace` は `spec` と `tuning` を持たない。**
+  [harness.md](../40_test/harness.md) 3 節のヘッダは 4 項目だが、
+  この 2 つは**再生に要らず、再現の切り分けにだけ使う**
+  （「実装が壊れた」のか「Tuning が変わった」のかの判別）。
+  そのためハーネス側の `TraceHeader` が持つ。純粋層に持ち込まない
 
 ## 5. 調整値
 

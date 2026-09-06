@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ハーネス層。入力列を流し込んだ通しの振る舞いを見る。
+    根拠: docs/00_process/test_first.md 3 節（**主戦場はここ**。要件の大半をここで担保する）
+          docs/40_test/harness.md 3〜5 節（記法・失敗時の出力・ランダム列の作り方）
+
+    **依存してよいのは公開 IF だけ**（test_first.md 3 節）。
+    src の internal に触らない。触れてしまうと「外から駆動して観測する層」でなくなる。
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Ten.Tests.Harness</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Ten.Pure/Ten.Pure.csproj" />
+  </ItemGroup>
+
+</Project>
