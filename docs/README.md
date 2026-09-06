@@ -17,7 +17,7 @@
 | [10_requirements/decisions/](10_requirements/decisions/) | 決定 | ADR | **17 件すべて Accepted**（うち 4 件はリスク受容あり）。**Proposed 0 件** |
 | [20_basic_design/](20_basic_design/) | 成果物 | モジュール分割・遷移・数値・データ・設定・診断 | **完了**（architecture / screens / balance / data_model / setting / diagnosis） |
 | [30_detailed_design/](30_detailed_design/) | 成果物 | 公開 IF・型 | **完了**（types + 16 モジュール。純粋層 7 / 境界 6 / 表示 3） |
-| [40_test/](40_test/) | 成果物 | テストケース・トレーサビリティ・ハーネス仕様 | **TC-001〜164 発番済み。テストコードは未着手**（.NET SDK は導入済み） |
+| [40_test/](40_test/) | 成果物 | テストケース・トレーサビリティ・ハーネス仕様 | **TC-001〜165 発番済み。TC-001〜007 / 165 はコード化して赤を確認済み**（残り 156 件が未着手） |
 | [50_review/](50_review/) | 記録 | 改善ループの周回記録・課題 | Codex レビュー 18 + 28 + 24 件を記録 |
 | [_templates/](_templates/) | 型 | ADR / テストケース / ループ記録 | — |
 | `../.claude/skills/` | 手順 | フェーズ別スキル 5 本 | — |

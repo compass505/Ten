@@ -1,4 +1,4 @@
-# TC-001〜019 — 乱数と盤面
+# TC-001〜019 / TC-165 — 乱数と盤面
 
 対象: [MOD-Rng](../../30_detailed_design/MOD-Rng.md) / [MOD-Board](../../30_detailed_design/MOD-Board.md)
 種別は全て unit。
@@ -10,7 +10,7 @@
 | TC-003 | ADR-0008 | 任意の seed | 用途だけを変えて引く | **他の用途の値が動かない**（全用途 × 通番 0〜99 を記録して比較） |
 | TC-004 | ADR-0008 | 任意の seed | 通番を 1 つ飛ばす（0,1,3…） | **飛ばした後の値が、飛ばさない場合と一致** |
 | TC-005 | NFR-004 | 任意の seed | `Range(…, 6)` を 10 万回 | 各値の出現が期待値 ±3% |
-| TC-006 | NFR-004 | — | `Rng` の実装を静的に検査 | `System.Random` / `UnityEngine` を参照していない |
+| TC-006 | NFR-004 | — | `Rng` の実装を静的に検査 | `System.Random` / `UnityEngine` を参照していない。**空実装の時点で green になる**（test_first.md 5.2） |
 | TC-007 | — | `ordinal = -1` / `exclusiveMax = 0` / 空 seed | 呼ぶ | **例外を投げる**（握り潰さない） |
 | TC-010 | REQ-019 / 021 | 任意の seed | `Board.Generate` を 100 回 | **全て同一の `BoardSpec`** |
 | TC-011 | REQ-041 / 050 | 100 個の seed | 盤面を生成 | `Hand.Total` が設定範囲内、かつ**各札種が 1 枚以上** |
@@ -21,3 +21,21 @@
 | TC-016 | REQ-034 | — | `Board.Tutorial()` の盤面で、寝たふりを狙う入力列を再生 | **1 回目の寝たふりが必ず成功する** |
 | TC-017 | REQ-048 | 同じ seed、`playIndex` 0 と 1 | 盤面を生成 | **`BoardSpec` が完全に一致**（盤面はプレイ回数で変わらない） |
 | TC-018 | — | `HandMin > HandMax` の `Tuning` | `Generate` を呼ぶ | **例外を投げる**（壊れた盤面を返さない） |
+
+## 参照ベクタ適合（2026-09-06 発番）
+
+出典: [harness.md](../harness.md) 2 節 —
+「[tests/vectors/rng.json](../../../tests/vectors/rng.json) を正とする。
+C# 実装がこれと 1 件でも食い違ったら NFR-004 が成立しない」
+
+| TC | 対象 REQ | 前提 | 手順 | 期待値 |
+| --- | --- | --- | --- | --- |
+| TC-165 | NFR-004 | `tests/vectors/rng.json` | `hash` 140 件 / `milli` 140 件 / `range` 96 件を全て引く | **全件が参照ベクタと完全に一致する** |
+
+**`hash` を見る理由。**`Milli` は上位 10 ビット相当、`Range` は下位数ビット相当しか固定しない。
+**最終撹拌の中間ビットを間違えても `milli` / `range` は全件通る。**
+そのまま `Chance` を細かい確率で使った時点で端末間の結果がずれる。
+`hash` 節だけが 32 ビット全部を固定するので、ここを見ないと NFR-004 の根拠にならない。
+
+**`Rng.Hash` は公開 IF ではない**（[MOD-Rng](../../30_detailed_design/MOD-Rng.md)）。
+`internal` + `InternalsVisibleTo("Ten.Tests.Unit")` でテストからだけ見える。

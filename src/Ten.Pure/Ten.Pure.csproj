@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    純粋層。**UnityEngine を参照しない。**
+    根拠: docs/20_basic_design/architecture.md（純粋層は別アセンブリに分けて参照を機械的に禁止する）
+          docs/40_test/harness.md 1 節（dotnet test が通ること自体が独立性のテスト）
+
+    ここに Unity / System.Random / DateTime を持ち込んだ時点で、
+    決定論（NFR-004）を機械的に確かめる手段が消える。TC-006 が見張っている。
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Ten.Pure</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    参照ベクタ（tests/vectors/rng.json）の hash 節 140 件を検証するため、
+    Rng.Hash を internal にしてテストアセンブリにだけ見せる。
+    公開 IF は Milli / Range / Chance の 3 つのまま（MOD-Rng.md）。
+  -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ten.Tests.Unit" />
+  </ItemGroup>
+
+</Project>

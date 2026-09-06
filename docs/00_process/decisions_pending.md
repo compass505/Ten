@@ -88,4 +88,6 @@ export PATH="$HOME/.dotnet:$PATH"
 | **診断は 7 軸の近傍マッチ** | ADR-0016 Accepted（2026-09-06）。REQ-062 確定 |
 | **寝たふり失敗時も親が動く** | ADR-0017 Accepted（2026-09-06）。**ISS-20 は未解決のまま受容** |
 | ハーネスの実装仕様（ISS-06） | [40_test/harness.md](../40_test/harness.md) |
-| テストケース TC-001〜164 | [40_test/cases/](../40_test/cases/)。**全 Must 要件に対応済み（未割当 0 件）** |
+| テストケース TC-001〜165 | [40_test/cases/](../40_test/cases/)。**全 Must 要件に対応済み（未割当 0 件）** |
+| 空実装の線引き（フェーズ 4 で `src/` に何を置けるか） | [test_first.md](test_first.md) 5.1（2026-09-06）。**本体は `throw` の 1 行だけ** |
+| `Rng.Hash` を internal にしてテストから見せる | [MOD-Rng](../30_detailed_design/MOD-Rng.md)（2026-09-06）。参照ベクタの hash 節 140 件を検証するため |

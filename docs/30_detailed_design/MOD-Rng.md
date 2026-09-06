@@ -18,8 +18,20 @@ public static class Rng {
 
     /// probMilli/1000 の確率で true
     public static bool Chance(string seed, RngPurpose purpose, int ordinal, int probMilli);
+
+    /// **公開しない**（internal）。テストからのみ見える
+    internal static uint Hash(string seed, RngPurpose purpose, int ordinal);
 }
 ```
+
+**`Hash` は公開 IF に含めない。**`internal` + `InternalsVisibleTo("Ten.Tests.Unit")` で
+テストアセンブリにだけ見せる（2026-09-06）。
+
+理由: [参照ベクタ](../../tests/vectors/rng.json)の `hash` 節 140 件は**32 ビット全部**を固定するが、
+`Milli`（上位 10 ビット相当）と `Range`（下位数ビット相当）だけでは
+**最終撹拌の中間ビットが未検証のまま残る。**そこを間違えても既存のベクタは全件通り、
+後から `Chance` を細かい確率で使った時点で端末間でずれる（NFR-004 が崩れる）。
+→ [TC-165](../40_test/cases/TC-pure-board.md)
 
 ## 満たすこと
 
