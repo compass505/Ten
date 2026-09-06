@@ -232,3 +232,4 @@ public readonly record struct SavedRun(string BoardDate, NightState State);
 | T-02 | 固定小数の単位（1/1000）で足りるか。慣れと強度の丸め誤差が蓄積しないか |
 | T-03 | `Tuning` をどこから読むか（`ScriptableObject` / JSON / 定数クラス） |
 | T-04 | `LockedKinds` を `ActionKind` のビットフラグにするか、配列にするか |
+| T-05 | **`DiagnosisEntry` をここに載せるか。**[MOD-Result](MOD-Result.md) の `Diagnose` の戻り値なのに、この文書に定義が無かった（2026-09-06 に発覚）。diagnosis.md 4 節から起こして [src/Ten.Pure/Result.cs](../../src/Ten.Pure/Result.cs) に置いてある → [decisions_pending.md](../00_process/decisions_pending.md) G-02 |

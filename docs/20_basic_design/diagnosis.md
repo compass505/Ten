@@ -2,8 +2,9 @@
 
 種別: リファレンス（規約・事実）— 理由は ADR に置く
 更新トリガー: パラメータが増減したとき / カタログを足したとき / 選び方を変えたとき
-状態: **2026-09-06 起草。**[ADR-0016](../10_requirements/decisions/ADR-0016-diagnosis-parameters.md)
-（**Proposed**）に依存する
+状態: **2026-09-06 起草・同日確定。**[ADR-0016](../10_requirements/decisions/ADR-0016-diagnosis-parameters.md)
+Accepted（REQ-062）。**プロファイル（7 軸の重み）は確定。カタログ 50 件の文言は書き直しが未着手**
+（3 節の長さを満たしていない。handoff.md H-02）
 
 出典: [ADR-0006](../10_requirements/decisions/ADR-0006-concept.md)（夫婦で笑う贈り物） /
 [ADR-0016](../10_requirements/decisions/ADR-0016-diagnosis-parameters.md) /

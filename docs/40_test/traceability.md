@@ -102,6 +102,7 @@
 | --- | --- |
 | TC-006 | `src/` を走査して禁止語が**無いこと**を見る静的検査。空実装の時点で条件を満たす。見張っているのは「実装が環境に触っていないこと」であって「実装があること」ではない |
 | TC-024 | 「首の向きが状態列に影響しない」を、`TickInput` が首の向きを**持たないこと**で機械的に保証している（types.md 4 節 / data_model.md 5 節）。型の形を見る検査なので、実装の有無に関係なく成り立つ |
+| TC-156 | 同じ形。「予兆は顔を見ているときだけ分かる」（REQ-061）を、`NightState` が予兆を**持たないこと**で保証している。状態に入れると首の向きに関係なく出せてしまう。**表示側の検証は e2e（TC-121）** |
 | （TC 無し）[tests/harness/HarnessSelfTests.cs](../../tests/harness/HarnessSelfTests.cs) の `TraceFileTests` 18 件 | **ハーネス自身のテスト。**検証対象が製品（`src/`）ではなく、入力列の読み書きと失敗報告という**道具**。道具は既に実装されているので green が正しい。道具が壊れているとその先の全テストが信用できなくなるため、テストは要る |
 
 **ここに足すときは理由を書く。**書けないなら、それは DoD の例外ではなく空振りしているテスト。
@@ -110,14 +111,27 @@
 
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
-| [tests/unit/RngTests.cs](../../tests/unit/RngTests.cs) | TC-001〜007 / TC-165 | **13 件中 12 件が赤 / TC-006 のみ green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | **TC-020〜069 / TC-164** | **69 件中 50 件が赤 / 19 件が green**。green は道具自身の 18 件と TC-024（上の例外） |
-| `tests/e2e/` | — | 未着手 |
+| [tests/unit/](../../tests/unit/) | TC-001〜007 / 084〜097 / 165 | **27 件中 26 件が赤 / TC-006 のみ green**（上の例外） |
+| [tests/harness/](../../tests/harness/) | TC-020〜083 / 152〜156 / 159〜164 | **93 件中 73 件が赤 / 20 件が green**。green は道具自身の 18 件と TC-024 / TC-156 |
+| `tests/e2e/` | — | **未着手**（Unity が要る） |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
 
-**`MOD-Sim` の TC はすべてコード化した**（TC-020〜069。欠番 039 / 044 / 061 を除く 47 件）。
-判別不能性の TC-164 も、純粋層で見られる 3 点をここに置いた。
+**純粋層の TC はすべてコード化した。**MOD-Rng / Board / Sim / Score / End / Result / Display と、
+ADR-0015 / 0016 / 0017 で足した TC-152〜156 / 159〜164。
 
-**残りは境界層・表示層（TC-070 以降）と e2e。**
-`MOD-Storage` / `MOD-Display` / `MOD-View` / `MOD-Shell` の IF に沿って足していく。
+## まだ書けていない TC と、その理由
+
+| 範囲 | 対象 | 書けない理由 |
+| --- | --- | --- |
+| TC-098〜102 | Clock | `IClock` の実装（`RealClock`）が Unity 側。`StepClock` はテスト用の差し替えで、それ自体は検証対象でない |
+| TC-103〜107 | Input | `TouchInput` が Unity のタッチを受ける。`Look` の丸めも Unity 側 |
+| TC-108〜112 | Storage | 保存形式が未決（[STO-01](../30_detailed_design/MOD-Storage.md)）。原子的書き込みと破損検知は実装依存 |
+| TC-113 / 114 | Calendar | **`ICalendar` が時刻を注入できない**（`BoardDate` プロパティのみ）。正午境界を試すには時刻を引数で受ける形が要る → 下記 |
+| TC-115〜119 | Share / Power | 権限・通信・画面抑止。**ビルドと実機を見る検査** |
+| TC-120〜151 | View / Tutorial / Shell / NFR | e2e と実機。Unity が要る |
+
+**TC-113 / 114 は IF の問題で、Unity の有無とは別。**
+`ICalendar.BoardDate` が端末時計を直接読む形だと、正午境界（REQ-019）を
+テストから作れない。**時刻を引数で受ける形にすれば純粋層で検証できる**（D2）。
+→ [decisions_pending.md](../00_process/decisions_pending.md)
