@@ -49,6 +49,7 @@
 | `playIndex` | 何回目のプレイか（REQ-031） |
 | `endKind` | `dawn` / `fellAsleep` / `handEmpty`（REQ-054） |
 | `commentary` | 実況テキスト 3 文以内（REQ-026） |
+| `diag[7]` / `diagId` | 診断のパラメータと、選ばれたカタログ ID（REQ-062） |
 
 - **同点なら先に遊んだほうを残す**（REQ-025）。`score` が等しいとき `best` を更新しない
 - `commentary` は生成結果を保存する。**再生成しない**（同じ入力列から作れるが、
@@ -71,6 +72,7 @@ REQ-032 / REQ-053 が名指ししているものに、[screens.md](screens.md) 4
 | 山札 | `hand[4]`（種類ごとの残枚数） | REQ-041 / 053 |
 | 出来事 | `eventsFired`（発生済みの索引） | REQ-053 |
 | 乱数の通番 | `pretendN`（寝たふりの回数）/ `dozeTick`（`doze_off` の刻み回数）/ `choiceN`（`parent_choice` の回数） | REQ-032 / ADR-0008 |
+| **診断** | `diag[7]`（いらだち / 疲労 / 徒労 / 寝不足 / 不安 / 翻弄 / いとおしさ） | REQ-062 / ADR-0016 |
 | 得点 | `score` / `scoredEdge`（加点済みかのエッジ） | REQ-052 |
 
 - **`pretendN` は「引いた回数」であって「次に引く番号」ではない。**

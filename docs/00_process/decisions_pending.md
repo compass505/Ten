@@ -8,7 +8,7 @@
 > このファイルは「戻ってきたとき何を決めればいいか」を 1 枚で見るためのもの。
 > 決めた結果は ADR / 要件 / 設計側に書く。**ここには残さない。**
 
-## A. 承認が要る — **残り 1 件**
+## A. 承認が要る — **2 件**
 
 **[ADR-0005](../10_requirements/decisions/ADR-0005-agent-roles.md) により、エージェントは
 自分が書いたものを承認しない。**3 件とも Codex レビューを通してある。
@@ -17,11 +17,20 @@
 | --- | --- | --- | --- |
 | **[ADR-0015](../10_requirements/decisions/ADR-0015-input-intensity-and-timing.md)** | 行動の入力を「強度」と「タイミング」の 2 軸にする | **REQ-060 / 061** / `TickInput` の形 / [MOD-Input](../30_detailed_design/MOD-Input.md) INP-01 / [MOD-Sim](../30_detailed_design/MOD-Sim.md) SIM-01・02 | 入力列の記法とハーネスの再生系が作り直し |
 
-**ADR-0015 に依存する TC は TC-152〜156 の 5 件だけ。**棄却しても他に波及しない
-（REQ-060 / 061 を取り下げて、その 5 件を消す）。
+| **[ADR-0016](../10_requirements/decisions/ADR-0016-diagnosis-parameters.md)** | 一晩を 7 つのパラメータで測り、カタログから近い診断を選ぶ | **REQ-062** / [diagnosis.md](../20_basic_design/diagnosis.md) のカタログ 50 件 / `NightState` に 7 値 | `NightState` の形と保存形式が変わる |
+
+**どちらも依存する TC は少ない。**ADR-0015 は TC-152〜156（5 件）、
+ADR-0016 は TC-159〜163（5 件）。**棄却してもその分を消すだけ。**
 
 **それ以外の TC（153 件）は承認済みの ADR の上に立っているので、
 .NET SDK さえ入れば今すぐ書き始められる。**
+
+### ADR-0016 は「カタログのレビュー」が本体
+
+決定そのもの（7 軸 + 近傍マッチ）は実測で裏を取ってある
+（[diagnosis.md](../20_basic_design/diagnosis.md) 1 節）。
+**読んでほしいのは 4 節のカタログ 50 件の文言。**
+ここが面白くないと ADR-0006（夫婦で笑う）に届かない。
 
 ### 差し戻す場合
 

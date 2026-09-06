@@ -52,6 +52,7 @@ public enum RngPurpose {
     FallAsleep,      // 寝たふり中の寝落ち。通番＝同上
     ParentChoice,    // 親がどの対処を選ぶか。通番＝その夜で何回目の対処か
     DozeOff,         // 待機中の寝落ち。通番＝その夜で何回目の刻み判定か（screens.md D-05）
+    Diagnosis,       // 診断パラメータの 3 つ目がどこに乗るか。通番＝tick（ADR-0016）
 }
 ```
 
@@ -116,6 +117,8 @@ public readonly record struct NightState(
     int EventsFired,
     int RollUntil, int HungryUntil, bool PartnerHere,
     int LockUntil, ActionKind LockedKinds, int DampUntil, int DampMilli,
+    // 診断（ADR-0016。承認まで暫定）
+    Diagnosis Diag,
     // 得点
     int Score,
     bool ScoredEdge,               // 加点済みか（REQ-052 のエッジ検出）
@@ -124,6 +127,16 @@ public readonly record struct NightState(
     // 終了
     EndKind? Over
 );
+
+/// 一晩の診断パラメータ。値は 1/10 単位の整数（diagnosis.md 1 節）
+public readonly record struct Diagnosis(
+    int Irritation, int Fatigue, int Futility, int SleepLoss,
+    int Anxiety, int Jerked, int Fondness
+) {
+    public int Total { get; }
+    /// 合計で割った割合。合計 0 のときは既定値を返す
+    public IReadOnlyList<int> Ratios { get; }
+}
 
 public readonly record struct Habit(int PatPat, int Milk, int Hold, int DiaperChange) {
     public int Of(CareKind k);
@@ -148,6 +161,7 @@ public readonly record struct Habit(int PatPat, int Milk, int Hold, int DiaperCh
 | I-9 | `Parent == Settling` のとき `Baby == EyesClosed`（開眼したら `Caring` へ落ちる。D-06） |
 | I-10 | `ScoredEdge == true` ⟺ 直近で `Arousal` が 100 に達してから 40 まで下がっていない |
 | I-11 | `PretendN`・`DozeN`・`ChoiceN` は単調非減少 |
+| I-12 | `Diag` の各値は**単調非減少**（減ることがない） |
 
 **テストは I-1〜I-11 を性質ベースで、それ以外を例示ベースで検証する**
 （[ADR-0002](../10_requirements/decisions/ADR-0002-test-harness.md) の規約 3）。
@@ -191,7 +205,8 @@ public readonly record struct Tuning( /* balance.md の全項目 */ );
 
 ```csharp
 public readonly record struct DeviceData(int SchemaVersion, int BoardSpecVersion, bool TutorialDone);
-public readonly record struct BestPlay(int Score, int PlayIndex, EndKind EndKind, string Commentary);
+public readonly record struct BestPlay(int Score, int PlayIndex, EndKind EndKind,
+                                      string Commentary, Diagnosis Diag, string DiagId);
 public readonly record struct TodayData(string BoardDate, int PlayCount, BestPlay? Best);
 public readonly record struct SavedRun(string BoardDate, NightState State);
 ```

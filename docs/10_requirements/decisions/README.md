@@ -26,6 +26,7 @@
 | [ADR-0013](ADR-0013-pretend-requires-closed-eyes.md) | 寝たふりは「目を閉じている間」にだけ成立させる（REQ-059 を発番） | Accepted |
 | [ADR-0014](ADR-0014-closed-eyes-information.md) | REQ-006 の「知ることができる」は目を開けている間について言う | Accepted |
 | [ADR-0015](ADR-0015-input-intensity-and-timing.md) | 行動の入力を「強度」と「タイミング」の 2 軸にする（REQ-060 / 061 を起案） | **Proposed** |
+| [ADR-0016](ADR-0016-diagnosis-parameters.md) | 一晩を 7 つのパラメータで測り、カタログから近い診断を選ぶ（REQ-062 を起案） | **Proposed** |
 
 **Proposed は未確定。** 人間が承認した時点で `Accepted` に書き換える。
 

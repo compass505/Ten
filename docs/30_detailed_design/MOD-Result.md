@@ -11,6 +11,10 @@ public static class Result {
     /// その日の結果テキスト。**盤面の答えを含めない**
     public static string Compose(BestPlay best, int playCount, int boardSpecVersion, IReadOnlyList<Beat> beats);
 
+    /// 7 軸の割合ベクトルに最も近い診断を、カタログから選ぶ（ADR-0016）
+    /// コサイン類似度。同点はカタログの並び順で先を採る（決定論）
+    public static DiagnosisEntry Diagnose(Diagnosis d, Tuning tuning);
+
     /// 実況の素材。Sim が夜の間に積む（最大 3 件まで残す）
     public readonly record struct Beat(int Tick, BeatKind Kind);
     public enum BeatKind { FirstScore, BestPretend, HandRanLow, EventStruck, FellAsleepAt, DawnReached }
@@ -27,6 +31,8 @@ public static class Result {
 | RS-4 | **盤面仕様の版番号**を含む | REQ-040 |
 | RS-5 | **親の初期状態・山札の並び・出来事の順序を含まない** | REQ-028 |
 | RS-6 | 純関数。同じ引数から常に同じ文字列 | REQ-020 |
+| RS-7 | `Diagnose` は**最大軸だけで決めない。**ベクトルの形で選ぶ（実測で最大軸方式は潰れた） | REQ-062 |
+| RS-8 | 合計が閾値未満なら **`DX-41` を固定で返す**（割合ベクトルが定義できない） | REQ-062 |
 
 **RS-5 のテスト**: 生成された文字列に、`BoardSpec` の `InitialArousal` / `Hand` の内訳 /
 `Events` の並びが**復元できる情報が含まれていない**こと。
@@ -51,4 +57,5 @@ public static class Result {
 | --- | --- |
 | RES-01 | 文言パターンの持ち方（リソースファイル / 定数配列） |
 | RES-02 | `Beat` の選び方。夜の間に積んだものから「面白い 3 件」をどう選ぶか。**選択規則も決定論でなければならない** |
+| RES-04 | カタログを埋め込むか外部リソースにするか。**50 件の文言は [diagnosis.md](../20_basic_design/diagnosis.md) 4 節が正** |
 | RES-03 | 実況を保存するか、入力列から再生成するか（[data_model.md](../20_basic_design/data_model.md) M-04。**今は保存する側**） |
