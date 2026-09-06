@@ -25,14 +25,18 @@
 | [ADR-0012](ADR-0012-balance-vs-tests.md) | テストは要件が言っていることだけを検証する（バランス値を期待値に書かない） | Accepted |
 | [ADR-0013](ADR-0013-pretend-requires-closed-eyes.md) | 寝たふりは「目を閉じている間」にだけ成立させる（REQ-059 を発番） | Accepted |
 | [ADR-0014](ADR-0014-closed-eyes-information.md) | REQ-006 の「知ることができる」は目を開けている間について言う | Accepted |
-| [ADR-0015](ADR-0015-input-intensity-and-timing.md) | 行動の入力を「強度」と「タイミング」の 2 軸にする（REQ-060 / 061 を起案） | **Proposed** |
-| [ADR-0016](ADR-0016-diagnosis-parameters.md) | 一晩を 7 つのパラメータで測り、カタログから近い診断を選ぶ（REQ-062 を起案） | **Proposed** |
+| [ADR-0015](ADR-0015-input-intensity-and-timing.md) | 行動の入力を「強度」と「タイミング」の 2 軸にする（REQ-060 / 061 を発番） | Accepted |
+| [ADR-0016](ADR-0016-diagnosis-parameters.md) | 一晩を 7 つのパラメータで測り、カタログから近い診断を選ぶ（REQ-062 を発番） | Accepted |
+| [ADR-0017](ADR-0017-parent-moves-on-failure.md) | 寝たふりに失敗しても親は赤ちゃんを動かす（盲目区間に手触りを戻す） | Accepted（**リスク受容あり**） |
 
 **Proposed は未確定。** 人間が承認した時点で `Accepted` に書き換える。
+**2026-09-06 時点で Proposed は 0 件。**
 
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](../../50_review/issues.md)の指摘 18 件
 （うち 9 件が「決定を覆すべき」）を**未解決のまま**、ユーザー判断で Accepted にしている。
 各 ADR 末尾の「承認時に受容したリスク」を必ず読むこと。
+ADR-0017 も [ISS-20](../open_issues.md)（判別不能性を実際に作れるか）を
+未解決のまま Accepted にしている。
 Accepted は書き換えない。覆すときは新規発番して旧を `Superseded by` にする。
 
 ADR-0008〜0011 は、確定前に Codex レビュー（28 件 / 24 件）を通し、

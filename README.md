@@ -1,12 +1,14 @@
 # Ten
 
-**現在のフェーズ: 4. テスト作成（ケース発番済み / コードは承認待ち）**
+**現在のフェーズ: 4. テスト作成（ケース発番済み / コードはこれから）**
 
-> **戻ってきたら [docs/00_process/decisions_pending.md](docs/00_process/decisions_pending.md) を先に読む。**
-> 承認待ちは **ADR-0015 の 1 件だけ**。ADR-0013 / 0014 は 2026-09-06 に承認済み。
+> **戻ってきたら [docs/00_process/handoff.md](docs/00_process/handoff.md) を先に読む。**
+> **ADR の承認待ちは 0 件**（2026-09-06 に ADR-0015 / 0016 / 0017 を承認）。
+> **.NET SDK 8.0.424 導入済み**（`~/.dotnet`）。残りはテストコードを書くことだけ。
 
 何を作るかは **ADR-0006 / 0007 で確定**（2026-09-02）。技術スタックは **ADR-0001**。
 要件は **2026-09-02 に確定した**（REQ-001〜058 / NFR-001〜009）。
+**REQ-059〜062 も 2026-09-06 に確定した。**
 Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済み。
 **どんなゲームかは [docs/10_requirements/game_overview.md](docs/10_requirements/game_overview.md)。**
 ドキュメントの地図は [docs/README.md](docs/README.md)。
@@ -27,7 +29,9 @@ Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済�
 | テストとバランス調整の衝突 | **確定** → [ADR-0012](docs/10_requirements/decisions/ADR-0012-balance-vs-tests.md) |
 | 寝たふりの成立条件 | **確定** → [ADR-0013](docs/10_requirements/decisions/ADR-0013-pretend-requires-closed-eyes.md) |
 | 閉眼中に何が分かるか | **確定** → [ADR-0014](docs/10_requirements/decisions/ADR-0014-closed-eyes-information.md) |
-| 入力の強度とタイミング | **承認待ち** → [ADR-0015](docs/10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) |
+| 入力の強度とタイミング | **確定** → [ADR-0015](docs/10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) |
+| 一晩の診断（7 軸の近傍マッチ） | **確定** → [ADR-0016](docs/10_requirements/decisions/ADR-0016-diagnosis-parameters.md) |
+| 寝たふり失敗時に親が動くか | **確定**（**リスク受容あり**） → [ADR-0017](docs/10_requirements/decisions/ADR-0017-parent-moves-on-failure.md) |
 
 未解決の論点は [open_issues.md](docs/10_requirements/open_issues.md) に一覧がある。
 
@@ -53,19 +57,19 @@ scratch/    技術検証プロトタイプ。本番コードから import しな
 
 ## 次にやること
 
-**フェーズ 2 の成果物 4 本は起草済み**（[architecture](docs/20_basic_design/architecture.md) /
-[screens](docs/20_basic_design/screens.md) / [balance](docs/20_basic_design/balance.md) /
-[data_model](docs/20_basic_design/data_model.md)）。全 Must 要件が割り当て済みで、
-画面と状態遷移は閉じている（行き止まり 0 件）。
+**フェーズ 2 / 3 は完了。**基本設計 6 本と詳細設計 16 モジュールが揃い、
+全 Must 要件が割り当て済みで、画面と状態遷移は閉じている（行き止まり 0 件）。
+**フェーズ 4 は TC-001〜164 の発番まで終わっている。**
 
 **残っているのは 2 つ。**
 
-1. **ADR-0015 の承認**（人間の判断）。REQ-060 / 061 は承認まで暫定。
-   **依存する TC は 5 件だけ**なので、残り 153 件は先に書ける
-2. **`.NET SDK` を入れる。**純粋層のテストは Unity 不要で `dotnet test` だけで走る
-3. **`scratch/mvp/` を実機で触る**（screens.md O-09）。
+1. **テストコードを書く。**フェーズ 4 の DoD は「テストコードが存在し、**全て落ちる**」。
+   .NET SDK は導入済みなので、`export PATH="$HOME/.dotnet:$PATH"` で `dotnet test` が走る。
+   純粋層は Unity 不要（[harness.md](docs/40_test/harness.md) 1 節）
+2. **`scratch/mvp/` を実機で触る**（screens.md O-09）。
    **盲目でいる 7 秒が苦痛かどうかは、触るまで判定できない**
 
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](docs/50_review/issues.md)の指摘 18 件を
 **未解決のまま受容して**確定させている。各 ADR 末尾の「承認時に受容したリスク」を先に読むこと。
 ISS-10（テスト書き換え禁止 × バランス調整）は ADR-0012 で決着した。
+**ADR-0017 も ISS-20（判別不能性を実際に作れるか）を未解決のまま受容している。**

@@ -3,8 +3,9 @@
 要件がテストで担保されているかを一覧で見る表。要件を足したら必ずここを更新する。
 
 > 要件は **2026-09-02 に確定した**（REQ-001〜058 / NFR-001〜009）。
-> **REQ-059 は確定**（2026-09-06）。**REQ-060 / 061 / 062 は暫定**（ADR-0015 / 0016 が Proposed のため）。
-> **2026-09-05: TC を発番した**（TC-001〜158）。ケースは [cases/](cases/) にある。
+> **REQ-059〜062 も確定**（2026-09-06。ADR-0013 / 0015 / 0016 承認）。**暫定の要件は 0 件。**
+> **2026-09-05: TC を発番した**（TC-001〜163）。
+> **2026-09-06: ADR-0017 の承認により TC-164 を追加**（判別不能性）。ケースは [cases/](cases/) にある。
 > **テストコードはまだ無い。**フェーズ 4 の DoD「全て落ちる」はコードを書いてから。
 
 非機能要件の対応:
@@ -38,7 +39,7 @@
 | [REQ-013](../10_requirements/requirements.md) | Must | TC-045 | 未作成 | 起票済み |
 | [REQ-014](../10_requirements/requirements.md) | Must | TC-028 / 040 / 041 / 042 | 未作成 | 起票済み |
 | [REQ-015](../10_requirements/requirements.md) | Must | TC-050 / 051 / 057 / 058 | 未作成 | 起票済み |
-| [REQ-016](../10_requirements/requirements.md) | Must | TC-052 / 125 | 未作成 | 起票済み |
+| [REQ-016](../10_requirements/requirements.md) | Must | TC-052 / 125 / **164** | 未作成 | 起票済み。TC-164 は ADR-0017 の判別不能性 |
 | [REQ-017](../10_requirements/requirements.md) | Must | TC-053 | 未作成 | 起票済み |
 | [REQ-018](../10_requirements/requirements.md) | Must | TC-054 | 未作成 | 起票済み |
 | [REQ-019](../10_requirements/requirements.md) | Must | TC-001 / 010 / 113 | 未作成 | 起票済み |
@@ -82,9 +83,9 @@
 | [REQ-057](../10_requirements/requirements.md) | Must | TC-068 | 未作成 | 起票済み |
 | [REQ-058](../10_requirements/requirements.md) | Must | TC-091 | 未作成 | 起票済み |
 | [REQ-059](../10_requirements/requirements.md) | Must | TC-026 / 027 | 未作成 | 起票済み |
-| [REQ-060](../10_requirements/requirements.md) | Must | TC-152 / 153 | 未作成 | **暫定**（ADR 承認待ち） |
-| [REQ-061](../10_requirements/requirements.md) | Must | TC-154 / 155 / 156 | 未作成 | **暫定**（ADR 承認待ち） |
-| [REQ-062](../10_requirements/requirements.md) | Must | TC-159 / 160 / 161 | 未作成 | **暫定**（ADR-0016 承認待ち） |
+| [REQ-060](../10_requirements/requirements.md) | Must | TC-152 / 153 | 未作成 | 確定（ADR-0015 承認 2026-09-06） |
+| [REQ-061](../10_requirements/requirements.md) | Must | TC-154 / 155 / 156 | 未作成 | 確定（ADR-0015 承認 2026-09-06） |
+| [REQ-062](../10_requirements/requirements.md) | Must | TC-159 / 160 / 161 / 162 / 163 | 未作成 | 確定（ADR-0016 承認 2026-09-06） |
 
 ## 穴チェック
 
