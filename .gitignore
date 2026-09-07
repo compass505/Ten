@@ -22,6 +22,10 @@ bin/
 obj/
 *.user
 
+# Unity が bin/ obj/ に対して作る .meta（中身自体を無視しているので不要）
+src/**/bin.meta
+src/**/obj.meta
+
 # Unity の生成物（開いた時点で作られる。Git に入れない）
 unity/Library/
 unity/Temp/

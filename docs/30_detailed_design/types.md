@@ -21,6 +21,26 @@
   端末間で結果がずれる経路を塞ぐ（NFR-004）
 - `null` を状態に使うのは「無い」が意味を持つ場所だけ（`CareKind?` など）
 
+### `src/` が使える C# の範囲（2026-09-08。実測で確定）
+
+**`src/` は `dotnet`（net8.0）と Unity（.NET Standard 2.1）の両方でコンパイルされる**
+（[architecture.md](../20_basic_design/architecture.md) のローカルパッケージ参照）。
+**狭いほうに合わせる。**
+
+| | 決めたこと |
+| --- | --- |
+| 言語版 | **C# 10。**Unity 6 の既定は C# 9 で `record struct` も file-scoped namespace も通らなかったので、各アセンブリの `csc.rsp` に `-langversion:10` を置いた |
+| `IsExternalInit` | **アセンブリごとに shim が要る。**`record` の `init` が必要とする型が .NET Standard 2.1 に無い。`#if !NET5_0_OR_GREATER` で囲み、net8.0 側では定義しない |
+| **使えないもの** | **C# 11 以降の構文**（primary constructor 等）。**.NET 8 で足された BCL API**（`ArgumentOutOfRangeException.ThrowIfNegative` / `ArgumentNullException.ThrowIfNull` 等）。素の `if` + `throw` で書く |
+
+**`tests/` は net8.0 だけで走るので、この制限を受けない。**
+制限がかかるのは `src/` の 2 アセンブリだけ。
+
+**Unity 側が `using UnityEngine` を弾くことは実測で確認した**（2026-09-08）。
+`.asmdef` の `noEngineReferences: true` により、書いた時点で
+`error CS0246: The type or namespace name 'UnityEngine' could not be found` になる。
+**TC-006 の静的検査と合わせて二重に見張っている。**
+
 ## 1. 列挙
 
 ```csharp

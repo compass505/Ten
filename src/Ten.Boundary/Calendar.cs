@@ -26,18 +26,28 @@ public interface ICalendar
 ///
 /// **これはシグネチャだけの空実装である**（test_first.md 5.1）。
 /// </summary>
-public sealed class DeviceCalendar(Func<DateTimeOffset> localNow, string? lastKnown = null) : ICalendar
+public sealed class DeviceCalendar : ICalendar
 {
     private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
+    private readonly Func<DateTimeOffset> _localNow;
+
+    public DeviceCalendar(Func<DateTimeOffset> localNow, string? lastKnown = null)
+    {
+        _localNow = localNow ?? throw new ArgumentNullException(nameof(localNow));
+        LastKnown = lastKnown;
+    }
+
     /// <summary>端末の時刻が取れないときに使う、前回保存した日付。</summary>
-    public string? LastKnown { get; } = lastKnown;
+    public string? LastKnown { get; }
 
     public string BoardDate => throw new NotImplementedException(NotYet);
 }
 
 /// <summary>テスト用（CA-5 / ADR-0002 D3）。固定の日付を返す。</summary>
-public sealed class FixedCalendar(string boardDate) : ICalendar
+public sealed class FixedCalendar : ICalendar
 {
-    public string BoardDate { get; } = boardDate;
+    public FixedCalendar(string boardDate) => BoardDate = boardDate;
+
+    public string BoardDate { get; }
 }

@@ -49,11 +49,13 @@ public interface IStorage
 /// **これはシグネチャだけの空実装である**（test_first.md 5.1）。
 /// 形式は未決（[STO-01](../../docs/30_detailed_design/MOD-Storage.md)）。
 /// </summary>
-public sealed class FileStorage(string rootDirectory) : IStorage
+public sealed class FileStorage : IStorage
 {
     private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
-    public string RootDirectory { get; } = rootDirectory;
+    public FileStorage(string rootDirectory) => RootDirectory = rootDirectory;
+
+    public string RootDirectory { get; }
 
     public LoadStatus LastStatus => throw new NotImplementedException(NotYet);
 

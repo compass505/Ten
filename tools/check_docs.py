@@ -18,9 +18,15 @@ def add(kind, msg):
     findings.append((kind, msg))
 
 
+# 生成物と外部由来のファイル。**書いた覚えのないものを検査しない。**
+# unity/Library は Unity がパッケージを展開する場所で、中の文書は Unity のもの
+# （UTF-8 でないものが混ざる）。scratch/visual はモデル制作の中間ファイル。
+SKIP_DIRS = (".git", "node_modules", "Library", "Temp", "Logs", "obj", "bin", "visual")
+
+
 def md_files():
     for p in ROOT.rglob("*.md"):
-        if any(part in (".git", "node_modules") for part in p.parts):
+        if any(part in SKIP_DIRS for part in p.parts):
             continue
         yield p
 

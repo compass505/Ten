@@ -62,7 +62,13 @@ public sealed class StepClock : IClock
     /// <summary>次の <see cref="Consume"/> で返す tick 数を積む。</summary>
     public void Push(int ticks)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(ticks);
+        // `ArgumentOutOfRangeException.ThrowIfNegative` は .NET 8 の API で、
+        // Unity（.NET Standard 2.1）には無い。**src/ は両方でコンパイルできる書き方に限る。**
+        if (ticks < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ticks), ticks, "負の tick は積めない");
+        }
+
         _pending += ticks;
     }
 

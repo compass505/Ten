@@ -54,22 +54,21 @@
 | **Unity Hub** | **導入済み**（2026-09-07。`/Applications/Unity Hub.app`） |
 | **Unity 6000.0.83f1（LTS）** | **導入済み**（`/Applications/Unity/Hub/Editor/`）。版は [ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md) に固定 |
 | **Android Build Support** | **導入済み**（2026-09-07）。SDK 1.0G / NDK 2.4G / OpenJDK 235M。エディタ全体で 14G |
-| **Unity のライセンス** | **未認証。エディタが起動しない**（`No valid Unity Editor license found`） |
+| **Unity のライセンス** | **認証済み**（2026-09-08。本人が実施） |
+| **`unity/` プロジェクト** | **コンパイル通過**（2026-09-08）。`src/` の 2 パッケージを読み込んで `rc=0` |
 
-### **人の作業が 1 つ残っている（2026-09-07）**
+**環境は揃った。人の作業は残っていない。**
 
-**Unity エディタはライセンス認証をしないと起動しない。**
-サインインとライセンスの有効化は**アカウントの操作なので代行しない。**
+### 二重ビルドが成立している（2026-09-08 実測）
 
-1. Unity Hub を開く → Unity アカウントでサインイン
-2. Personal ライセンスを有効化
-3. `unity/` を「Add project from disk」で開く
+| 検証 | 結果 |
+| --- | --- |
+| Unity が `src/` をコンパイルできる | **通る**（`rc=0`） |
+| `dotnet test` が同じソースで走る | **通る**（unit 33 件 / harness 109 件） |
+| `noEngineReferences` が `using UnityEngine` を弾く | **弾く**（`error CS0246`。実測で確認） |
 
-**プロジェクトの雛形は用意済み**（[unity/README.md](../../unity/README.md)）。
-開けば `src/` のローカルパッケージを読み込む。
-
-**これが済むまで、Unity が要る TC（タッチ / 描画 / 権限 / 実機）には進めない。**
-それ以外の TC は影響を受けない。
+**この 3 つが揃って、[harness.md](../40_test/harness.md) 1 節の
+「`dotnet test` が通らなくなったら純粋層が環境に触り始めた証拠」が成立する。**
 
 **純粋層のテストは Unity 不要で、.NET SDK だけで走る**
 （[harness.md](../40_test/harness.md) 1 節）。フェーズ 4 の DoD
