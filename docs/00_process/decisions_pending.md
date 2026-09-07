@@ -53,7 +53,7 @@
 | **.NET SDK 8.0.424** | **導入済み**（`~/.dotnet`。Microsoft 公式 `dotnet-install.sh`、ユーザー権限）。**PATH は未設定**（下記） |
 | **Unity Hub** | **導入済み**（2026-09-07。`/Applications/Unity Hub.app`） |
 | **Unity 6000.0.83f1（LTS）** | **導入済み**（`/Applications/Unity/Hub/Editor/`）。版は [ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md) に固定 |
-| Android Build Support | 導入中（SDK / NDK / OpenJDK 込み） |
+| **Android Build Support** | **導入済み**（2026-09-07）。SDK 1.0G / NDK 2.4G / OpenJDK 235M。エディタ全体で 14G |
 | **Unity のライセンス** | **未認証。エディタが起動しない**（`No valid Unity Editor license found`） |
 
 ### **人の作業が 1 つ残っている（2026-09-07）**
