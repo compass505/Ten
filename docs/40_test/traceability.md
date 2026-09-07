@@ -115,7 +115,7 @@
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
 | [tests/unit/](../../tests/unit/) | TC-001〜007 / 084〜097 / **113** / 165 | **33 件中 31 件が赤 / 2 件が green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | TC-020〜083 / **098〜102** / **108〜112** / 114 / 152〜156 / 159〜164 | **109 件中 86 件が赤 / 23 件が green**。green は道具自身の 18 件と型・静的検査・差し替えの 5 件 |
+| [tests/harness/](../../tests/harness/) | TC-020〜083 / 098〜114 / 152〜156 / 159〜164 | **116 件中 93 件が赤 / 23 件が green**。green は道具自身の 18 件と型・静的検査・差し替えの 5 件 |
 | `tests/e2e/` | — | **未着手**（Unity が要る） |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
@@ -129,7 +129,7 @@ ADR-0015 / 0016 / 0017 で足した TC-152〜156 / 159〜164。
 | --- | --- | --- |
 | ~~TC-098〜102~~ | ~~Clock~~ | **解決（2026-09-06）。**`Consume(deltaSeconds)` が経過時間を引数で受け取るので、Unity なしで検証できた。コード化済み |
 | ~~TC-108〜112~~ | ~~Storage~~ | **解決（2026-09-06）。**`IStorage` の口に対して `MemoryStorage` で検証できた（D3）。**端末の保存先を触る `FileStorage` だけが Unity / 実機（TC-109）** |
-| TC-103〜107 | Input | `TouchInput` が Unity のタッチを受ける。`Look` の丸めも Unity 側 |
+| ~~TC-103〜107~~ | ~~Input~~ | **解決（2026-09-08）。**接触を `PointerSample` として値で受け取る形にした。Unity 側は `Input.touches` を詰め替えるだけの殻になる。コード化済み |
 | ~~TC-113 / 114~~ | ~~Calendar~~ | **解決（2026-09-06）。**規則を `BoardDateRule` として純粋層に出し、時刻を引数で受ける形にした（G-01）。コード化済み |
 | TC-115〜119 | Share / Power | 権限・通信・画面抑止。**ビルドと実機を見る検査** |
 | TC-120〜151 | View / Tutorial / Shell / NFR | e2e と実機。Unity が要る |
