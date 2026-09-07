@@ -36,15 +36,35 @@ TC-006 の静的検査と二重に見張っている。
 
 **開いた時点で `Library/` などが生成される。**それらは Git に入れない（`.gitignore` 済み）。
 
-## 動作確認
+## テスト
 
-開いたら **Window → General → Test Runner** で `EditMode` を実行し、
-`Ten.Pure` / `Ten.Boundary` がコンパイルできていることを見る。
+**`Assets/Tests/` は PlayMode のテスト。**描いて見るしかないもの（TC-120〜129）、
+実機でしか測れないもの（TC-145〜151）、実ファイルが要るもの（TC-109）だけを置く。
 
-`dotnet test` 側は Unity と無関係に走る。
+**規則で見られるものはここに置かない。**それは `tests/harness/` にあり、
+`dotnet test` で秒で回る。
 
 ```bash
+# Unity 側（PlayMode。16 件）
+"/Applications/Unity/Hub/Editor/6000.0.83f1/Unity.app/Contents/MacOS/Unity" \
+  -batchmode -runTests -testPlatform PlayMode \
+  -projectPath unity -testResults /tmp/playmode.xml -logFile -
+
+# 純粋層と境界層（Unity 不要）
 export PATH="$HOME/.dotnet:$PATH"
 cd tests/unit && dotnet test
 cd tests/harness && dotnet test
 ```
+
+**PlayMode で実行する。**`EditMode` では 0 件になる
+（asmdef の `includePlatforms` を空にしてあるため、PlayMode 側の資産として扱われる）。
+
+### コンパイルだけ確かめる
+
+```bash
+"/Applications/Unity/Hub/Editor/6000.0.83f1/Unity.app/Contents/MacOS/Unity" \
+  -batchmode -nographics -quit -projectPath unity -logFile -
+```
+
+**`rc=0` なら `Ten.Pure` / `Ten.Boundary` が Unity 側でも通っている。**
+`using UnityEngine` を純粋層に書くと、ここで落ちる（`noEngineReferences`）。

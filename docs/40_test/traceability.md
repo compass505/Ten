@@ -117,13 +117,28 @@
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
 | [tests/unit/](../../tests/unit/) | TC-001〜007 / 084〜097 / **113** / 165 | **33 件中 31 件が赤 / 2 件が green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | TC-020〜083 / 098〜119 / 147 / 152〜156 / 159〜164 | **127 件中 102 件が赤 / 25 件が green**。green は道具自身の 18 件と型・静的検査・差し替えの 7 件 |
-| `tests/e2e/` | — | **未着手**（Unity が要る） |
+| [tests/harness/](../../tests/harness/) | TC-020〜083 / 098〜122 / 127 / 130〜144 / 147 / 152〜164 | **155 件中 129 件が赤 / 26 件が green**。green は道具自身の 18 件と型・静的検査・差し替えの 8 件 |
+| [unity/Assets/Tests/](../../unity/Assets/Tests/) | TC-109 / 120〜126 / 128 / 129 / 145〜147 / 150 / 151 | **16 件すべて赤**（PlayMode で実行確認済み） |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
 
 **純粋層の TC はすべてコード化した。**MOD-Rng / Board / Sim / Score / End / Result / Display と、
 ADR-0015 / 0016 / 0017 で足した TC-152〜156 / 159〜164。
+
+## Unity 側（PlayMode）のテスト
+
+**描いて見るしかないもの・実機でしか測れないもの・実ファイルが要るものだけ**を
+[unity/Assets/Tests/](../../unity/Assets/Tests/) に置いた。**16 件すべて赤**（2026-09-08 実行）。
+
+| TC | 中身 |
+| --- | --- |
+| TC-120 / 122〜126 / 128 / 129 | 画素を見る。`ScreenProbe` 経由で撮って測る |
+| TC-109 | 保存の原子性。**実ファイルでないと「途中で落ちる」を作れない** |
+| TC-145〜147 / 150 / 151 | 実機。**エディタでは落とす**（黙って通すと「測っていないのに緑」になる） |
+
+**規則で見られるものは Unity 側に置かない。**
+TC-122 の区間の重なり、TC-127 の冗長化、TC-130 の -1 の扱いは
+[tests/harness/ViewRuleTests.cs](../../tests/harness/ViewRuleTests.cs) にあり、`dotnet test` で走る。
 
 ## まだ書けていない TC と、その理由
 
