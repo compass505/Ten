@@ -53,8 +53,12 @@
 | --- | --- |
 | `tests/unit` | 12 赤 / 1 green（TC-006。静的検査なので DoD の例外） |
 | `tests/unit` | 31 赤 / 2 green |
-| `tests/harness` | 129 赤 / 26 green |
+| `tests/harness` | **138 赤 / 26 green** |
 | `unity/Assets/Tests`（PlayMode） | **16 赤 / 0 green** |
+
+**ケース表の 159 件すべてがコードになっている**（機械的に突き合わせ済み。
+突き合わせ方は [traceability.md](../40_test/traceability.md) の「穴チェック」）。
+**Must 要件 59 件に TC 未割当は 0 件。**
 
 green は道具自身のテスト 18 件と、型・静的検査・差し替えの 5 件。
 例外の理由は [traceability.md](../40_test/traceability.md) の表に残してある。

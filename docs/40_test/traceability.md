@@ -87,11 +87,28 @@
 | [REQ-061](../10_requirements/requirements.md) | Must | TC-154 / 155 / 156 | 未作成 | 確定（ADR-0015 承認 2026-09-06） |
 | [REQ-062](../10_requirements/requirements.md) | Must | TC-159 / 160 / 161 / 162 / 163 | 未作成 | 確定（ADR-0016 承認 2026-09-06） |
 
-## 穴チェック
+## 穴チェック（2026-09-08 実測）
 
-- Must なのに TC が無い要件 → **0 件であること**（現在はフェーズ 4 前なので全件が空）
-- TC はあるがテストコードが無い → フェーズ 4 未完
-- テストコードはあるが対応する REQ が無い → 要件の書き漏れか、不要なテスト
+| | 結果 |
+| --- | --- |
+| Must なのに TC が無い要件 | **0 件** |
+| ケース表にあってコードが無い TC | **0 件**（159 / 159） |
+| テストコードはあるが対応する REQ が無い | 無し |
+
+**突き合わせ方**（`docs/40_test/cases/` の表の TC 番号と、
+`tests/` + `unity/Assets/Tests/` のコードに現れる TC 番号を機械的に比較する）:
+
+```bash
+python3 - <<'EOF'
+import re, pathlib
+docs = {m.group(1) for p in pathlib.Path('docs/40_test/cases').glob('*.md')
+        for m in re.finditer(r'\|\s*(TC-\d{3})\s*\|', p.read_text(encoding='utf-8'))}
+code = {'TC-' + m.group(1) for d in ('tests', 'unity/Assets/Tests')
+        for p in pathlib.Path(d).rglob('*.cs')
+        for m in re.finditer(r'TC-?(\d{3})', p.read_text(encoding='utf-8'))}
+print("未コード化:", sorted(docs - code) or "なし")
+EOF
+```
 
 ## 実装前に green になるテスト（DoD の例外）
 
@@ -117,7 +134,7 @@
 | 置き場 | 対応 TC | 状態 |
 | --- | --- | --- |
 | [tests/unit/](../../tests/unit/) | TC-001〜007 / 084〜097 / **113** / 165 | **33 件中 31 件が赤 / 2 件が green**（上の例外） |
-| [tests/harness/](../../tests/harness/) | TC-020〜083 / 098〜122 / 127 / 130〜144 / 147 / 152〜164 | **155 件中 129 件が赤 / 26 件が green**。green は道具自身の 18 件と型・静的検査・差し替えの 8 件 |
+| [tests/harness/](../../tests/harness/) | TC-010〜018 / 020〜083 / 098〜122 / 127 / 130〜144 / 147 / 152〜164 | **164 件中 138 件が赤 / 26 件が green**。green は道具自身の 18 件と型・静的検査・差し替えの 8 件 |
 | [unity/Assets/Tests/](../../unity/Assets/Tests/) | TC-109 / 120〜126 / 128 / 129 / 145〜147 / 150 / 151 | **16 件すべて赤**（PlayMode で実行確認済み） |
 
 `export PATH="$HOME/.dotnet:$PATH"` のうえ、`tests/unit` と `tests/harness` でそれぞれ `dotnet test`。
