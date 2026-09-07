@@ -46,12 +46,30 @@
 | [SET-04](../20_basic_design/setting.md) | 抱っこ中の視点移動が 3D 酔い（NFR-009）を起こすか | Unity ビルドで |
 | [SHL-01](../30_detailed_design/MOD-Shell.md) | コールドスタート 3 秒（NFR-008）に Unity の初期化が収まるか | 実機で 5 回計測 |
 
-## D. 環境 — **.NET SDK は 2026-09-06 に導入済み**
+## D. 環境
 
 | | 状態 |
 | --- | --- |
 | **.NET SDK 8.0.424** | **導入済み**（`~/.dotnet`。Microsoft 公式 `dotnet-install.sh`、ユーザー権限）。**PATH は未設定**（下記） |
-| Unity | **未導入。**フェーズ 4 の主線には要らない |
+| **Unity Hub** | **導入済み**（2026-09-07。`/Applications/Unity Hub.app`） |
+| **Unity 6000.0.83f1（LTS）** | **導入済み**（`/Applications/Unity/Hub/Editor/`）。版は [ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md) に固定 |
+| Android Build Support | 導入中（SDK / NDK / OpenJDK 込み） |
+| **Unity のライセンス** | **未認証。エディタが起動しない**（`No valid Unity Editor license found`） |
+
+### **人の作業が 1 つ残っている（2026-09-07）**
+
+**Unity エディタはライセンス認証をしないと起動しない。**
+サインインとライセンスの有効化は**アカウントの操作なので代行しない。**
+
+1. Unity Hub を開く → Unity アカウントでサインイン
+2. Personal ライセンスを有効化
+3. `unity/` を「Add project from disk」で開く
+
+**プロジェクトの雛形は用意済み**（[unity/README.md](../../unity/README.md)）。
+開けば `src/` のローカルパッケージを読み込む。
+
+**これが済むまで、Unity が要る TC（タッチ / 描画 / 権限 / 実機）には進めない。**
+それ以外の TC は影響を受けない。
 
 **純粋層のテストは Unity 不要で、.NET SDK だけで走る**
 （[harness.md](../40_test/harness.md) 1 節）。フェーズ 4 の DoD

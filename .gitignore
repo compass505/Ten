@@ -21,3 +21,21 @@ scratch/visual/
 bin/
 obj/
 *.user
+
+# Unity の生成物（開いた時点で作られる。Git に入れない）
+unity/Library/
+unity/Temp/
+unity/Logs/
+unity/Obj/
+unity/Build/
+unity/Builds/
+unity/UserSettings/
+unity/MemoryCaptures/
+unity/Recordings/
+*.csproj.user
+*.unityproj
+*.sln.DotSettings.user
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
