@@ -94,6 +94,21 @@ Unity 側は `Update` で `Time.deltaTime` を渡すだけになる。
 `MOD-Calendar` も同じ形にした（→ [decisions_pending.md](../00_process/decisions_pending.md) G-01）。
 
 **Unity が本当に要るのは、タッチ・描画・権限・実機の 4 つだけ。**
+
+### Unity プロジェクトからの参照（2026-09-07。本人判断）
+
+**ソースを 1 つにする。**`src/Ten.Pure` と `src/Ten.Boundary` を
+**Unity のローカルパッケージ**として参照し（`package.json` + `.asmdef`）、
+同じファイルを `.csproj` からも `dotnet test` からも見る。
+
+**DLL を焼いて `Assets/Plugins` に置く形は採らない。**
+[harness.md](../40_test/harness.md) 1 節の二重化
+（「`dotnet test` が通らなくなったら純粋層が環境に触り始めた証拠」）は、
+**両方が同じソースを見ていて初めて成立する。**DLL 経由だと、古いまま気づかない経路ができる。
+
+**`.asmdef` の `noEngineReferences: true` が効く。**
+純粋層・境界層に `using UnityEngine` を書いた時点で、**Unity 側のコンパイルが落ちる。**
+TC-006 の静的検査と二重に見張ることになる。
 - `MOD-End` → `MOD-Score` の向きは REQ-051（最後の 1 枚の得点は終了判定より先）から決まる
 
 ## 要件の割り当て（DoD）

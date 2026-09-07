@@ -1,0 +1,10 @@
+{
+  "name": "jp.ten.pure",
+  "version": "0.1.0",
+  "displayName": "Ten.Pure",
+  "description": "純粋層。乱数・盤面・夜の状態機械・得点・終了・結果・段階表示。UnityEngine を参照しない（asmdef の noEngineReferences で機械的に禁止）。",
+  "unity": "6000.0",
+  "author": {
+    "name": "Ten"
+  }
+}

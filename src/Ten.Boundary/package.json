@@ -1,0 +1,13 @@
+{
+  "name": "jp.ten.boundary",
+  "version": "0.1.0",
+  "displayName": "Ten.Boundary",
+  "description": "境界層の口と、環境から受け取った値だけで完結する処理。UnityEngine を参照しない。Unity API を直接叩く実装は Unity プロジェクト側に置く。",
+  "unity": "6000.0",
+  "dependencies": {
+    "jp.ten.pure": "0.1.0"
+  },
+  "author": {
+    "name": "Ten"
+  }
+}
