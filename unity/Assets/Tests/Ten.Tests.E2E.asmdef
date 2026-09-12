@@ -5,7 +5,8 @@
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner",
     "Ten.Pure",
-    "Ten.Boundary"
+    "Ten.Boundary",
+    "Ten.View"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

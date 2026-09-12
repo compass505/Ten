@@ -43,3 +43,7 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
+
+# Unity のビルド中間物（バッチビルドが作る）
+unity/.utmp/
+unity/Build/

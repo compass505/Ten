@@ -40,6 +40,11 @@ public sealed class BuildInspectionTests
         return Directory.GetFiles(UnityDir, "AndroidManifest.xml", SearchOption.AllDirectories)
             // パッケージに同梱された雛形は成果物ではない
             .Where(p => !p.Contains(Path.Combine("Library", "PackageCache"), StringComparison.Ordinal))
+            // **`Assets/` の下にあるものは入力であって成果物ではない**（ADR-0020）。
+            // 権限を 1 件も残さないために `tools:node="remove"` を書いた追加マニフェストが
+            // ここにあり、それ自体を「権限を要求している」と数えてしまう。
+            // このテストが見るのは、マージが終わったあとの**吐かれたマニフェスト**
+            .Where(p => !p.Contains(Path.Combine("unity", "Assets"), StringComparison.Ordinal))
             .ToArray();
     }
 
@@ -50,7 +55,13 @@ public sealed class BuildInspectionTests
 
         foreach (var path in RequireManifests())
         {
+            var tools = XNamespace.Get("http://schemas.android.com/tools");
+
             var permissions = XDocument.Load(path).Root!.Descendants("uses-permission")
+                // **`tools:node="remove"` は「要求」ではなく「消す指示」**（ADR-0020）。
+                // マージャはこれを見て消す。数えると、消すために書いた 1 行を
+                // 「権限を 1 件要求している」と読んでしまう
+                .Where(e => (string?)e.Attribute(tools + "node") is not ("remove" or "removeAll"))
                 .Select(e => (string?)e.Attribute(ns + "name") ?? "(名前なし)")
                 .ToArray();
 

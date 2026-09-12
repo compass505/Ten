@@ -413,4 +413,231 @@ public readonly record struct Tuning
         CareKind.DiaperChange => DiaperArousalDrop,
         _ => 0,
     };
+
+    // ------------------------------------------------------------------
+    // 等価比較とハッシュ
+    //
+    // **自動生成に任せない。**項目が 90 近くあるので、コンパイラが作る
+    // 「1 つの式」が IL2CPP の吐く C++ で入れ子 256 段を超え、
+    // **Android ビルドが通らなくなる**（clang: bracket nesting level exceeded）。
+    // 1 項目 1 文で書く。
+    // ------------------------------------------------------------------
+
+    public bool Equals(Tuning other)
+    {
+        if (NightTicks != other.NightTicks) { return false; }
+        if (DawnImminentTicks != other.DawnImminentTicks) { return false; }
+        if (ArousalMax != other.ArousalMax) { return false; }
+        if (Rearm != other.Rearm) { return false; }
+        if (VigorMax != other.VigorMax) { return false; }
+        if (VigorStart != other.VigorStart) { return false; }
+        if (HabitMax != other.HabitMax) { return false; }
+        if (ArousalDecaySleepTicks != other.ArousalDecaySleepTicks) { return false; }
+        if (ArousalDecayUpTicks != other.ArousalDecayUpTicks) { return false; }
+        if (CalmBlockTicks != other.CalmBlockTicks) { return false; }
+        if (VigorRegenTicks != other.VigorRegenTicks) { return false; }
+        if (HabitDecayTicks != other.HabitDecayTicks) { return false; }
+        if (HabitDivisor != other.HabitDivisor) { return false; }
+        if (ArousalFloorMilli != other.ArousalFloorMilli) { return false; }
+        if (CryBase != other.CryBase) { return false; }
+        if (CryVigor != other.CryVigor) { return false; }
+        if (CryTicks != other.CryTicks) { return false; }
+        if (CryCareMilli != other.CryCareMilli) { return false; }
+        if (FussBase != other.FussBase) { return false; }
+        if (FussVigor != other.FussVigor) { return false; }
+        if (FussTicks != other.FussTicks) { return false; }
+        if (FussCareMilli != other.FussCareMilli) { return false; }
+        if (KickBase != other.KickBase) { return false; }
+        if (KickVigor != other.KickVigor) { return false; }
+        if (KickTicks != other.KickTicks) { return false; }
+        if (KickCareMilli != other.KickCareMilli) { return false; }
+        if (GraceBase != other.GraceBase) { return false; }
+        if (GraceFloorMilli != other.GraceFloorMilli) { return false; }
+        if (GraceMultiplierMilli != other.GraceMultiplierMilli) { return false; }
+        if (ChargeTicks != other.ChargeTicks) { return false; }
+        if (ChargeDrainTicks != other.ChargeDrainTicks) { return false; }
+        if (VigorExponentNum != other.VigorExponentNum) { return false; }
+        if (VigorExponentDen != other.VigorExponentDen) { return false; }
+        if (PatPatArousal != other.PatPatArousal) { return false; }
+        if (PatPatVigor != other.PatPatVigor) { return false; }
+        if (PatPatHabit != other.PatPatHabit) { return false; }
+        if (PatPatTicks != other.PatPatTicks) { return false; }
+        if (PatPatLockTicks != other.PatPatLockTicks) { return false; }
+        if (MilkArousal != other.MilkArousal) { return false; }
+        if (MilkVigor != other.MilkVigor) { return false; }
+        if (MilkHabit != other.MilkHabit) { return false; }
+        if (MilkTicks != other.MilkTicks) { return false; }
+        if (MilkArousalDrop != other.MilkArousalDrop) { return false; }
+        if (MilkLockTicks != other.MilkLockTicks) { return false; }
+        if (HoldArousal != other.HoldArousal) { return false; }
+        if (HoldVigor != other.HoldVigor) { return false; }
+        if (HoldHabit != other.HoldHabit) { return false; }
+        if (HoldTicks != other.HoldTicks) { return false; }
+        if (HoldDampTicks != other.HoldDampTicks) { return false; }
+        if (HoldDampMilli != other.HoldDampMilli) { return false; }
+        if (DiaperArousal != other.DiaperArousal) { return false; }
+        if (DiaperVigor != other.DiaperVigor) { return false; }
+        if (DiaperHabit != other.DiaperHabit) { return false; }
+        if (DiaperTicks != other.DiaperTicks) { return false; }
+        if (DiaperArousalDrop != other.DiaperArousalDrop) { return false; }
+        if (DiaperDampTicks != other.DiaperDampTicks) { return false; }
+        if (DiaperDampMilli != other.DiaperDampMilli) { return false; }
+        if (CareDelayBase != other.CareDelayBase) { return false; }
+        if (CareDelayStep != other.CareDelayStep) { return false; }
+        if (CareDelayRef != other.CareDelayRef) { return false; }
+        if (HandMin != other.HandMin) { return false; }
+        if (HandMax != other.HandMax) { return false; }
+        if (HandPerKindMin != other.HandPerKindMin) { return false; }
+        if (EventMin != other.EventMin) { return false; }
+        if (EventMax != other.EventMax) { return false; }
+        if (EventSegments != other.EventSegments) { return false; }
+        if (DiaperSoiledCards != other.DiaperSoiledCards) { return false; }
+        if (PartnerCards != other.PartnerCards) { return false; }
+        if (PhoneArousal != other.PhoneArousal) { return false; }
+        if (RollTicks != other.RollTicks) { return false; }
+        if (HungryTicks != other.HungryTicks) { return false; }
+        if (HungryDrainTicks != other.HungryDrainTicks) { return false; }
+        if (ClosedThresholdTicks != other.ClosedThresholdTicks) { return false; }
+        if (SettleTicks != other.SettleTicks) { return false; }
+        if (GraceTicks != other.GraceTicks) { return false; }
+        if (DrowsyPeriodTicks != other.DrowsyPeriodTicks) { return false; }
+        if (PretendBaseMilli != other.PretendBaseMilli) { return false; }
+        if (PretendDecayMilli != other.PretendDecayMilli) { return false; }
+        if (PretendFloorMilli != other.PretendFloorMilli) { return false; }
+        if (FallAsleepMilli != other.FallAsleepMilli) { return false; }
+        if (DozeIdleTicks != other.DozeIdleTicks) { return false; }
+        if (DozeStepTicks != other.DozeStepTicks) { return false; }
+        if (DozeProbMilli != other.DozeProbMilli) { return false; }
+        if (InitialArousalMin != other.InitialArousalMin) { return false; }
+        if (InitialArousalMax != other.InitialArousalMax) { return false; }
+        if (ArousalStage1 != other.ArousalStage1) { return false; }
+        if (ArousalStage2 != other.ArousalStage2) { return false; }
+        if (ArousalStage3 != other.ArousalStage3) { return false; }
+        if (VigorStage1 != other.VigorStage1) { return false; }
+        if (VigorStage2 != other.VigorStage2) { return false; }
+        if (HandStage1 != other.HandStage1) { return false; }
+        if (HandStage2 != other.HandStage2) { return false; }
+        if (TimeStageTicks != other.TimeStageTicks) { return false; }
+        if (DiagnosisMinTotal != other.DiagnosisMinTotal) { return false; }
+        if (DiagnosisThinTotal != other.DiagnosisThinTotal) { return false; }
+        if (DiagnosisThickTotal != other.DiagnosisThickTotal) { return false; }
+        if (DiagnosisWeight != other.DiagnosisWeight) { return false; }
+
+        return true;
+    }
+
+    public override int GetHashCode()
+    {
+        // **畳み込みを断つ。**`hash = hash * 31 + X;` を 97 回並べると、
+        // C# コンパイラが 1 つの式にまとめ、IL2CPP の C++ が入れ子 256 段を超える。
+        // 配列に詰めてから回すと、式が段ごとに切れる
+        var values = new int[97];
+
+        values[0] = NightTicks;
+        values[1] = DawnImminentTicks;
+        values[2] = ArousalMax;
+        values[3] = Rearm;
+        values[4] = VigorMax;
+        values[5] = VigorStart;
+        values[6] = HabitMax;
+        values[7] = ArousalDecaySleepTicks;
+        values[8] = ArousalDecayUpTicks;
+        values[9] = CalmBlockTicks;
+        values[10] = VigorRegenTicks;
+        values[11] = HabitDecayTicks;
+        values[12] = HabitDivisor;
+        values[13] = ArousalFloorMilli;
+        values[14] = CryBase;
+        values[15] = CryVigor;
+        values[16] = CryTicks;
+        values[17] = CryCareMilli;
+        values[18] = FussBase;
+        values[19] = FussVigor;
+        values[20] = FussTicks;
+        values[21] = FussCareMilli;
+        values[22] = KickBase;
+        values[23] = KickVigor;
+        values[24] = KickTicks;
+        values[25] = KickCareMilli;
+        values[26] = GraceBase;
+        values[27] = GraceFloorMilli;
+        values[28] = GraceMultiplierMilli;
+        values[29] = ChargeTicks;
+        values[30] = ChargeDrainTicks;
+        values[31] = VigorExponentNum;
+        values[32] = VigorExponentDen;
+        values[33] = PatPatArousal;
+        values[34] = PatPatVigor;
+        values[35] = PatPatHabit;
+        values[36] = PatPatTicks;
+        values[37] = PatPatLockTicks;
+        values[38] = MilkArousal;
+        values[39] = MilkVigor;
+        values[40] = MilkHabit;
+        values[41] = MilkTicks;
+        values[42] = MilkArousalDrop;
+        values[43] = MilkLockTicks;
+        values[44] = HoldArousal;
+        values[45] = HoldVigor;
+        values[46] = HoldHabit;
+        values[47] = HoldTicks;
+        values[48] = HoldDampTicks;
+        values[49] = HoldDampMilli;
+        values[50] = DiaperArousal;
+        values[51] = DiaperVigor;
+        values[52] = DiaperHabit;
+        values[53] = DiaperTicks;
+        values[54] = DiaperArousalDrop;
+        values[55] = DiaperDampTicks;
+        values[56] = DiaperDampMilli;
+        values[57] = CareDelayBase;
+        values[58] = CareDelayStep;
+        values[59] = CareDelayRef;
+        values[60] = HandMin;
+        values[61] = HandMax;
+        values[62] = HandPerKindMin;
+        values[63] = EventMin;
+        values[64] = EventMax;
+        values[65] = EventSegments;
+        values[66] = DiaperSoiledCards;
+        values[67] = PartnerCards;
+        values[68] = PhoneArousal;
+        values[69] = RollTicks;
+        values[70] = HungryTicks;
+        values[71] = HungryDrainTicks;
+        values[72] = ClosedThresholdTicks;
+        values[73] = SettleTicks;
+        values[74] = GraceTicks;
+        values[75] = DrowsyPeriodTicks;
+        values[76] = PretendBaseMilli;
+        values[77] = PretendDecayMilli;
+        values[78] = PretendFloorMilli;
+        values[79] = FallAsleepMilli;
+        values[80] = DozeIdleTicks;
+        values[81] = DozeStepTicks;
+        values[82] = DozeProbMilli;
+        values[83] = InitialArousalMin;
+        values[84] = InitialArousalMax;
+        values[85] = ArousalStage1;
+        values[86] = ArousalStage2;
+        values[87] = ArousalStage3;
+        values[88] = VigorStage1;
+        values[89] = VigorStage2;
+        values[90] = HandStage1;
+        values[91] = HandStage2;
+        values[92] = TimeStageTicks;
+        values[93] = DiagnosisMinTotal;
+        values[94] = DiagnosisThinTotal;
+        values[95] = DiagnosisThickTotal;
+        values[96] = DiagnosisWeight;
+
+        var hash = 17;
+
+        for (var i = 0; i < values.Length; i++)
+        {
+            hash = hash * 31 + values[i];
+        }
+
+        return hash;
+    }
 }
