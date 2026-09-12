@@ -24,8 +24,7 @@
 
 ## 2. 現在地
 
-**フェーズ 2（基本設計）を名乗っているが、実体はフェーズ 4 のテストケース発番まで終わっている。**
-`CLAUDE.md` のフェーズ表記が追いついていない。
+**フェーズ 5（実装）が終わった**（2026-09-12）。残っているのは**実機で測る 5 件だけ。**
 
 | フェーズ | 実体 |
 | --- | --- |
@@ -33,49 +32,58 @@
 | 1 要件定義 | 完了。REQ-001〜058 / NFR-001〜009 が 2026-09-02 確定。**REQ-059〜062 も 2026-09-06 確定。暫定 0 件** |
 | 2 基本設計 | **完了。**architecture / screens / balance / data_model / setting / diagnosis の 6 本 |
 | 3 詳細設計 | **完了。**16 モジュール + types.md。公開 IF 確定 |
-| 4 テスト作成 | **TC-001〜165 を発番済み。TC-001〜007 / 165 はコード化して赤を確認済み**（残り 156 件が未着手） |
-| 5 実装 | 未着手。**`src/` にはシグネチャだけの空実装がある**（test_first.md 5.1） |
+| 4 テスト作成 | **完了。**TC-001〜165 を発番し、全件をコード化した |
+| 5 実装 | **完了。**純粋層 / 境界層 / 表示層 / Android ビルド |
+| 6 修正改善 | **未着手。**ここからは実機で遊んで測る |
 
-**止まっている理由は無くなった**（2026-09-06）。
+### いま緑になっているもの
 
-- **承認待ちは 0 件。**ADR-0015 / 0016 / 0017 を本人が承認し、REQ-060 / 061 / 062 が確定した
-- **.NET SDK 8.0.424 を `~/.dotnet` に導入した。**`export PATH="$HOME/.dotnet:$PATH"` で使える。
-  **PATH をシェルの設定に入れていないので、新しいシェルでは毎回必要**
-- **Unity はまだ要らない。**純粋層は Unity なしで走る（[harness.md](../40_test/harness.md) 1 節）。
-  Unity が要るのは view / shell 層のテスト・e2e・実機判定 3 件（O-09 / SET-04 / SHL-01）
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/unit/Ten.Tests.Unit.csproj        # 33 / 33
+dotnet test tests/harness/Ten.Tests.Harness.csproj  # 164 / 164
+```
 
-**残っているのはテストコードを書くことだけ。**フェーズ 4 の DoD は
-「テストコードが存在し、**全て落ちる**」。
-
-**2026-09-06 に乱数（TC-001〜007 / 165）とハーネスの道具まで書いた。**
-
-| | 赤 / green |
+| | 結果 |
 | --- | --- |
-| `tests/unit` | 12 赤 / 1 green（TC-006。静的検査なので DoD の例外） |
-| `tests/unit` | 31 赤 / 2 green |
-| `tests/harness` | **138 赤 / 26 green** |
-| `unity/Assets/Tests`（PlayMode） | **16 赤 / 0 green** |
+| `tests/unit` | **33 green / 0 赤** |
+| `tests/harness` | **164 green / 0 赤** |
+| `unity/Assets/Tests`（PlayMode） | **11 green / 5 赤** |
 
-**ケース表の 159 件すべてがコードになっている**（機械的に突き合わせ済み。
-突き合わせ方は [traceability.md](../40_test/traceability.md) の「穴チェック」）。
-**Must 要件 59 件に TC 未割当は 0 件。**
+**PlayMode の 5 赤は Android 実機でしか測れない**（TC-145 / 146 / 147 / 150 / 151）。
+`Application.isEditor` を見て、エディタでは**わざと落とす**ようにテスト側が書かれている
+（「黙って通すと『測っていないのに緑』になる」）。**実機に挿すまで赤のままが正しい。**
 
-green は道具自身のテスト 18 件と、型・静的検査・差し替えの 5 件。
-例外の理由は [traceability.md](../40_test/traceability.md) の表に残してある。
+### 動かし方
 
-**全 TC をコード化した**（2026-09-08）。純粋層・境界層・表示層・実機。
+```bash
+# 純粋層・境界層（Unity 不要。秒で回る）
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/unit/Ten.Tests.Unit.csproj
+dotnet test tests/harness/Ten.Tests.Harness.csproj
 
-**Unity 側に置いたのは 16 件だけ。**描いて見るしかないもの（画素検査）、
-実機でしか測れないもの、実ファイルが要るもの（TC-109 の原子性）。
-それ以外は**端末から来る値を引数で受け取る形**にしたので `dotnet test` で走る。
+# Unity PlayMode
+"/Applications/Unity/Hub/Editor/6000.0.83f1/Unity.app/Contents/MacOS/Unity" \
+  -batchmode -runTests -testPlatform PlayMode \
+  -projectPath unity -testResults /tmp/playmode.xml -logFile -
 
-**残っているのは「測る」作業で、書く作業ではない。**
+# Android ビルド（TC-115 / 119 / 147 の前提。**成果物を見ないと通らない**）
+"/Applications/Unity/Hub/Editor/6000.0.83f1/Unity.app/Contents/MacOS/Unity" \
+  -batchmode -quit -projectPath unity -buildTarget Android \
+  -executeMethod Ten.Editor.TenBuild.Android -logFile -
+```
 
-| 何をするか | 該当 TC |
+- **Unity のライセンスは有効**（2026-09-12 に batchmode 起動を確認）。Android モジュール・SDK・NDK も入っている
+- **.NET SDK 8.0.424 は `~/.dotnet`。**PATH をシェルの設定に入れていないので毎回 export が要る
+
+### 実装で判明したこと（次の人が最初に踏む）
+
+| | |
 | --- | --- |
-| Android ビルドを 1 度通す | TC-115 / 119 / 147（成果物を検査する） |
-| 実機で測る | TC-145 / 146 / 150 / 151 |
-| 実装する（フェーズ 5） | それ以外すべて |
+| **テストケースの欠陥 8 件** | 実装をどう書いても通らないものがあった。直した理由は [ADR-0020](../10_requirements/decisions/ADR-0020-test-defects-found-in-implementation.md)。**自分で書いて自分で直したので、別の目で検めるまでリスクを持つ**（ADR-0005） |
+| **バランス値が動いた** | 寝入りばなを `ST-P-Grace` に統合、`doze_off` を弱く遅く、対処の代償を 4 札すべてに。[balance.md](../20_basic_design/balance.md) 15 節 |
+| **IL2CPP は「1 つの長い式」で落ちる** | `Tuning`（97 項目）の自動生成 `GetHashCode` と、カタログ 50 件の配列初期化子が、C++ の入れ子 256 段を超えて **Android ビルドを止めた。**項目の多い `record struct` は等価比較とハッシュを手で書く |
+| **得点のレンジが 0〜1 に縮んでいる** | プロトタイプは 0〜3.4 だった。**REQ-056（支配戦略が無い）はこの状態では判定できない。**フェーズ 6 の最初の宿題 |
 
 ## 3. 会話でだけ決まっていること（**最重要**）
 

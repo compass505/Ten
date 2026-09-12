@@ -24,17 +24,31 @@ TC-006 の静的検査と二重に見張っている。
 | 置く | 表示層 3 件（`MOD-View` / `MOD-Tutorial` / `MOD-Shell`）、Unity API を直接叩く境界層の実装（タッチ・端末の保存先・画面消灯抑止）、シーン、アセット |
 | **置かない** | **純粋層と、値だけで完結する境界層の処理。**それは `src/` にある |
 
-## 初回に必要なこと（人の作業）
+## ライセンスと Android モジュール
 
-**Unity エディタはライセンス認証をしないと起動しない。**
-2026-09-07 時点で未認証（`No valid Unity Editor license found`）。
+**2026-09-12 時点で認証済み。**batchmode での起動・PlayMode の実行・Android ビルドが通ることを確認した。
+Android の SDK / NDK / OpenJDK は Unity 同梱のものが入っている。
+
+もし `No valid Unity Editor license found` が出たら:
 
 1. Unity Hub を開く
 2. Unity アカウントでサインインする
 3. Personal ライセンスを有効化する
-4. このフォルダ（`unity/`）を「Add project from disk」で開く
 
-**開いた時点で `Library/` などが生成される。**それらは Git に入れない（`.gitignore` 済み）。
+**`Library/` などは Git に入れない**（`.gitignore` 済み）。
+
+## ここに置いた実装（フェーズ 5）
+
+| 置き場 | 中身 |
+| --- | --- |
+| `Assets/Scripts/` | `RoomRig`（一人称の寝室。**実行時に組み立てる**）/ `RoomView`（MOD-View）/ `TenBoot` |
+| `Assets/Editor/TenBuild.cs` | Android ビルド。`-executeMethod Ten.Editor.TenBuild.Android` |
+| `Assets/Plugins/Android/` | 追加マニフェストと Gradle の雛形。**要求権限 0 件**（NFR-003）と lint 停止（NFR-002） |
+| `Assets/Scenes/Night.unity` | 入口。**中身は空で、`TenBoot` が実行時に寝室を組む** |
+
+**寝室をシーンアセットに置いていない。**e2e（`ScreenProbe`）が
+「いま画面に何が映っているか」を撮って測るため。シーンに置くと、
+テストが読むのはシーンの中身であって画面ではなくなる。
 
 ## テスト
 
@@ -45,7 +59,12 @@ TC-006 の静的検査と二重に見張っている。
 `dotnet test` で秒で回る。
 
 ```bash
-# Unity 側（PlayMode。16 件）
+# Android ビルド（TC-115 / 119 / 147 の前提。**成果物を見ないと通らない**）
+"/Applications/Unity/Hub/Editor/6000.0.83f1/Unity.app/Contents/MacOS/Unity" \
+  -batchmode -quit -projectPath unity -buildTarget Android \
+  -executeMethod Ten.Editor.TenBuild.Android -logFile -
+
+# Unity 側（PlayMode。16 件中 11 件が green。**残る 5 件は実機でしか測れない**）
 "/Applications/Unity/Hub/Editor/6000.0.83f1/Unity.app/Contents/MacOS/Unity" \
   -batchmode -runTests -testPlatform PlayMode \
   -projectPath unity -testResults /tmp/playmode.xml -logFile -
