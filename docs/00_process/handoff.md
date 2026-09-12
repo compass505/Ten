@@ -3,8 +3,8 @@
 種別: リファレンス（事実）— 判断そのものは ADR / 設計側に置く
 更新トリガー: フェーズが進んだとき / 会話でだけ決まったことが出たとき（**その場で書く**） /
 測って分かった事実が出たとき
-状態: **2026-09-06 更新。**フェーズ 3 完了 + フェーズ 4 のテストケース発番まで完了。
-**ADR の承認待ちは 0 件。.NET SDK 導入済み。**
+状態: **2026-09-12 更新。**フェーズ 3 完了 + フェーズ 4 のテストケース発番まで完了。
+**ADR の承認待ちは 2 件（ADR-0018 / 0019。親の 3D モデル）。.NET SDK 導入済み。**
 
 > **これは何か。**エージェントは会話履歴を持たない
 > （[documentation.md](documentation.md) 1 節）。**このプロジェクトで一番失われやすいのは、
@@ -85,6 +85,8 @@ green は道具自身のテスト 18 件と、型・静的検査・差し替え�
 | --- | --- | --- | --- |
 | H-02 | **診断の文言はもう少し長くする**（一行では短い） | 本人（2026-09-06） | [diagnosis.md](../20_basic_design/diagnosis.md) 3 節に反映済み。**50 件の文言そのものは未着手** |
 | H-03 | **モデル（3D モデル・アセット）の作成は Codex 側で行う。**このリポジトリの作業範囲に含めない | 本人（2026-09-06） | **ここにしか書かれていない。**Unity が要るのは view / shell 層のテスト・e2e・実機判定で、**アセット制作はその前段として Codex が持つ**。[ADR-0005](../10_requirements/decisions/ADR-0005-agent-roles.md)（役割分担）に反映するかは未定 |
+| H-04 | **親の姿と、モデルの合格条件を決めた** | 本人（2026-09-12） | **ADR に落とした**（[ADR-0018](../10_requirements/decisions/ADR-0018-parent-is-mother.md) / [ADR-0019](../10_requirements/decisions/ADR-0019-parent-model-acceptance.md)）。**どちらも Proposed。**採用したモデルシートは `scratch/visual/parent/parent-model-sheet-v4-e2-long-cute-30s.png` と `parent-hand-sheet-v2.png`。Codex への指示書は `scratch/visual/parent/ASTRA-PROMPT-r56.md` |
+| H-05 | **実在の人物（俳優）に顔を寄せる案は採らない** | 2026-09-12 | 肖像の問題と、[setting.md](../20_basic_design/setting.md) 2 節の制約の両方。**ADR-0018 の確定内容 4 として残した**（性別の確定とは独立に維持する） |
 
 ## 4. 測って初めて分かったこと
 

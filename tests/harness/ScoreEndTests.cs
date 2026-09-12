@@ -127,10 +127,10 @@ public sealed class ScoreEndTests
     }
 
     /// <summary>
-    /// 壊れた調整値。**`Tuning` はまだ項目を持たない**（types.md 5 節）ので、
-    /// フェーズ 5 で項目を起こすときにここを実際の値にする。
+    /// 再加点が不可能な調整値（再加点閾値 &gt;= 上限）。
+    /// **フェーズ 5 で `Tuning` の項目を起こしたので実際の値にした**（ADR-0020）。
     /// </summary>
-    private static Tuning BrokenTuning() => new();
+    private static Tuning BrokenTuning() => new() { Rearm = 100, ArousalMax = 100 };
 
     private static BestPlay Best(int score, int playIndex) =>
         new(score, playIndex, EndKind.Dawn, string.Empty, default, "DX-41");

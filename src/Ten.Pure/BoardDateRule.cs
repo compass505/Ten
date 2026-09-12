@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Ten.Pure;
 
@@ -14,12 +15,11 @@ namespace Ten.Pure;
 ///
 /// そこで**規則だけをここに出し、端末時計を読む役は境界層の `ICalendar` に残す。**
 /// → docs/00_process/decisions_pending.md G-01（2026-09-06）
-///
-/// **これはシグネチャだけの空実装である**（test_first.md 5.1）。
 /// </summary>
 public static class BoardDateRule
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
+    /// <summary>日付の境界となる時刻（正午）。</summary>
+    private const int BoundaryHour = 12;
 
     /// <summary>
     /// 端末ローカルの現在時刻から「その日」を返す。形式は `yyyy-MM-dd`。
@@ -28,6 +28,11 @@ public static class BoardDateRule
     /// 0:00〜11:59 は前日、12:00〜23:59 は当日。
     /// </summary>
     /// <param name="localNow">端末ローカルの現在時刻。**引数で受ける**（D2）</param>
-    public static string From(DateTimeOffset localNow) =>
-        throw new NotImplementedException(NotYet);
+    public static string From(DateTimeOffset localNow)
+    {
+        var shifted = localNow.Hour < BoundaryHour ? localNow.AddDays(-1) : localNow;
+
+        // 月日は 0 詰め。seed の入力は ASCII に限る（harness.md 2 節）
+        return shifted.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    }
 }

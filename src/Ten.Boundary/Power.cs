@@ -24,7 +24,6 @@ public interface IPower
 /// </summary>
 public static class PowerRule
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
     /// <summary>
     /// 画面を点けたままにするか。
@@ -38,8 +37,8 @@ public static class PowerRule
     /// <param name="isNightScreen">いま `SCR-Night` にいるか</param>
     /// <param name="isPaused">`ST-N-Pause` に入っているか（フォーカス喪失など。REQ-009）</param>
     /// <param name="isOver">夜が終わっているか</param>
-    public static bool ShouldKeepAwake(bool isNightScreen, bool isPaused, bool isOver) =>
-        throw new NotImplementedException(NotYet);
+    public static bool ShouldKeepAwake(bool isNightScreen, bool isPaused, bool isOver)
+    { return isNightScreen && !isPaused && !isOver; }
 }
 
 /// <summary>

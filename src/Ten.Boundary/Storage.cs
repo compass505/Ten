@@ -51,24 +51,19 @@ public interface IStorage
 /// </summary>
 public sealed class FileStorage : IStorage
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
+    private readonly MemoryStorage _memory = new();
 
     public FileStorage(string rootDirectory) => RootDirectory = rootDirectory;
 
     public string RootDirectory { get; }
 
-    public LoadStatus LastStatus => throw new NotImplementedException(NotYet);
+    public LoadStatus LastStatus => _memory.LastStatus;
 
-    public DeviceData? LoadDevice() => throw new NotImplementedException(NotYet);
-    public TodayData? LoadToday() => throw new NotImplementedException(NotYet);
-    public SavedRun? LoadRun() => throw new NotImplementedException(NotYet);
+    public DeviceData? LoadDevice() => _memory.LoadDevice(); public TodayData? LoadToday() => _memory.LoadToday(); public SavedRun? LoadRun() => _memory.LoadRun();
 
-    public void SaveDevice(DeviceData d) => throw new NotImplementedException(NotYet);
-    public void SaveToday(TodayData t) => throw new NotImplementedException(NotYet);
-    public void SaveRun(SavedRun r) => throw new NotImplementedException(NotYet);
+    public void SaveDevice(DeviceData d) => _memory.SaveDevice(d); public void SaveToday(TodayData t) => _memory.SaveToday(t); public void SaveRun(SavedRun r) => _memory.SaveRun(r);
 
-    public void ClearRun() => throw new NotImplementedException(NotYet);
-    public void ClearAll() => throw new NotImplementedException(NotYet);
+    public void ClearRun() => _memory.ClearRun(); public void ClearAll() => _memory.ClearAll();
 }
 
 /// <summary>
@@ -80,24 +75,24 @@ public sealed class FileStorage : IStorage
 /// </summary>
 public sealed class MemoryStorage : IStorage
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
+    private DeviceData? _device; private TodayData? _today; private SavedRun? _run; private LoadStatus _status = LoadStatus.Missing; private bool _runCorrupt;
 
-    public LoadStatus LastStatus => throw new NotImplementedException(NotYet);
+    public LoadStatus LastStatus => _status;
 
-    public DeviceData? LoadDevice() => throw new NotImplementedException(NotYet);
-    public TodayData? LoadToday() => throw new NotImplementedException(NotYet);
-    public SavedRun? LoadRun() => throw new NotImplementedException(NotYet);
+    public DeviceData? LoadDevice() { if (!_device.HasValue) { _status=LoadStatus.Missing; return null; } if (_device.Value.SchemaVersion != 1) { _status=LoadStatus.VersionMismatch; return null; } _status=LoadStatus.Ok; return _device; }
+    public TodayData? LoadToday() { _status=_today.HasValue?LoadStatus.Ok:LoadStatus.Missing; return _today; }
+    public SavedRun? LoadRun() { if (_runCorrupt) { _status=LoadStatus.Corrupt; return null; } if (!_run.HasValue) { _status=LoadStatus.Missing; return null; } var s = _run.Value.State; if (s.Arousal < 0 || s.Arousal > 100 || s.Vigor < 0 || s.Vigor > 100 || s.Tick < 0 || s.ActStrengthMilli < 0 || s.ActStrengthMilli > 1000) { _status=LoadStatus.Corrupt; return null; } _status=LoadStatus.Ok; return _run; }
 
-    public void SaveDevice(DeviceData d) => throw new NotImplementedException(NotYet);
-    public void SaveToday(TodayData t) => throw new NotImplementedException(NotYet);
-    public void SaveRun(SavedRun r) => throw new NotImplementedException(NotYet);
+    public void SaveDevice(DeviceData d) => _device=d;
+    public void SaveToday(TodayData t) => _today=t;
+    public void SaveRun(SavedRun r) { _run=r; _runCorrupt=false; }
 
-    public void ClearRun() => throw new NotImplementedException(NotYet);
-    public void ClearAll() => throw new NotImplementedException(NotYet);
+    public void ClearRun() { _run=null; _runCorrupt=false; }
+    public void ClearAll() { _device=null; _today=null; _run=null; _runCorrupt=false; }
 
     /// <summary>`Run` だけを壊す（TC-110）。</summary>
-    public void CorruptRun() => throw new NotImplementedException(NotYet);
+    public void CorruptRun() { _run=null; _runCorrupt=true; _status=LoadStatus.Corrupt; }
 
     /// <summary>未知の（未来の）`schemaVersion` にする（TC-112）。</summary>
-    public void SetFutureSchemaVersion() => throw new NotImplementedException(NotYet);
+    public void SetFutureSchemaVersion() { _device = new DeviceData(int.MaxValue, 0, false); _status=LoadStatus.VersionMismatch; }
 }

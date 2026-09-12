@@ -155,12 +155,13 @@ public sealed class BoardTests
         // 山札の下限が上限を超えているような設定。**丸めて盤面を返さない。**
         // 壊れた盤面で夜が進むと、原因が分からなくなる
         //
-        // `Tuning` はまだ項目を持たない（types.md 5 節）ので、
-        // フェーズ 5 で項目を起こすときにここを実際の値にする
+        // フェーズ 5 で `Tuning` の項目を起こしたので、実際に壊れた値を渡す
+        // （ADR-0020: `new()` は本番の既定値になったため、壊れた値にならない）
         Assert.Throws<ArgumentException>(
             () => Board.Generate("2026-01-01", BrokenTuning()),
             "**壊れた Tuning を弾いていない**（MOD-Board のエラー時）");
     }
 
-    private static Tuning BrokenTuning() => new();
+    /// <summary>山札の下限が上限を超えている調整値（ADR-0020）。</summary>
+    private static Tuning BrokenTuning() => new() { HandMin = 20, HandMax = 8 };
 }

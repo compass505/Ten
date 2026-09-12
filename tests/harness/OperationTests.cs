@@ -87,10 +87,14 @@ public sealed class OperationTests
         {
             var pressed = SimProbe.Step(closed, new TickInput(kind, false), board);
 
-            Assert.That(pressed with { Tick = closed.Tick, TClosed = closed.TClosed },
-                Is.EqualTo(closed with { Tick = closed.Tick, TClosed = closed.TClosed }),
+            // **`TIdle` も揃える。**無操作の時計は毎 tick 必ず進み、
+            // 眼の操作でも行動の押下でもリセットされない（D-03 / REQ-047）。
+            // 揃えないと、入力に関係なく 1 tick ぶんの差で落ちる（ADR-0020）
+            Assert.That(
+                pressed with { Tick = closed.Tick, TClosed = closed.TClosed, TIdle = closed.TIdle },
+                Is.EqualTo(closed with { Tick = closed.Tick, TClosed = closed.TClosed, TIdle = closed.TIdle }),
                 $"**閉眼中に {kind} が状態を変えた**（REQ-059 / D-01）。" +
-                "時刻と閉眼時計以外は動いてはいけない");
+                "時刻と閉眼時計・無操作の時計以外は動いてはいけない");
 
             // 開眼したときに遅れて発火しないこと（IN-2: キューに残さない）
             var opened = SimProbe.OpenEyes(pressed, board);

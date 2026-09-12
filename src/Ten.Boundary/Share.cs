@@ -30,15 +30,14 @@ public enum ShareAction { Intent, Copy, None }
 /// </summary>
 public static class ShareRule
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
     /// <summary>
     /// 共有先が無い / Intent が失敗したら**コピーにフォールバックする**
     /// （MOD-Share のエラー時）。クリップボードも使えなければ何もしない。
     /// **どの場合も例外を投げない。**画面は `SCR-Result` のまま。
     /// </summary>
-    public static ShareAction Decide(bool shareAvailable, bool clipboardAvailable) =>
-        throw new NotImplementedException(NotYet);
+    public static ShareAction Decide(bool shareAvailable, bool clipboardAvailable)
+    { return shareAvailable ? ShareAction.Intent : clipboardAvailable ? ShareAction.Copy : ShareAction.None; }
 }
 
 /// <summary>

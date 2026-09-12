@@ -40,17 +40,16 @@ public readonly record struct GazeBand(GazeTarget Target, float MinYawDeg, float
 /// </summary>
 public static class GazeRule
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
     /// <summary>その首の向きで見えている対象。どれでもなければ <see cref="GazeTarget.Ceiling"/>。</summary>
-    public static GazeTarget At(float yawDeg, IReadOnlyList<GazeBand> bands) =>
-        throw new NotImplementedException(NotYet);
+    public static GazeTarget At(float yawDeg, IReadOnlyList<GazeBand> bands)
+    { foreach (var b in bands) if (yawDeg >= b.MinYawDeg && yawDeg <= b.MaxYawDeg) return b.Target; return GazeTarget.Ceiling; }
 
     /// <summary>
     /// 2 つ以上の対象が同時に見える角度があるか（**あってはいけない**。D-11 / V-3）。
     /// </summary>
-    public static bool HasOverlap(IReadOnlyList<GazeBand> bands) =>
-        throw new NotImplementedException(NotYet);
+    public static bool HasOverlap(IReadOnlyList<GazeBand> bands)
+    { for (var i=0;i<bands.Count;i++) for (var j=i+1;j<bands.Count;j++) if (bands[i].Target != bands[j].Target && Math.Max(bands[i].MinYawDeg,bands[j].MinYawDeg) <= Math.Min(bands[i].MaxYawDeg,bands[j].MaxYawDeg)) return true; return false; }
 }
 
 /// <summary>
@@ -72,14 +71,17 @@ public readonly record struct Look(int Silhouette, int Posture, int CycleMilli, 
 /// </summary>
 public static class LookRule
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
     /// <summary>
     /// 段階に対応する見せ方。**`stage` が -1（見えない）なら null を返す。**
     /// 推測して埋めない（MOD-View のエラー時 / TC-130）。
     /// </summary>
-    public static Look? Of(GazeTarget target, int stage) => throw new NotImplementedException(NotYet);
+    public static Look? Of(GazeTarget target, int stage)
+    {
+        var count = StageCount(target); if (stage == -1) return null; if (stage < 0 || stage >= count) throw new ArgumentOutOfRangeException(nameof(stage));
+        return new Look((int)target + stage + 1, stage, (stage + 1) * 100, 500 + stage * 100);
+    }
 
     /// <summary>その対象が持つ段階の数。</summary>
-    public static int StageCount(GazeTarget target) => throw new NotImplementedException(NotYet);
+    public static int StageCount(GazeTarget target) { if (target == GazeTarget.Ceiling) return 0; return 3; }
 }

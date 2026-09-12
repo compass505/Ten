@@ -61,18 +61,25 @@ public sealed class PretendTests
         NightState? success = null;
         NightState? failure = null;
 
+        // **山札の枚数は日替わり**（REQ-019）なので、盤面をまたいで枚数そのものは比べられない。
+        // 比べるのは「その盤面の初期枚数から減っているか」（ADR-0020）
+        var successSpent = 0;
+        var failureSpent = 0;
+
         foreach (var seed in SimProbe.Seeds(40))
         {
             var board = BoardOf(seed);
             var judged = UntilJudged(SimProbe.Begin(board), board);
 
-            if (judged.Parent == ParentPhase.Settling)
+            if (judged.Parent == ParentPhase.Settling && success is null)
             {
-                success ??= judged;
+                success = judged;
+                successSpent = board.Hand.Total - judged.Hand.Total;
             }
-            else if (judged.Parent == ParentPhase.Feint)
+            else if (judged.Parent == ParentPhase.Feint && failure is null)
             {
-                failure ??= judged;
+                failure = judged;
+                failureSpent = board.Hand.Total - judged.Hand.Total;
             }
 
             if (success is not null && failure is not null)
@@ -95,7 +102,7 @@ public sealed class PretendTests
         // 山札・元気・行動の可否は開眼すれば見えるので、ここも一致していなければならない
         Assert.Multiple(() =>
         {
-            Assert.That(b.Hand.Total, Is.EqualTo(a.Hand.Total),
+            Assert.That(failureSpent, Is.EqualTo(successSpent),
                 "**山札の減り方が違う。**そこから成否が逆算できる（ADR-0017）");
             Assert.That(b.TSettle, Is.EqualTo(a.TSettle),
                 "**盲目区間の長さが違う。**長さが成否の通知になる");
@@ -182,9 +189,11 @@ public sealed class PretendTests
     {
         var board = Board;
 
+        // **`ST-P-Up` は「完全に覚醒してベッドを出ている」状態**（screens.md 4.2）。
+        // 覚醒度を初期値のままにすると REQ-030 で 1 tick でベッドへ戻り、前提が崩れる（ADR-0020）
         foreach (var phase in new[] { ParentPhase.Caring, ParentPhase.Up })
         {
-            var s = SimProbe.Begin(board) with { Parent = phase };
+            var s = SimProbe.Begin(board) with { Parent = phase, Arousal = phase == ParentPhase.Up ? 100 : 0 };
             var closed = SimProbe.CloseEyes(s, board);
             var later = SimProbe.RunTicks(closed, board, 300);
 

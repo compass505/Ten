@@ -42,7 +42,6 @@ public interface ITutorial
 /// </summary>
 public static class TutorialRule
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
     /// <summary>
     /// いまの段と状態から、次の段を返す。**完了したら null。**
@@ -56,10 +55,10 @@ public static class TutorialRule
     /// **段の条件が長時間満たされなくても止めない。**
     /// 夜が終わったら同じ段からやり直す（MOD-Tutorial のエラー時）。
     /// </summary>
-    public static TutorialStep? Advance(TutorialStep current, NightState s) =>
-        throw new NotImplementedException(NotYet);
+    public static TutorialStep? Advance(TutorialStep current, NightState s)
+    { if (!IsSatisfied(current,s)) return current; if (current == TutorialStep.Pretend) return null; return current + 1; }
 
     /// <summary>その段の完了条件を満たしているか。</summary>
-    public static bool IsSatisfied(TutorialStep step, NightState s) =>
-        throw new NotImplementedException(NotYet);
+    public static bool IsSatisfied(TutorialStep step, NightState s)
+    { switch(step) { case TutorialStep.Arousal: return s.Arousal >= 100; case TutorialStep.Vigor: return s.Vigor == 0; case TutorialStep.Pretend: return s.Parent == ParentPhase.Settling && s.PretendN > 0; default: return false; } }
 }

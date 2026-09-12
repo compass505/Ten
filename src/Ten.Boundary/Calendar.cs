@@ -28,7 +28,6 @@ public interface ICalendar
 /// </summary>
 public sealed class DeviceCalendar : ICalendar
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
 
     private readonly Func<DateTimeOffset> _localNow;
 
@@ -41,7 +40,10 @@ public sealed class DeviceCalendar : ICalendar
     /// <summary>端末の時刻が取れないときに使う、前回保存した日付。</summary>
     public string? LastKnown { get; }
 
-    public string BoardDate => throw new NotImplementedException(NotYet);
+    public string BoardDate
+    {
+        get { try { return BoardDateRule.From(_localNow()); } catch { return LastKnown ?? "1970-01-01"; } }
+    }
 }
 
 /// <summary>テスト用（CA-5 / ADR-0002 D3）。固定の日付を返す。</summary>

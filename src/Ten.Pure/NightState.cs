@@ -19,6 +19,7 @@ public readonly record struct NightState(
     ActionKind? ActKind,
     int ActRemain,
     int ActStrengthMilli,          // 0〜1000。長押しの強度（ADR-0015 / REQ-060）
+    int ChargeTicks,               // 溜め始めてからの tick 数。**溜めの代償を測るため**（ADR-0015）
     bool ActFired,                 // この行動が既に発火したか
     int Vigor,                     // 0〜100
     // 親
@@ -46,5 +47,6 @@ public readonly record struct NightState(
     bool PretendPrimed,            // 猶予中に泣いた（順 7 で解決する予約）
     int CalmBlock,                 // 起きている親が落ち着くのを止めている残り
     // 終了
+    bool Dozed,                    // 寝落ちが成立した（MOD-End が読む。順 5 / 6）
     EndKind? Over
 );

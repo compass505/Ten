@@ -70,34 +70,64 @@ public sealed class ResultTests
     public void TC088_盤面の答えが復元できない()
     {
         // 100 個の盤面で、結果テキストから InitialArousal / Hand の内訳 / Events の並びが
-        // 読み取れないことを見る（REQ-028）。**数値だけでなく、一意に対応する語も含めない**
+        // 読み取れないことを見る（REQ-028）。
+        //
+        // **部分文字列で見ない**（ADR-0020）。結果テキストは通算回数・何回目・版番号を
+        // 数字で出す義務がある（TC-085 / 087）ので、盤面の値がたまたまその数字と
+        // 一致した瞬間に落ちる。山札は各札種 1〜8 枚なので、100 盤面では必ず起きる。
+        //
+        // **代わりに、出てよい数字の集合そのものを固定する。**
+        // 結果テキストに現れる数字が「得点 / 通算回数 / 何回目 / 版番号」の 4 つだけなら、
+        // 盤面由来の数値は定義上 1 つも出ていない。こちらのほうが厳しい判定になる。
+        const int playCount = 5;
+
         foreach (var seed in Seeds(100))
         {
             var board = Board.Generate(seed, Tuning);
-            var text = Result.Compose(Best(), 5, board.SpecVersion, Beats);
+            var best = Best();
+            var text = Result.Compose(best, playCount, board.SpecVersion, Beats);
 
-            AssertDoesNotLeak(text, board.InitialArousal, "InitialArousal", seed);
-            AssertDoesNotLeak(text, board.Hand.PatPat, "Hand.PatPat", seed);
-            AssertDoesNotLeak(text, board.Hand.Milk, "Hand.Milk", seed);
-            AssertDoesNotLeak(text, board.Hand.Hold, "Hand.Hold", seed);
-            AssertDoesNotLeak(text, board.Hand.DiaperChange, "Hand.DiaperChange", seed);
+            int[] allowed = [best.Score, playCount, best.PlayIndex, board.SpecVersion];
+            var found = Numbers(text);
+
+            Assert.That(found, Is.SubsetOf(allowed),
+                $"**結果テキストに、出してよい数字以外が含まれている**（REQ-028。seed={seed}）。" +
+                $"出てよいのは 得点 / 通算回数 / 何回目 / 版番号 だけ。" +
+                $"見つかった: {string.Join(" / ", found)}\n{text}");
 
             foreach (var e in board.Events)
             {
                 Assert.That(text, Does.Not.Contain(e.Kind.ToString()),
                     $"**出来事 {e.Kind} の名前が結果に出ている**（REQ-028。seed={seed}）");
-                AssertDoesNotLeak(text, e.Tick, $"Event.Tick({e.Kind})", seed);
             }
         }
     }
 
-    private static void AssertDoesNotLeak(string text, int value, string what, string seed)
+    /// <summary>テキストに現れる数字の並びを、数値として全部取り出す。</summary>
+    private static int[] Numbers(string text)
     {
-        // 「一意に対応する語」まで見るのは実装を見ないと書けないので、
-        // ここでは**数値そのものが出ていないこと**を見る。
-        // 語の側は TC-161（診断）と合わせて、実装時にレビューで見る
-        Assert.That(text, Does.Not.Contain(value.ToString()),
-            $"**{what} の値 {value} が結果テキストに出ている**（REQ-028。seed={seed}）\n{text}");
+        var found = new List<int>();
+        var i = 0;
+
+        while (i < text.Length)
+        {
+            if (!char.IsDigit(text[i]))
+            {
+                i++;
+                continue;
+            }
+
+            var start = i;
+
+            while (i < text.Length && char.IsDigit(text[i]))
+            {
+                i++;
+            }
+
+            found.Add(int.Parse(text[start..i]));
+        }
+
+        return found.ToArray();
     }
 
     [Test]

@@ -33,20 +33,27 @@ public interface IClock
 /// </summary>
 public sealed class RealClock : IClock
 {
-    private const string NotYet = "フェーズ 5（実装）で書く（test_first.md 5.1）";
+    private double _remainder;
+    public bool IsPaused { get; private set; }
 
     /// <summary>1 フレームで消化する tick 数の上限（C-3）。**バランス値ではなく安全弁。**</summary>
     public const int MaxTicksPerFrame = 10;
 
-    public bool IsPaused => throw new NotImplementedException(NotYet);
+    public int Consume(double deltaSeconds)
+    {
+        if (IsPaused || deltaSeconds < 0) return 0;
+        _remainder += deltaSeconds * 20.0;
+        var ticks = (int)_remainder;
+        _remainder -= ticks;
+        if (ticks > MaxTicksPerFrame) { ticks = MaxTicksPerFrame; _remainder = 0; }
+        return ticks;
+    }
 
-    public int Consume(double deltaSeconds) => throw new NotImplementedException(NotYet);
+    public void Reset() => _remainder = 0;
 
-    public void Reset() => throw new NotImplementedException(NotYet);
+    public void Pause() => IsPaused = true;
 
-    public void Pause() => throw new NotImplementedException(NotYet);
-
-    public void Resume() => throw new NotImplementedException(NotYet);
+    public void Resume() => IsPaused = false;
 }
 
 /// <summary>
