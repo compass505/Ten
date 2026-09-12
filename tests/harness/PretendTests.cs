@@ -63,8 +63,10 @@ public sealed class PretendTests
 
         // **山札の枚数は日替わり**（REQ-019）なので、盤面をまたいで枚数そのものは比べられない。
         // 比べるのは「その盤面の初期枚数から減っているか」（ADR-0020）
-        var successSpent = 0;
-        var failureSpent = 0;
+        // **総枚数だけでは足りない。**成功側だけ別の札種を 1 枚使う実装は総枚数が同じで通る。
+        // ADR-0017 が言うのは「山札の減り方から逆算できない」ことなので、**内訳ごとに見る**
+        var successSpent = default(HandCount);
+        var failureSpent = default(HandCount);
 
         foreach (var seed in SimProbe.Seeds(40))
         {
@@ -74,12 +76,12 @@ public sealed class PretendTests
             if (judged.Parent == ParentPhase.Settling && success is null)
             {
                 success = judged;
-                successSpent = board.Hand.Total - judged.Hand.Total;
+                successSpent = Spent(board, judged);
             }
             else if (judged.Parent == ParentPhase.Feint && failure is null)
             {
                 failure = judged;
-                failureSpent = board.Hand.Total - judged.Hand.Total;
+                failureSpent = Spent(board, judged);
             }
 
             if (success is not null && failure is not null)
@@ -103,7 +105,8 @@ public sealed class PretendTests
         Assert.Multiple(() =>
         {
             Assert.That(failureSpent, Is.EqualTo(successSpent),
-                "**山札の減り方が違う。**そこから成否が逆算できる（ADR-0017）");
+                $"**山札の減り方が違う。**そこから成否が逆算できる（ADR-0017）。" +
+                $"成功側 {successSpent} / 失敗側 {failureSpent}");
             Assert.That(b.TSettle, Is.EqualTo(a.TSettle),
                 "**盲目区間の長さが違う。**長さが成否の通知になる");
             Assert.That(b.DozeN, Is.EqualTo(a.DozeN),
@@ -111,6 +114,13 @@ public sealed class PretendTests
             Assert.That(b.Baby, Is.EqualTo(a.Baby), "どちらも閉眼のまま（I-9）");
         });
     }
+
+    /// <summary>その盤面の初期の山札から、札種ごとに何枚減ったか。</summary>
+    private static HandCount Spent(BoardSpec board, NightState s) =>
+        new(board.Hand.PatPat - s.Hand.PatPat,
+            board.Hand.Milk - s.Hand.Milk,
+            board.Hand.Hold - s.Hand.Hold,
+            board.Hand.DiaperChange - s.Hand.DiaperChange);
 
     [Test]
     public void TC053_寝たふりの成功率はn回目ほど下がり下限を持つ()

@@ -142,6 +142,16 @@ public sealed class BuildInspectionTests
             "成果物を見ずに「権限 0 件」「通信 0 件」とは言えない。\n" +
             "先に 1 度 Android ビルドを通す（手順は unity/README.md）");
 
+        // **マージ前の中間物だけを見て通っていないこと**を確かめる（ADR-0020）。
+        // 権限はマージで増える。マージ後のものが 1 つも無いなら、**まだ測れていない**
+        Assert.That(
+            found.Any(p => p.Contains("merged", StringComparison.OrdinalIgnoreCase)
+                        || p.Contains("packaged", StringComparison.OrdinalIgnoreCase)),
+            Is.True,
+            "**マージ後のマニフェストが 1 つも無い。**\n" +
+            "権限はマージで増えるので、マージ前だけを見ても NFR-003 は確かめられない。\n" +
+            "ビルドが途中で止まっていないか、生成物の置き場が変わっていないかを疑う");
+
         return found;
     }
 

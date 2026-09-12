@@ -77,17 +77,24 @@ public sealed class ResultTests
         // 一致した瞬間に落ちる。山札は各札種 1〜8 枚なので、100 盤面では必ず起きる。
         //
         // **代わりに、出てよい数字の集合そのものを固定する。**
-        // 結果テキストに現れる数字が「得点 / 通算回数 / 何回目 / 版番号」の 4 つだけなら、
-        // 盤面由来の数値は定義上 1 つも出ていない。こちらのほうが厳しい判定になる。
-        const int playCount = 5;
+        // そのうえで、出してよい 4 つを**盤面のどの値とも一致しない大きさ**にしておく。
+        // こうすると「許された数字と偶然一致したせいで漏れを見逃す」経路が消える。
+        //
+        // 盤面が持つ数値の上限: 初期覚醒度 < 100 / 山札の各札種 < 100 / 出来事の tick <= 5400。
+        // **5 桁にしておけば、どれとも一致しない。**
+        const int playCount = 90011;
+        const int playIndex = 81103;
+        const int score = 73301;
+        const int specVersion = 64007;
+
+        var best = new BestPlay(score, playIndex, EndKind.Dawn, string.Empty, default, "DX-41");
 
         foreach (var seed in Seeds(100))
         {
             var board = Board.Generate(seed, Tuning);
-            var best = Best();
-            var text = Result.Compose(best, playCount, board.SpecVersion, Beats);
+            var text = Result.Compose(best, playCount, specVersion, Beats);
 
-            int[] allowed = [best.Score, playCount, best.PlayIndex, board.SpecVersion];
+            int[] allowed = [score, playCount, playIndex, specVersion];
             var found = Numbers(text);
 
             Assert.That(found, Is.SubsetOf(allowed),
@@ -95,10 +102,18 @@ public sealed class ResultTests
                 $"出てよいのは 得点 / 通算回数 / 何回目 / 版番号 だけ。" +
                 $"見つかった: {string.Join(" / ", found)}\n{text}");
 
+            // **数値だけでなく、一意に対応する語も出さない**（REQ-028）。
+            // 出来事の名前と札種の名前は、そのまま盤面の中身を指す
             foreach (var e in board.Events)
             {
                 Assert.That(text, Does.Not.Contain(e.Kind.ToString()),
                     $"**出来事 {e.Kind} の名前が結果に出ている**（REQ-028。seed={seed}）");
+            }
+
+            foreach (var care in Enum.GetValues<CareKind>())
+            {
+                Assert.That(text, Does.Not.Contain(care.ToString()),
+                    $"**札種 {care} の名前が結果に出ている**（REQ-028。seed={seed}）");
             }
         }
     }
