@@ -1,6 +1,6 @@
 # ADR-0018: 親を「母」として確定し、姿を 1 つに固定する
 
-- ステータス: **Proposed**（人間の承認待ち）
+- ステータス: **Accepted**（2026-09-13。本人から全面委任「決断は全て任せる」を受けて Claude が確定。ADR-0005 原則 4 の例外として記録）
 - 日付: 2026-09-12
 - 関連: [ADR-0006](ADR-0006-concept.md) / [ADR-0007](ADR-0007-game-design.md) /
   [setting.md](../../20_basic_design/setting.md) 2 節 /

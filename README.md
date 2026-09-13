@@ -3,7 +3,7 @@
 **現在のフェーズ: 4. テスト作成（ケース発番済み / コードはこれから）**
 
 > **戻ってきたら [docs/00_process/handoff.md](docs/00_process/handoff.md) を先に読む。**
-> **ADR の承認待ちは 2 件**（ADR-0018 / 0019。親の 3D モデル制作が止まっている）。
+> **ADR の承認待ちは 0 件**（2026-09-13 に ADR-0018 / 0019 を確定）。
 > **.NET SDK 8.0.424 導入済み**（`~/.dotnet`）。残りはテストコードを書くことだけ。
 
 何を作るかは **ADR-0006 / 0007 で確定**（2026-09-02）。技術スタックは **ADR-0001**。
@@ -32,8 +32,8 @@ Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済�
 | 入力の強度とタイミング | **確定** → [ADR-0015](docs/10_requirements/decisions/ADR-0015-input-intensity-and-timing.md) |
 | 一晩の診断（7 軸の近傍マッチ） | **確定** → [ADR-0016](docs/10_requirements/decisions/ADR-0016-diagnosis-parameters.md) |
 | 寝たふり失敗時に親が動くか | **確定**（**リスク受容あり**） → [ADR-0017](docs/10_requirements/decisions/ADR-0017-parent-moves-on-failure.md) |
-| 親の性別と姿 | **承認待ち**（母に確定する案） → [ADR-0018](docs/10_requirements/decisions/ADR-0018-parent-is-mother.md) |
-| 親モデルの合格条件・作り込み度 | **承認待ち**（ゲーム内の見え方で判定する案） → [ADR-0019](docs/10_requirements/decisions/ADR-0019-parent-model-acceptance.md) |
+| 親の性別と姿 | **確定**（母） → [ADR-0018](docs/10_requirements/decisions/ADR-0018-parent-is-mother.md) |
+| 親モデルの合格条件・作り込み度 | **確定**（ゲーム内の見え方で判定） → [ADR-0019](docs/10_requirements/decisions/ADR-0019-parent-model-acceptance.md) |
 | 母の姿勢 | **確定**（座ったまま、うとうと） → [ADR-0021](docs/10_requirements/decisions/ADR-0021-mother-sits-and-dozes.md) |
 | 寝たふり中の抱き上げの動き（ISS-20） | **確定**（成否で同じ 1 本） → [ADR-0022](docs/10_requirements/decisions/ADR-0022-single-carry-motion.md) |
 

@@ -6,9 +6,9 @@
 > **REQ-059〜062 も確定**（2026-09-06。ADR-0013 / 0015 / 0016 承認）。**暫定の要件は 0 件。**
 > **2026-09-05: TC を発番した**（TC-001〜163）。
 > **2026-09-06: ADR-0017 の承認により TC-164 を追加**（判別不能性）。ケースは [cases/](cases/) にある。
-> **2026-09-13: TC-166〜177 を追加**（遊べる形に繋いだときに切り出した規則。[cases/TC-phase6.md](cases/TC-phase6.md)）。
+> **2026-09-13: TC-166〜179 を追加**（遊べる形に繋いだときに切り出した規則。[cases/TC-phase6.md](cases/TC-phase6.md)）。
 > **下の表の「テストコード」列は 2026-09-05 のまま更新していない。**実装が終わった現在、TC-001〜177 のうち
-> dotnet で走るものはすべてコード化済み（`dotnet test` 222 件）。Unity と実機のものは TC-view-shell.md。
+> dotnet で走るものはすべてコード化済み（`dotnet test` 224 件）。Unity と実機のものは TC-view-shell.md。
 > **テストコードはまだ無い。**フェーズ 4 の DoD「全て落ちる」はコードを書いてから。
 
 非機能要件の対応:
@@ -28,7 +28,7 @@
 | REQ | 優先度 | TC | テストコード | 状態 |
 | --- | --- | --- | --- | --- |
 | [REQ-001](../10_requirements/requirements.md) | Must | TC-120 | 未作成 | 起票済み |
-| [REQ-002](../10_requirements/requirements.md) | Must | TC-105 / 120 | 未作成 | 起票済み |
+| [REQ-002](../10_requirements/requirements.md) | Must | TC-105 / 120 / **178 / 179** | 未作成 | 起票済み。TC-178 / 179 は初期視線と相対ドラッグ（MOD-Input IN-8） |
 | [REQ-003](../10_requirements/requirements.md) | Must | TC-023 / 025 | 未作成 | 起票済み |
 | [REQ-004](../10_requirements/requirements.md) | Must | TC-093 / 123 / 124 / **170** | 未作成 | 起票済み。TC-170 は閉眼中の見せ方（MOD-Present） |
 | [REQ-005](../10_requirements/requirements.md) | Must | TC-104 / 107 / 129 | 未作成 | 起票済み |
@@ -82,7 +82,7 @@
 | [REQ-053](../10_requirements/requirements.md) | Must | TC-109 | 未作成 | 起票済み |
 | [REQ-054](../10_requirements/requirements.md) | Must | TC-073 / 081 / 086 | 未作成 | 起票済み |
 | [REQ-055](../10_requirements/requirements.md) | Must | TC-049 / 066 / 095 / **175** | 未作成 | 起票済み |
-| [REQ-056](../10_requirements/requirements.md) | Must | TC-069 | 未作成 | 起票済み |
+| [REQ-056](../10_requirements/requirements.md) | Must | TC-069 | 未作成 | 起票済み。**2026-09-13 に方針 2 つを追加**（ADR-0023。独走を見張れていなかった） |
 | [REQ-057](../10_requirements/requirements.md) | Must | TC-068 | 未作成 | 起票済み |
 | [REQ-058](../10_requirements/requirements.md) | Must | TC-091 | 未作成 | 起票済み |
 | [REQ-059](../10_requirements/requirements.md) | Must | TC-026 / 027 | 未作成 | 起票済み |

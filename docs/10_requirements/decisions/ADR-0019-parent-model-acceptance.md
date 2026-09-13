@@ -1,6 +1,6 @@
 # ADR-0019: 親モデルの合格条件を「ゲーム内の見え方」に置き、作り込みをそこで止める
 
-- ステータス: **Proposed**（人間の承認待ち）
+- ステータス: **Accepted**（2026-09-13。本人から全面委任「決断は全て任せる」を受けて Claude が確定。ADR-0005 原則 4 の例外として記録）
 - 日付: 2026-09-12
 - 関連: SET-01 / [setting.md](../../20_basic_design/setting.md) 4・5・10 節 /
   [ADR-0010](ADR-0010-no-numbers.md) / [ADR-0018](ADR-0018-parent-is-mother.md) /
