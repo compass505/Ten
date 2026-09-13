@@ -31,8 +31,8 @@
 | [ADR-0016](../10_requirements/decisions/ADR-0016-diagnosis-parameters.md) | 一晩を 7 つのパラメータで測り、カタログから近い診断を選ぶ | **REQ-062** / [diagnosis.md](../20_basic_design/diagnosis.md) のカタログ 50 件 / `NightState` に 7 値 / TC-159〜163 |
 | [ADR-0017](../10_requirements/decisions/ADR-0017-parent-moves-on-failure.md) | 寝たふりに**失敗しても親が動く**（盲目区間に手触りを戻す） | [screens.md](../20_basic_design/screens.md) の **D-12 / D-05 / 遷移図** / 新状態 `ST-P-Feint` / [setting.md](../20_basic_design/setting.md) 8 節 / **TC-164（新規）** |
 
-**ADR-0017 は [ISS-20](../10_requirements/open_issues.md) を未解決のまま受容している。**
-判別不能性を実際に作れるかは実機でしか判定できない（→ C 節 O-09 と同じ計測）。
+**ADR-0017 が未解決のまま受容した [ISS-20](../10_requirements/open_issues.md) は、
+2026-09-13 に [ADR-0022](../10_requirements/decisions/ADR-0022-single-carry-motion.md) で決着した**（成否で同じ 1 本の動き）。
 
 **残る作業のうち、承認に依存するものは無い。**
 [diagnosis.md](../20_basic_design/diagnosis.md) のカタログ 50 件は
@@ -102,10 +102,22 @@ export PATH="$HOME/.dotnet:$PATH"
 | --- | --- | --- |
 | ~~G-01~~ | ~~`ICalendar` が時刻を注入できない~~ | **解決（2026-09-06。本人承認）。**規則を `BoardDateRule` として純粋層に出し、時刻を引数で受ける形にした。端末時計を読む役だけが `ICalendar` に残る。TC-113 / 114 はコード化済み |
 | ~~G-02~~ | ~~`DiagnosisEntry` の定義がどこにも無い~~ | **解決（2026-09-06）。**diagnosis.md 4 節の表から起こして [types.md](../30_detailed_design/types.md) 3 節に載せた。実体は [src/Ten.Pure/Result.cs](../../src/Ten.Pure/Result.cs) |
-| **G-03** | **「濃さ」（うっすら / どっぷり）の置き場が無い。**[diagnosis.md](../20_basic_design/diagnosis.md) 2 節が合計値の大きさで修飾語を付けると定めているが、`Diagnose` は `DiagnosisEntry` しか返さない | **未解決。**濃さを `DiagnosisEntry` に持たせるか、`Compose` 側で付けるか。**カタログの 1 件は濃さを持たない**（同じ診断が薄くも濃くもなる）ので、エントリに混ぜると意味がずれる → [types.md](../30_detailed_design/types.md) T-05 |
+| ~~G-03~~ | ~~「濃さ」（うっすら / どっぷり）の置き場が無い~~ | **解決（2026-09-13）。**エントリに持たせず、`Result.StrengthOf` / `Result.Title` で名前に付ける（[MOD-Result](../30_detailed_design/MOD-Result.md)。TC-169） |
 
-**G-03 は急がない。**診断そのものは TC-159〜163 で検証できており、
-濃さは**結果テキストの見せ方**の話。**カタログ 50 件の文言を書き直すとき（H-02）に一緒に決めるのが自然。**
+## E2. 遊べる形に繋ぐときに仮に決めたこと — **6 件（確認したい）**
+
+**2026-09-13。**Unity で「ホーム → 夜 → 結果 → 共有」とチュートリアルを繋いだとき、
+決めないと動かせなかったもの。**どれも後戻りは 1 日以内**なので ADR にせず、仮に決めて動かしている。
+中身と理由は [presentation.md](../20_basic_design/presentation.md) 6 節。
+
+| ID | 仮に決めたこと | 違ったら直すもの |
+| --- | --- | --- |
+| PRE-01 | **チュートリアルの間だけ**、押し場所の名前（泣く / ぐずる / ばたつく / 目を閉じる）を画面下に出す | `TenApp.DrawTutorial` |
+| PRE-02 | 共有する文字列の先頭に `Ten 9月13日` を付ける | `TenApp.ShareText` |
+| PRE-03 | 天井灯は山札の**終盤（1〜2 枚）**で点く（setting.md 7 節の「3 枚以下」と 4.3 節が食い違っていた） | `PresentRule` |
+| PRE-04 | **予告中の手の形を札種で 4 通り**にする。**Codex の r57 は `Reach` を 1 本しか頼んでいない**ので追加依頼が要る | Codex への指示書 |
+| PRE-05 | 結果画面は「このプレイ」、共有は「その日の最高」 | `TenApp.DrawResult` |
+| PRE-06 | 中断から戻っても自動で再開せず、`つづける` を押すまで止めておく | `TenApp.DrawNight` |
 
 ## E. こちらで決めてよいもの（決定待ちではない）
 
@@ -124,12 +136,14 @@ export PATH="$HOME/.dotnet:$PATH"
 | 乱数 / 時間 / 状態の見せ方 / プレイごとの運 | ADR-0008 / 0009 / 0010 / 0011 |
 | テストとバランス調整の衝突（ISS-10） | ADR-0012 |
 | 基本設計 6 本 | architecture / screens / balance / data_model / setting / diagnosis |
-| 詳細設計 16 モジュール + 型 | [30_detailed_design/](../30_detailed_design/) |
+| 詳細設計 17 モジュール + 型（MOD-Present は 2026-09-13 追加） | [30_detailed_design/](../30_detailed_design/) |
 | **寝たふりは閉眼中にだけ成立する** | ADR-0013 Accepted（2026-09-06）。REQ-059 確定 |
 | **閉眼中は窓の明るさ以外分からない** | ADR-0014 Accepted（2026-09-06）。ISS-18 決着 |
 | **入力は強度 × タイミングの 2 軸** | ADR-0015 Accepted（2026-09-06）。REQ-060 / 061 確定 |
 | **診断は 7 軸の近傍マッチ** | ADR-0016 Accepted（2026-09-06）。REQ-062 確定 |
-| **寝たふり失敗時も親が動く** | ADR-0017 Accepted（2026-09-06）。**ISS-20 は未解決のまま受容** |
+| **寝たふり失敗時も親が動く** | ADR-0017 Accepted（2026-09-06）。ISS-20 は ADR-0022 で決着 |
+| **母は座ったまま、うとうと** | ADR-0021 Accepted（2026-09-13） |
+| **抱き上げは成否で同じ 1 本（ISS-20）** | ADR-0022 Accepted（2026-09-13） |
 | ハーネスの実装仕様（ISS-06） | [40_test/harness.md](../40_test/harness.md) |
 | テストケース TC-001〜165 | [40_test/cases/](../40_test/cases/)。**全 Must 要件に対応済み（未割当 0 件）** |
 | 空実装の線引き（フェーズ 4 で `src/` に何を置けるか） | [test_first.md](test_first.md) 5.1（2026-09-06）。**本体は `throw` の 1 行だけ** |

@@ -12,6 +12,8 @@
 | TC-070〜089 | [MOD-Score](../../30_detailed_design/MOD-Score.md) / [MOD-End](../../30_detailed_design/MOD-End.md) / [MOD-Result](../../30_detailed_design/MOD-Result.md) / [MOD-Display](../../30_detailed_design/MOD-Display.md) |
 | TC-090〜109 | 境界層 6 モジュール |
 | TC-110〜129 | 表示層 3 モジュール / NFR |
+| TC-130〜165 | 表示層の続き・ADR-0015〜0017 で足したもの（各ファイル内） |
+| TC-166〜177 | **フェーズ 6 で足したもの**（実況の素材・診断の濃さ / MOD-Present / 実ファイルでの往復） |
 
 **ID の意味は後から変えない。**欠番は詰めない。
 
@@ -40,3 +42,4 @@
 | [TC-pure-out.md](TC-pure-out.md) | 得点・終了・結果テキスト・段階表示 |
 | [TC-boundary.md](TC-boundary.md) | 時間・入力・保存・日付・共有・電源 |
 | [TC-view-shell.md](TC-view-shell.md) | 表示・チュートリアル・ライフサイクル・NFR |
+| [TC-phase6.md](TC-phase6.md) | 実況の素材・診断の濃さ・状態 → 見せ方・実ファイルでの往復 |

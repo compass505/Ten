@@ -34,6 +34,8 @@ Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済�
 | 寝たふり失敗時に親が動くか | **確定**（**リスク受容あり**） → [ADR-0017](docs/10_requirements/decisions/ADR-0017-parent-moves-on-failure.md) |
 | 親の性別と姿 | **承認待ち**（母に確定する案） → [ADR-0018](docs/10_requirements/decisions/ADR-0018-parent-is-mother.md) |
 | 親モデルの合格条件・作り込み度 | **承認待ち**（ゲーム内の見え方で判定する案） → [ADR-0019](docs/10_requirements/decisions/ADR-0019-parent-model-acceptance.md) |
+| 母の姿勢 | **確定**（座ったまま、うとうと） → [ADR-0021](docs/10_requirements/decisions/ADR-0021-mother-sits-and-dozes.md) |
+| 寝たふり中の抱き上げの動き（ISS-20） | **確定**（成否で同じ 1 本） → [ADR-0022](docs/10_requirements/decisions/ADR-0022-single-carry-motion.md) |
 
 未解決の論点は [open_issues.md](docs/10_requirements/open_issues.md) に一覧がある。
 
@@ -74,4 +76,4 @@ scratch/    技術検証プロトタイプ。本番コードから import しな
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](docs/50_review/issues.md)の指摘 18 件を
 **未解決のまま受容して**確定させている。各 ADR 末尾の「承認時に受容したリスク」を先に読むこと。
 ISS-10（テスト書き換え禁止 × バランス調整）は ADR-0012 で決着した。
-**ADR-0017 も ISS-20（判別不能性を実際に作れるか）を未解決のまま受容している。**
+**ADR-0017 が未解決のまま受容した ISS-20（判別不能性を実際に作れるか）は、ADR-0022 で決着した。**

@@ -18,8 +18,8 @@ namespace Ten.View
             // 触れた時点で組み上がる
             var _ = RoomRig.Instance;
 
-            // 夜を動かす
-            gameObject.AddComponent<NightDriver>();
+            // 画面の流れ（SCR-Boot → Tutorial / Home → Night → Result）
+            gameObject.AddComponent<TenApp>();
         }
     }
 }

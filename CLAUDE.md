@@ -1,7 +1,8 @@
 # Ten — 作業ルール
 
 **現在のフェーズ: 6. 修正改善**（フェーズ 2〜5 は完了。2026-09-12 に実装が終わった。
-`dotnet test` は **197 / 197 green**、Unity PlayMode は **11 / 16**。
+`dotnet test` は **222 / 222 green**、Unity PlayMode は **11 / 16**。
+2026-09-13 に**絵以外をゲームとして繋いだ**（`TenApp` / `NightSession` / MOD-Present。見た目は仮）。
 **赤い 5 件は Android 実機でしか測れない**（TC-145 / 146 / 147 / 150 / 151）。
 **ここから先は実機で遊んで測る。**動かし方は handoff.md 2 節）
 
@@ -34,7 +35,8 @@
 | 要件（`REQ-xxx`） | **確定** → `docs/10_requirements/requirements.md`（REQ-001〜062 / NFR-001〜009） |
 | 入力の強度とタイミング（ISS-19） | **確定** → ADR-0015 Accepted |
 | 一晩の診断（7 軸の近傍マッチ） | **確定** → ADR-0016 Accepted |
-| 寝たふり失敗時に親が動くか | **確定** → ADR-0017 Accepted（**リスク受容あり。ISS-20 が未解決**） |
+| 寝たふり失敗時に親が動くか | **確定** → ADR-0017 Accepted（**リスク受容あり**。ISS-20 は ADR-0022 で決着） |
+| 母の姿勢 | **確定** → ADR-0021 Accepted（座ったまま、うとうと） |
 | 乱数の適用範囲（ISU-14） | **確定** → ADR-0008 Accepted |
 | 1 プレイの時間構造（ISU-13） | **確定** → ADR-0009 Accepted（**決め手は仮説**） |
 | 技術スタック | **確定**（Unity + Android） → ADR-0001 Accepted（**リスク受容あり**） |

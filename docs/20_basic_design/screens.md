@@ -164,7 +164,7 @@ ST-B-Open ──目を閉じる──▶ ST-B-Closed （ここから先は何も
 そこから成否は分からない**（[ADR-0017](../10_requirements/decisions/ADR-0017-parent-moves-on-failure.md)）。
 **成功側（`ST-P-Settle`）と失敗側（`ST-P-Feint`）が判別不能であること**が、
 REQ-016（成否を事前に知らされないまま、いつ目を開けるかを決める）の成立条件。
-**判別不能性を実際に作れるかは未検証**（→ [ISS-20](../10_requirements/open_issues.md)）。
+**判別不能性は、成否で同じ 1 本の動きを使うことで作り方の側から保証する**（→ [ADR-0022](../10_requirements/decisions/ADR-0022-single-carry-motion.md)。ISS-20 決着）。
 
 ### 4.1 赤ちゃん（プレイヤー）
 
@@ -190,7 +190,7 @@ REQ-016（成否を事前に知らされないまま、いつ目を開けるか�
 | `ST-P-Sleep` | 寝ている（覚醒度は上限未満） | **寝たふりの判定が走る唯一の状態**（D-04） | 対処を出す → `ST-P-Care` / `sleep_pretend` が成功 → `ST-P-Settle` / 覚醒度が上限 → `ST-P-Up` |
 | `ST-P-Care` | 対処中（トントン / ミルク / 抱っこ / オムツ替え）。**山札 −1** | **この間の赤ちゃんの行動は覚醒度を上げない**（REQ-049）。対処への慣れが付く（REQ-029） | 対処が終わる → `ST-P-Sleep` / 覚醒度が上限 → `ST-P-Up` |
 | `ST-P-Settle` | 抱き上げて布団に置く。**赤ちゃんは盲目。**長さは固定 tick（`t_settle`。D-07） | 着地の瞬間は見えない | `t_settle` 満了（着地）→ `ST-P-Grace` / **途中で開眼 → `ST-P-Care`**（気づかれる。山札 −1） |
-| `ST-P-Feint` | **寝たふりが失敗したときの動き**（[ADR-0017](../10_requirements/decisions/ADR-0017-parent-moves-on-failure.md)）。**`ST-P-Settle` と判別できてはならない。**長さは同じ `t_settle` | 赤ちゃんは盲目。動きの正体（抱き上げるのか布団を直すのか）は **[ISS-20](../10_requirements/open_issues.md) で未決** | `t_settle` 満了 → `ST-P-Sleep`（何も起きない）/ **途中で開眼 → `ST-P-Care`**（気づかれる。山札 −1。D-06 と同じ扱い） |
+| `ST-P-Feint` | **寝たふりが失敗したときの動き**（[ADR-0017](../10_requirements/decisions/ADR-0017-parent-moves-on-failure.md)）。**`ST-P-Settle` と判別できてはならない。**長さは同じ `t_settle` | 赤ちゃんは盲目。動きの正体は**成功時と同じ抱き上げ・置き直し。同じ 1 本のアニメーションを使う**（[ADR-0022](../10_requirements/decisions/ADR-0022-single-carry-motion.md)。ISS-20 決着） | `t_settle` 満了 → `ST-P-Sleep`（何も起きない）/ **途中で開眼 → `ST-P-Care`**（気づかれる。山札 −1。D-06 と同じ扱い） |
 | `ST-P-Grace` | 着地後の猶予（REQ-015 の「置かれてから一定時間内」） | **開眼は失敗にしない**（D-06）。ここで泣いた場合だけ最大の上昇 | 泣く → 覚醒度に応じて `ST-P-Up` / `ST-P-Sleep`（4.5 の順 8） / `t_grace` 満了 → `ST-P-Sleep` |
 | `ST-P-Up` | 完全に覚醒してベッドを出ている（**得点済み**）。**視界から消える**（部屋が空になり、部屋の電気が点く） | 加点は上限到達の瞬間に 1 回だけ（REQ-052）。**顔も手も見られないので覚醒度と次の対処が読めない** | 静かな時間が続く → `ST-P-Sleep`（REQ-030。覚醒度が定められた値まで下がる） |
 

@@ -20,6 +20,12 @@ public interface IView {
 public enum GazeTarget { ParentFace, ParentHand, Window }
 ```
 
+> **2026-09-13: 「何を描くか」を [MOD-Present](MOD-Present.md)（境界層）に出した。**
+> 実装は `RoomView.Render(NightState, Stages, BoardSpec, Tuning, yaw, pitch)` で、
+> 中で `PresentRule.Of` を呼び、返った `Presentation` を寝室に写すだけ。
+> **V-10 / V-11（成否で見た目を分けない）は、写像の段階で TC-170 / 171 が見張る。**
+> 画素としての同一性は引き続き TC-125。
+
 ## 満たすこと
 
 | # | 性質 | 要件 |

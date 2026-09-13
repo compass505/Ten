@@ -12,12 +12,12 @@
 | --- | --- | --- |
 | 共通 | [types.md](types.md) | 起草済み |
 | 純粋 | [MOD-Rng](MOD-Rng.md) / [MOD-Board](MOD-Board.md) / [MOD-Sim](MOD-Sim.md) / [MOD-Score](MOD-Score.md) / [MOD-End](MOD-End.md) / [MOD-Result](MOD-Result.md) / [MOD-Display](MOD-Display.md) | **7 件 起草済み** |
-| 境界 | [MOD-Clock](MOD-Clock.md) / [Input](MOD-Input.md) / [Storage](MOD-Storage.md) / [Calendar](MOD-Calendar.md) / [Share](MOD-Share.md) / [Power](MOD-Power.md) | **6 件 起草済み** |
+| 境界 | [MOD-Clock](MOD-Clock.md) / [Input](MOD-Input.md) / [Storage](MOD-Storage.md) / [Calendar](MOD-Calendar.md) / [Share](MOD-Share.md) / [Power](MOD-Power.md) / [Present](MOD-Present.md) | **7 件**（MOD-Present は 2026-09-13 追加。状態 → 見せ方） |
 | 表示 | [MOD-View](MOD-View.md) / [Tutorial](MOD-Tutorial.md) / [Shell](MOD-Shell.md) | **3 件 起草済み** |
 
 ## DoD の状態
 
-**全 16 モジュールの公開 IF が確定した。**
+**全 16 モジュールの公開 IF が確定した。**（2026-09-13 に MOD-Present を足して 17）
 残るのは各ファイルの「決めていないこと」と、[ADR-0013 / 0014 / 0015 の承認](../10_requirements/decisions/README.md)。
 
 ## 置くもの

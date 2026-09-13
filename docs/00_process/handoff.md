@@ -3,8 +3,8 @@
 種別: リファレンス（事実）— 判断そのものは ADR / 設計側に置く
 更新トリガー: フェーズが進んだとき / 会話でだけ決まったことが出たとき（**その場で書く**） /
 測って分かった事実が出たとき
-状態: **2026-09-12 更新。**フェーズ 3 完了 + フェーズ 4 のテストケース発番まで完了。
-**ADR の承認待ちは 2 件（ADR-0018 / 0019。親の 3D モデル）。.NET SDK 導入済み。**
+状態: **2026-09-13 更新。**フェーズ 6。**アプリとして一通り遊べる形に繋いだ**（見た目は仮。絵は Codex 待ち）。
+**ADR の承認待ちは 2 件（ADR-0018 / 0019。親の 3D モデル）。仮に決めて動かしているもの 6 件**（decisions_pending.md E2）
 
 > **これは何か。**エージェントは会話履歴を持たない
 > （[documentation.md](documentation.md) 1 節）。**このプロジェクトで一番失われやすいのは、
@@ -24,14 +24,26 @@
 
 ## 2. 現在地
 
-**フェーズ 5（実装）が終わった**（2026-09-12）。残っているのは**実機で測る 5 件だけ。**
+**フェーズ 5（実装）が終わった**（2026-09-12）。**2026-09-13 に、絵以外をゲームとして繋いだ。**
+
+| 繋いだもの（2026-09-13） | 実体 |
+| --- | --- |
+| 画面の流れ（起動 → チュートリアル / ホーム → 夜 → 結果 → ホーム、復旧、中断、戻る操作） | `unity/Assets/Scripts/TenApp.cs` |
+| 保存と再開（フォーカス喪失で保存、続きから / やり直す、最高成績、日付の切り替え） | 同上 + `FileStorage`（**入れ子の値が書き戻せない欠陥を直した**。TC-176 / 177） |
+| 共有（Android の共有シート / それ以外はコピー）と画面消灯の抑止 | `DeviceServices.cs` |
+| 一晩の進行（**tick の無いフレームで接触を取りこぼしていた**のを直した） | `NightSession.cs`（旧 `NightDriver.cs` を置き換え） |
+| 状態 → 見せ方（母の姿勢・手・小物・電気・窓・出来事・視界の揺れと沈み） | `src/Ten.Boundary/Present.cs`（[MOD-Present](../30_detailed_design/MOD-Present.md)）+ `RoomRig.cs` の仮の姿 |
+| 実況の素材と診断の濃さ | `src/Ten.Pure/Commentary.cs` / `Result.StrengthOf`・`Title` |
+| アセットの差し込み口・画面の文言・チュートリアルの流れ | [presentation.md](../20_basic_design/presentation.md) |
+
+残っているのは**実機で測る 5 件**と、**Codex の絵を差し込むこと**（presentation.md 2 節の手順）。
 
 | フェーズ | 実体 |
 | --- | --- |
 | 0 仕組み | 完了 |
 | 1 要件定義 | 完了。REQ-001〜058 / NFR-001〜009 が 2026-09-02 確定。**REQ-059〜062 も 2026-09-06 確定。暫定 0 件** |
 | 2 基本設計 | **完了。**architecture / screens / balance / data_model / setting / diagnosis の 6 本 |
-| 3 詳細設計 | **完了。**16 モジュール + types.md。公開 IF 確定 |
+| 3 詳細設計 | **完了。**16 モジュール + types.md。公開 IF 確定（2026-09-13 に MOD-Present を追加） |
 | 4 テスト作成 | **完了。**TC-001〜165 を発番し、全件をコード化した |
 | 5 実装 | **完了。**純粋層 / 境界層 / 表示層 / Android ビルド |
 | 6 修正改善 | **未着手。**ここからは実機で遊んで測る |
@@ -40,14 +52,14 @@
 
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/unit/Ten.Tests.Unit.csproj        # 33 / 33
-dotnet test tests/harness/Ten.Tests.Harness.csproj  # 164 / 164
+dotnet test tests/unit/Ten.Tests.Unit.csproj        # 44 / 44
+dotnet test tests/harness/Ten.Tests.Harness.csproj  # 178 / 178
 ```
 
 | | 結果 |
 | --- | --- |
-| `tests/unit` | **33 green / 0 赤** |
-| `tests/harness` | **164 green / 0 赤** |
+| `tests/unit` | **44 green / 0 赤**（2026-09-13 に TC-166〜169 を追加） |
+| `tests/harness` | **178 green / 0 赤**（2026-09-13 に TC-170〜177 を追加） |
 | `unity/Assets/Tests`（PlayMode） | **11 green / 5 赤** |
 
 **PlayMode の 5 赤は Android 実機でしか測れない**（TC-145 / 146 / 147 / 150 / 151）。
@@ -83,7 +95,11 @@ dotnet test tests/harness/Ten.Tests.Harness.csproj
 | **テストケースの欠陥 8 件** | 実装をどう書いても通らないものがあった。直した理由は [ADR-0020](../10_requirements/decisions/ADR-0020-test-defects-found-in-implementation.md)。**自分で書いて自分で直したので、別の目で検めるまでリスクを持つ**（ADR-0005） |
 | **バランス値が動いた** | 寝入りばなを `ST-P-Grace` に統合、`doze_off` を弱く遅く、対処の代償を 4 札すべてに。[balance.md](../20_basic_design/balance.md) 15 節 |
 | **IL2CPP は「1 つの長い式」で落ちる** | `Tuning`（97 項目）の自動生成 `GetHashCode` と、カタログ 50 件の配列初期化子が、C++ の入れ子 256 段を超えて **Android ビルドを止めた。**項目の多い `record struct` は等価比較とハッシュを手で書く |
-| **得点のレンジが 0〜1 に縮んでいる** | プロトタイプは 0〜3.4 だった。**REQ-056（支配戦略が無い）はこの状態では判定できない。**フェーズ 6 の最初の宿題 |
+| **得点のレンジが 0〜1 に縮んでいる** | プロトタイプは 0〜3.4 だった。**REQ-056（支配戦略が無い）はこの状態では判定できない。**フェーズ 6 の最初の宿題。**2026-09-13 時点でも未着手**（遊べる形に繋ぐのを先にした。実機で触ってから balance.md 16 節で測る） |
+| **`FileStorage` が進行中のプレイを読み戻せなかった**（2026-09-13） | `NightState` の入れ子（山札・慣れ・診断）を `ToString()` で書いていた。**TC-108 は `MemoryStorage` なので気づけなかった。**最高成績も保存していなかった。主コンストラクタの引数順で書くように直した（TC-176 / 177） |
+| **tick の無いフレームで接触が消えていた**（2026-09-13） | 60fps に対して 20 tick/秒なので、**3 回に 2 回のタップが無視されていた。**押す / 離すを 1 tick に 1 件ずつ流す列に溜める（`NightSession`） |
+| **夜の初期視線が天井ではなく母の顔になっている**（2026-09-13 に Mac ビルドで確認。**未修正**） | `PointerInputSource.Look` は最初のドラッグまで (0, 0) を返し、首の向きは**指の絶対位置**で決まる。screens.md 4.2.1「初期視線は天井」とずれる。直すなら境界層の IN-6 と一緒に（テストを先に） |
+| **`FileStorage` は反射で保存する**（2026-09-13） | IL2CPP のコード削除（Managed Stripping）を強くすると、主コンストラクタやプロパティが消えて読めなくなりうる。**実機で「続きから」を 1 度確かめる** |
 
 ## 3. 会話でだけ決まっていること（**最重要**）
 
@@ -91,10 +107,12 @@ dotnet test tests/harness/Ten.Tests.Harness.csproj
 
 | # | 決まったこと | 誰が | 現状 |
 | --- | --- | --- | --- |
-| H-02 | **診断の文言はもう少し長くする**（一行では短い） | 本人（2026-09-06） | [diagnosis.md](../20_basic_design/diagnosis.md) 3 節に反映済み。**50 件の文言そのものは未着手** |
+| H-02 | **診断の文言はもう少し長くする**（一行では短い） | 本人（2026-09-06） | [diagnosis.md](../20_basic_design/diagnosis.md) 3 節に反映済み。**50 件は 2026-09-12 に 2 文ずつで書き下ろし済み**（diagnosis.md 4 節）。3 節の「2〜4 文」の上側に寄せるかは、実機で結果画面を見てから |
 | H-03 | **モデル（3D モデル・アセット）の作成は Codex 側で行う。**このリポジトリの作業範囲に含めない | 本人（2026-09-06） | **ここにしか書かれていない。**Unity が要るのは view / shell 層のテスト・e2e・実機判定で、**アセット制作はその前段として Codex が持つ**。[ADR-0005](../10_requirements/decisions/ADR-0005-agent-roles.md)（役割分担）に反映するかは未定 |
 | H-04 | **親の姿と、モデルの合格条件を決めた** | 本人（2026-09-12） | **ADR に落とした**（[ADR-0018](../10_requirements/decisions/ADR-0018-parent-is-mother.md) / [ADR-0019](../10_requirements/decisions/ADR-0019-parent-model-acceptance.md)）。**どちらも Proposed。**採用したモデルシートは `scratch/visual/parent/parent-model-sheet-v4-e2-long-cute-30s.png` と `parent-hand-sheet-v2.png`。Codex への指示書は `scratch/visual/parent/ASTRA-PROMPT-r56.md` |
 | H-05 | **実在の人物（俳優）に顔を寄せる案は採らない** | 2026-09-12 | 肖像の問題と、[setting.md](../20_basic_design/setting.md) 2 節の制約の両方。**ADR-0018 の確定内容 4 として残した**（性別の確定とは独立に維持する） |
+| H-06 | **ゲームに要る見た目の制作物を 4 包み（母 / 寝室と小物 / 父 / アプリの外側）に分けて Codex の Astra に作らせる。**作り込みは「必要最低限」。生活感の小物は置かない（SET-02）、父は表情なしのシルエット（SET-03）。**母は本人が制作中。父は時間的に間に合うか分からないので後回し**（指示があるまで着手しない） | 本人（2026-09-13） | 指示書は `scratch/visual/ASTRA-COMMON.md` と各包みの `ASTRA-PROMPT-*.md`。**SET-02 / 03 の決着を setting.md 10 節に反映していない** |
+| H-07 | **寸法の正は setting.md。**`RoomRig.cs` の抽象配置（対象を 4 m 先に ±45°）と「ベビーベッドの柵」（setting.md 2 節は床の布団）は、アセット取り込み時に直す。画角は Unity 実装の**水平 30°**。床は**フローリング**。（母の姿勢は ADR-0021、抱き上げは ADR-0022 に落とした） | Claude（本人から委任。2026-09-13） | **取り込み時の注意:** PlayMode の TC-122（視界の判定）は差し替えで結果が変わりうる。**テストを書き換えず**、視界判定用の代理物を残す方針 |
 
 ## 4. 測って初めて分かったこと
 
@@ -164,7 +182,7 @@ dotnet test tests/harness/Ten.Tests.Harness.csproj
 - 診断カタログ 50 件の**文言を書き直す**（長文化。H-02）
 - 実機で確かめるしかない 3 件（O-09 / SET-04 / SHL-01）は
   [decisions_pending.md](decisions_pending.md) C 節。
-  **ISS-20（判別不能性）もここに合流する**（ADR-0017 が未解決のまま受容した）
+  （ISS-20 は 2026-09-13 に ADR-0022 で決着した）
 - 聞けるときに聞く 2 件（ISS-11 の端末 / ISS-12）
 
 ## 8. この文書の使い方

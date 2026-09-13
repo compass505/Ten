@@ -18,8 +18,35 @@ public static class Result {
     /// 実況の素材。Sim が夜の間に積む（最大 3 件まで残す）
     public readonly record struct Beat(int Tick, BeatKind Kind);
     public enum BeatKind { FirstScore, BestPretend, HandRanLow, EventStruck, FellAsleepAt, DawnReached }
+
+    /// 診断の濃さ（diagnosis.md 2 節）と、修飾語を付けた名前（G-03。2026-09-13 追加）
+    public enum Strength { Thin, Plain, Thick }
+    public static Strength StrengthOf(Diagnosis d, Tuning tuning);
+    public static string Title(DiagnosisEntry entry, Strength strength);
+}
+
+/// 実況の素材を夜の間に積み、3 件に絞る（RES-02 決着。2026-09-13 追加）
+public static class Commentary {
+    public const int Max = 3;
+    public static IReadOnlyList<Result.Beat> Observe(IReadOnlyList<Result.Beat> beats, NightState prev, NightState next, Tuning tuning);
+    public static IReadOnlyList<Result.Beat> Pick(IReadOnlyList<Result.Beat> beats);
+    public static string Encode(IReadOnlyList<Result.Beat> beats);
+    public static IReadOnlyList<Result.Beat> Decode(string? text);
 }
 ```
+
+### 素材を積む条件（`Commentary.Observe`。TC-166）
+
+| 素材 | 積む瞬間 |
+| --- | --- |
+| `FirstScore` | 得点が 0 → 1 |
+| `BestPretend` | 親が `Settling` → `Grace`（**成功側の着地だけ**。`Feint` の満了は積まない） |
+| `EventStruck` | 出来事が 1 件起きた |
+| `HandRanLow` | 山札が終盤の段階に入った（0 枚は夜の終わりなので数えない） |
+| `FellAsleepAt` / `DawnReached` | 夜が寝落ち / 夜明けで終わった |
+
+**同じ種類は最初の 1 回だけ。**選ぶとき（`Pick`。TC-167）の優先順は
+**終わり方 → 寝たふり → 最初の一撃 → 出来事 → 手札**。選んだ 3 件は起きた順に並べる。
 
 ## 満たすこと
 
@@ -56,6 +83,7 @@ public static class Result {
 | ID | 論点 |
 | --- | --- |
 | RES-01 | 文言パターンの持ち方（リソースファイル / 定数配列） |
-| RES-02 | `Beat` の選び方。夜の間に積んだものから「面白い 3 件」をどう選ぶか。**選択規則も決定論でなければならない** |
+| ~~RES-02~~ | ~~`Beat` の選び方~~ → **決着（2026-09-13）。**上の「素材を積む条件」と優先順。状態の前後だけを見る純関数（TC-166 / 167） |
+| ~~G-03~~ | ~~「濃さ」の置き場~~ → **決着（2026-09-13）。**`DiagnosisEntry` には持たせず、`StrengthOf` / `Title` で名前に付ける（カタログの 1 件は薄くも濃くもなるため。TC-169） |
 | RES-04 | カタログを埋め込むか外部リソースにするか。**50 件の文言は [diagnosis.md](../20_basic_design/diagnosis.md) 4 節が正** |
-| RES-03 | 実況を保存するか、入力列から再生成するか（[data_model.md](../20_basic_design/data_model.md) M-04。**今は保存する側**） |
+| ~~RES-03~~ | ~~実況を保存するか、入力列から再生成するか~~ → **決着（2026-09-13）。素材を保存し、共有時に文にする**（[data_model.md](../20_basic_design/data_model.md) M-04） |

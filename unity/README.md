@@ -41,7 +41,10 @@ Android の SDK / NDK / OpenJDK は Unity 同梱のものが入っている。
 
 | 置き場 | 中身 |
 | --- | --- |
-| `Assets/Scripts/` | `RoomRig`（一人称の寝室。**実行時に組み立てる**）/ `RoomView`（MOD-View）/ `TenBoot` |
+| `Assets/Scripts/` | `RoomRig`（一人称の寝室と仮の母・小物。**実行時に組み立てる**）/ `RoomView`（MOD-View。`PresentRule` の結果を写す）/ `TenBoot` |
+| `Assets/Scripts/TenApp.cs` | **画面の流れ**（MOD-Shell の本番）。保存・再開・中断・戻る操作・共有・チュートリアル。**見た目は仮の IMGUI**（2026-09-13） |
+| `Assets/Scripts/NightSession.cs` | 一晩の進行。**tick の順序（REQ-051）を持つ唯一の場所**。旧 `NightDriver` を置き換えた |
+| `Assets/Scripts/DeviceServices.cs` | Android の共有シート / クリップボード、画面消灯の抑止 |
 | `Assets/Editor/TenBuild.cs` | Android ビルド。`-executeMethod Ten.Editor.TenBuild.Android` |
 | `Assets/Plugins/Android/` | 追加マニフェストと Gradle の雛形。**要求権限 0 件**（NFR-003）と lint 停止（NFR-002） |
 | `Assets/Scenes/Night.unity` | 入口。**中身は空で、`TenBoot` が実行時に寝室を組む** |

@@ -96,6 +96,38 @@ public static class Result
         _ => "夜が動いた",
     };
 
+    /// <summary>診断の濃さ（diagnosis.md 2 節）。**カタログの 1 件は濃さを持たない**ので別に出す（G-03）。</summary>
+    public enum Strength { Thin, Plain, Thick }
+
+    /// <summary>合計値の大きさで濃さを決める（diagnosis.md 2 節の表）。</summary>
+    public static Strength StrengthOf(Diagnosis d, Tuning tuning)
+    {
+        tuning.Validate();
+
+        return d.Total < tuning.DiagnosisThinTotal ? Strength.Thin
+            : d.Total >= tuning.DiagnosisThickTotal ? Strength.Thick
+            : Strength.Plain;
+    }
+
+    /// <summary>
+    /// 濃さの修飾語を付けた名前（「うっすら」「どっぷり」）。
+    /// **何も起きなかった夜（`DX-41`）には付けない。**
+    /// </summary>
+    public static string Title(DiagnosisEntry entry, Strength strength)
+    {
+        if (entry.Id == DiagnosisCatalog.FallbackId)
+        {
+            return entry.Name;
+        }
+
+        return strength switch
+        {
+            Strength.Thin => "うっすら " + entry.Name,
+            Strength.Thick => "どっぷり " + entry.Name,
+            _ => entry.Name,
+        };
+    }
+
     /// <summary>
     /// 7 軸の割合ベクトルに最も近い診断を、カタログから選ぶ（ADR-0016 / RS-7）。
     /// コサイン類似度。**同点はカタログの並び順で先を採る**（決定論）。

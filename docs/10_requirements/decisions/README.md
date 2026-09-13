@@ -30,6 +30,9 @@
 | [ADR-0017](ADR-0017-parent-moves-on-failure.md) | 寝たふりに失敗しても親は赤ちゃんを動かす（盲目区間に手触りを戻す） | Accepted（**リスク受容あり**） |
 | [ADR-0018](ADR-0018-parent-is-mother.md) | 親を「母」として確定し、姿を 1 つに固定する | **Proposed**（承認待ち） |
 | [ADR-0019](ADR-0019-parent-model-acceptance.md) | 親モデルの合格条件を「ゲーム内の見え方」に置き、作り込みをそこで止める（SET-01 決着） | **Proposed**（承認待ち） |
+| [ADR-0020](ADR-0020-test-defects-found-in-implementation.md) | 実装で判明したテストケースの欠陥 8 件を、テスト側を直して解消する | Accepted |
+| [ADR-0021](ADR-0021-mother-sits-and-dozes.md) | 母は「布団の横に座ったまま、うとうとしている」姿勢で夜を過ごす | Accepted |
+| [ADR-0022](ADR-0022-single-carry-motion.md) | 寝たふりの成否にかかわらず、母は同じ抱き上げを 1 本の動きで行う（ISS-20 決着） | Accepted |
 
 **Proposed は未確定。** 人間が承認した時点で `Accepted` に書き換える。
 **2026-09-12 時点で Proposed は 2 件**（ADR-0018 / 0019。どちらも親の 3D モデル制作を止めている）。
@@ -37,8 +40,8 @@
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](../../50_review/issues.md)の指摘 18 件
 （うち 9 件が「決定を覆すべき」）を**未解決のまま**、ユーザー判断で Accepted にしている。
 各 ADR 末尾の「承認時に受容したリスク」を必ず読むこと。
-ADR-0017 も [ISS-20](../open_issues.md)（判別不能性を実際に作れるか）を
-未解決のまま Accepted にしている。
+ADR-0017 は [ISS-20](../open_issues.md)（判別不能性を実際に作れるか）を
+未解決のまま Accepted にしたが、2026-09-13 に ADR-0022 で決着した。
 Accepted は書き換えない。覆すときは新規発番して旧を `Superseded by` にする。
 
 ADR-0008〜0011 は、確定前に Codex レビュー（28 件 / 24 件）を通し、
