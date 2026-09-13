@@ -28,6 +28,32 @@
 
 ## 2. アセットの差し込み口
 
+### 2.0 取り込み済み（2026-09-14）
+
+**母 r56-approved と寝室 room-r1 を取り込んだ。**r57 は届いていないので、足りない動きは下の代わりで出している。
+
+| | 実体 |
+| --- | --- |
+| 置き場 | `unity/Assets/Resources/Models/`（Mother / Room）。取り込み設定は `Editor/TenModelImport.cs`（母は Legacy・12 クリップに分割） |
+| 寸法 | **実寸に置き直した**（`RoomRig.cs`）。目は床から 0.28 m、**水平 35°**（= 1080 × 2400 で垂直 70°）、初期視線は真上 |
+| 視線の代理物 | 顔 (−0.38, 0.81, 0.40) 直径 0.26 / 手 (−0.47, 0.72, −0.18) 0.16 / 窓 (2.19, 1.50, −0.30)。**描かない**（`forceRenderingOff`） |
+| 明かり | 月（窓の内側の点光源。窓が白むほど強い）/ 天井灯 / スマホ。窓・電球・スマホの画面は Emission |
+| 目視 | `Editor/TenShots.cs` が 17 の姿勢を `unity/Build/Shots` に撮り、平均相対輝度を出す（最大は夜明けの窓 + 点灯で 0.0996） |
+
+| `BodyClip` / `HandClip` | r56-approved | r57 が届いたら |
+| --- | --- | --- |
+| `BreathDeep` / `BreathLight` / `BreathHalf` | A0 / A1 / A2 をループ | `Breath_*` |
+| `BreathAwake` | A3 の 2.0 秒で止める（末尾の「消える」は使わない） | `Breath_Awake` |
+| `DozeWarn` / `DozeDrop` | B の 0〜4.5 秒 / 4.5〜6.3 秒 | `Doze_Warn` / `Doze_Drop` |
+| `TurnAway` | **A1 + 首を 75° 回す（代わり）** | `TurnAway` |
+| `Sniff` | **首を小さく揺らす（代わり）** | `Sniff` |
+| `PatSteady` / `PatRough` / `PatStall` | C0 / C1 / C2（右腕だけ上書き） | `Pat_*` |
+| `Reach` | **対処クリップの出だしで止める（代わり）**。ミルクだけ哺乳瓶を持つ | `Reach_*` 4 形 |
+| `CareMilk` / `CareHold` / `CareDiaper` | D1（+ 哺乳瓶の配置式）/ D2（両腕）/ D3（両腕） | `Care_*` |
+| `Carry` | 母は描かない。窓の明かりのずれは従来のまま | `Carry` のカメラ曲線 |
+
+**未解決: 縦画面では顔と手が同時に視界に入る**（handoff.md H-10）。
+
 ### 2.1 母（`scratch/visual/parent/unity-reference-r57/mother-runtime.fbx`）
 
 **`Presentation.Body` と `Presentation.Hand` を、Animator の 2 層に 1 対 1 で流す。**
@@ -90,6 +116,18 @@
 | `font/` | `Ui.Ensure()` で `GUI.skin.font` に設定する（**ウェイトは 2 つまで**） |
 | `parts/`（9 スライスのボタン背景） | `Ui` のボタンの `normal` / `active` の背景 |
 | `icon/` | Player Settings の Adaptive Icon（前景 / 背景） |
+
+**2026-09-14 に r1 を取り込んだ**（IMGUI のまま）。
+
+| 取り込んだもの | 置き場 | 実体 |
+| --- | --- | --- |
+| 色（`palette.json`） | `TenApp.cs` の `Ui` | 背景 `#101821` / 文字 `#C4CDD5` / 文字（弱）`#A4B2C0` / 主ボタン `#344D60` / 副ボタン `#1D2B38`。**得点の強調色（暖色）は廃止**して文字色の Bold にした（暖色は親の肌と天井灯だけ） |
+| フォント | `unity/Assets/Resources/Ui/`（`OFL.txt` 同梱） | 本文 Medium / 得点・ボタン Bold |
+| ボタン（9 スライス） | 同上 | **一番下のボタンだけ主ボタン**（4.2）。取り込み設定は `Editor/TenAssetImport.cs`（圧縮・ミップマップなし） |
+| アイコン | `unity/Assets/Art/Icon/` | `TenBuild.ApplyIcons()`（Adaptive + Round / Legacy は 512 px の合成） |
+
+**取り込まなかったもの**: `layout.md` の画面文言（「3 点」「結果テキストを共有」など）はモック用の見本なので、**文言は 4.3 のまま**。
+配置の比率も 4.2 のまま（layout.md のボタン高 168 px ≒ 7.0% に対して 7.5%。差は小さいので実機で見てから）。
 
 **uGUI に置き換えるなら、`SCR-Night` の間は Canvas を無効にする。**TC-126 は夜の画面に生きている
 `UnityEngine.UI` の部品を 1 つでも数える（IMGUI は数えない）。

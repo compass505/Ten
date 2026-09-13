@@ -22,9 +22,9 @@ namespace Ten.View
 
         /// <summary>
         /// 夜の初期視線（screens.md 4.2.1「初期視線は天井」）。
-        /// 左右は**どの対象にも向かない**位置（`RoomRig.InitialYawDeg`）、上下は仰ぎいっぱい。
+        /// 実寸の寝室では**真上**がどの対象にも向かない（`RoomRig.InitialYawDeg` / `InitialPitchDeg`）。
         /// </summary>
-        public static readonly (float YawDeg, float PitchDeg) InitialLook = (RoomRig.InitialYawDeg, 30f);
+        public static readonly (float YawDeg, float PitchDeg) InitialLook = (RoomRig.InitialYawDeg, RoomRig.InitialPitchDeg);
 
         private readonly Tuning _tuning;
         private readonly RealClock _clock = new();

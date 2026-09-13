@@ -179,6 +179,37 @@ namespace Ten.Tests.E2E
         /// <summary>視界に入っている対象の数（D-11 / TC-122）。</summary>
         public static int VisibleTargetCount() => Rig.VisibleTargetCount();
 
+        /// <summary>対象端末の縦画面（NFR-001 で固定。1080 × 2400）の縦横比。</summary>
+        private const float PortraitAspect = 1080f / 2400f;
+
+        /// <summary>縦画面で、窓が視界に入っているか（ADR-0024 / TC-122）。</summary>
+        public static bool SeesWindowOnPortrait()
+        {
+            foreach (var kind in Rig.VisibleTargets(PortraitAspect))
+            {
+                if (kind == RoomRig.GazeTargetKind.Window)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>縦画面で、母の顔か手が視界に入っているか（ADR-0024 / TC-122）。</summary>
+        public static bool SeesMotherOnPortrait()
+        {
+            foreach (var kind in Rig.VisibleTargets(PortraitAspect))
+            {
+                if (kind is RoomRig.GazeTargetKind.ParentFace or RoomRig.GazeTargetKind.ParentHand)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>2 枚の画面が画素として同一か（REQ-016 / TC-125）。</summary>
         public static bool PixelsEqual(Texture2D a, Texture2D b)
         {

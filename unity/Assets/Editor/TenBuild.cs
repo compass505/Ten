@@ -182,6 +182,49 @@ namespace Ten.Editor
 
             // 解析の類を入れない（NFR-002 / TC-147）
             PlayerSettings.gcIncremental = true;
+
+            ApplyIcons();
+        }
+
+        /// <summary>
+        /// アプリのアイコン（ui 包み r1。presentation.md 2.3）。
+        /// Adaptive は前景と背景の 432 px を重ねる。古いランチャー向けには 512 px の合成を使う。
+        /// </summary>
+        private static void ApplyIcons()
+        {
+            const string dir = "Assets/Art/Icon/";
+
+            var foreground = AssetDatabase.LoadAssetAtPath<Texture2D>(dir + "ic_foreground.png");
+            var background = AssetDatabase.LoadAssetAtPath<Texture2D>(dir + "ic_background.png");
+            var flat = AssetDatabase.LoadAssetAtPath<Texture2D>(dir + "store-512.png");
+
+            if (foreground == null || background == null || flat == null)
+            {
+                throw new InvalidOperationException($"アイコンが {dir} に揃っていない");
+            }
+
+            var target = NamedBuildTarget.Android;
+
+            var adaptive = PlayerSettings.GetPlatformIcons(target, UnityEditor.Android.AndroidPlatformIconKind.Adaptive);
+
+            foreach (var icon in adaptive)
+            {
+                icon.SetTextures(background, foreground);
+            }
+
+            PlayerSettings.SetPlatformIcons(target, UnityEditor.Android.AndroidPlatformIconKind.Adaptive, adaptive);
+
+            foreach (var kind in new[] { UnityEditor.Android.AndroidPlatformIconKind.Round, UnityEditor.Android.AndroidPlatformIconKind.Legacy })
+            {
+                var icons = PlayerSettings.GetPlatformIcons(target, kind);
+
+                foreach (var icon in icons)
+                {
+                    icon.SetTexture(flat);
+                }
+
+                PlayerSettings.SetPlatformIcons(target, kind, icons);
+            }
         }
     }
 }

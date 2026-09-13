@@ -800,16 +800,19 @@ namespace Ten.View
     /// </summary>
     internal sealed class Ui
     {
-        // 暗所で見る（NFR-007）。背景はほぼ黒、文字は明るすぎない生成り
-        private static readonly Color Ground = new(0.043f, 0.047f, 0.070f, 1f);
-        private static readonly Color Ink = new(0.79f, 0.76f, 0.73f, 1f);
-        private static readonly Color InkDim = new(0.49f, 0.47f, 0.44f, 1f);
-        private static readonly Color Accent = new(0.85f, 0.65f, 0.36f, 1f);
-        private static readonly Color Button = new(0.106f, 0.114f, 0.153f, 1f);
-        private static readonly Color ButtonDown = new(0.165f, 0.176f, 0.227f, 1f);
+        // 暗所で見る（NFR-007）。ui 包み r1 の palette.json（presentation.md 4.1）。
+        // **暖色を足さない**（親の肌と点灯時の天井灯だけが暖色。setting.md）
+        private static readonly Color Ground = Hex(0x101821);
+        private static readonly Color Ink = Hex(0xC4CDD5);
+        private static readonly Color InkDim = Hex(0xA4B2C0);
+        private static readonly Color Button = Hex(0x1D2B38);
 
-        private GUIStyle _small, _body, _big, _paragraph, _button, _coach, _zone;
-        private Texture2D _ground, _buttonTex, _buttonDown, _veil;
+        /// <summary>9 スライスのボタン背景の角（96 px 四方のうち四辺 36 px。ui 包み layout.md）。</summary>
+        private const int ButtonBorder = 36;
+
+        private GUIStyle _small, _body, _big, _paragraph, _button, _buttonPrimary, _coach, _zone;
+        private Texture2D _ground, _buttonTex, _veil;
+        private Font _medium, _bold;
         private int _height = -1;
 
         private float W => UScreen.width;
@@ -829,28 +832,48 @@ namespace Ten.View
 
             _ground ??= Solid(Ground);
             _buttonTex ??= Solid(Button);
-            _buttonDown ??= Solid(ButtonDown);
             _veil ??= Solid(new Color(0.02f, 0.02f, 0.03f, 0.82f));
 
+            // **ウェイトは 2 つだけ**（本文 Medium / 見出し・操作名 Bold）。OFL 1.1、Resources/Ui/OFL.txt
+            _medium ??= Resources.Load<Font>("Ui/ZenMaruGothic-Medium");
+            _bold ??= Resources.Load<Font>("Ui/ZenMaruGothic-Bold");
+
             // 1080 × 2400 基準で 本文 48px ≒ 16sp 相当（ui 包みの条件）
-            _small = Style(0.017f, InkDim);
-            _body = Style(0.022f, Ink);
-            _big = Style(0.050f, Accent, FontStyle.Bold);
-            _paragraph = Style(0.019f, Ink);
+            _small = Style(0.017f, InkDim, _medium);
+            _body = Style(0.022f, Ink, _medium);
+            _big = Style(0.050f, Ink, _bold);
+            _paragraph = Style(0.019f, Ink, _medium);
             _paragraph.wordWrap = true;
-            _coach = Style(0.018f, Ink);
+            _coach = Style(0.018f, Ink, _medium);
             _coach.wordWrap = true;
-            _zone = Style(0.016f, InkDim);
+            _zone = Style(0.016f, InkDim, _medium);
             _zone.alignment = TextAnchor.LowerCenter;
 
-            _button = new GUIStyle(GUI.skin.button)
+            _button = ButtonStyle("Ui/button-secondary", "Ui/button-secondary-pressed");
+            _buttonPrimary = ButtonStyle("Ui/button-primary", "Ui/button-primary-pressed");
+        }
+
+        /// <summary>
+        /// 9 スライスのボタン。**不透明単色と、角の外の完全透明だけ**（半透明の面を作らない）。
+        /// 画像が無ければ単色で描く（**見た目が落ちるだけで、押せなくはしない**）。
+        /// </summary>
+        private GUIStyle ButtonStyle(string normal, string pressed)
+        {
+            var up = Resources.Load<Texture2D>(normal);
+            var down = Resources.Load<Texture2D>(pressed);
+            var style = new GUIStyle(GUI.skin.button)
             {
+                font = _bold,
                 fontSize = Mathf.RoundToInt(H * 0.022f),
                 alignment = TextAnchor.MiddleCenter,
+                border = up != null ? new RectOffset(ButtonBorder, ButtonBorder, ButtonBorder, ButtonBorder) : new RectOffset(),
             };
-            _button.normal.background = _button.hover.background = _buttonTex;
-            _button.active.background = _buttonDown;
-            _button.normal.textColor = _button.hover.textColor = _button.active.textColor = Ink;
+
+            style.normal.background = style.hover.background = style.focused.background = up != null ? up : _buttonTex;
+            style.active.background = down != null ? down : _buttonTex;
+            style.normal.textColor = style.hover.textColor = style.focused.textColor = style.active.textColor = Ink;
+
+            return style;
         }
 
         public void Background() => GUI.DrawTexture(new Rect(0, 0, W, H), _ground);
@@ -889,7 +912,10 @@ namespace Ten.View
                     break;
                 }
 
-                if (GUI.Button(new Rect(Margin, y, W - Margin * 2, height), buttons[i].Label, _button))
+                // いちばん押すボタンは一番下（presentation.md 4.2）。そこだけ主操作の色
+                var style = i == buttons.Count - 1 ? _buttonPrimary : _button;
+
+                if (GUI.Button(new Rect(Margin, y, W - Margin * 2, height), buttons[i].Label, style))
                 {
                     buttons[i].Act();
                 }
@@ -942,12 +968,12 @@ namespace Ten.View
             return y + height + H * 0.006f;
         }
 
-        private GUIStyle Style(float size, Color color, FontStyle font = FontStyle.Normal)
+        private GUIStyle Style(float size, Color color, Font font)
         {
             var style = new GUIStyle(GUI.skin.label)
             {
+                font = font,
                 fontSize = Mathf.RoundToInt(H * size),
-                fontStyle = font,
                 wordWrap = true,
             };
 
@@ -955,6 +981,9 @@ namespace Ten.View
 
             return style;
         }
+
+        private static Color Hex(int rgb) =>
+            new(((rgb >> 16) & 0xFF) / 255f, ((rgb >> 8) & 0xFF) / 255f, (rgb & 0xFF) / 255f, 1f);
 
         private static Texture2D Solid(Color color)
         {

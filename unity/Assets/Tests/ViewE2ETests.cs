@@ -37,14 +37,32 @@ namespace Ten.Tests.E2E
         [Test]
         public void TC122_3対象が同時に視界へ入る角度が存在しない()
         {
-            for (var yaw = -55f; yaw <= 55f; yaw += 0.5f)
-            {
-                ScreenProbe.LookAt(yaw, 0f);
+            // **対象端末の縦画面で測る**（ADR-0024）。画面の縦横比に任せると、
+            // batchmode の横長の画面では縦の画角が狭く、母の顔が視界から外れて「測っていないのに緑」になる
+            var seenWindow = false;
+            var seenMother = false;
 
-                Assert.That(ScreenProbe.VisibleTargetCount(), Is.LessThanOrEqualTo(1),
-                    $"**yaw={yaw}° で 2 つ以上が同時に見えている**（REQ-006 / D-11 / V-3）。" +
-                    "同時に見えると「見ることが選択になる」が成立しない");
+            for (var pitch = -15f; pitch <= 30f; pitch += 5f)
+            {
+                for (var yaw = -55f; yaw <= 55f; yaw += 0.5f)
+                {
+                    ScreenProbe.LookAt(yaw, pitch);
+
+                    var window = ScreenProbe.SeesWindowOnPortrait();
+                    var mother = ScreenProbe.SeesMotherOnPortrait();
+
+                    seenWindow |= window;
+                    seenMother |= mother;
+
+                    Assert.That(window && mother, Is.False,
+                        $"**yaw={yaw}° pitch={pitch}° で窓と母が同時に見えている**（REQ-006 / D-11 / V-3 / ADR-0024）。" +
+                        "同時に見えると「時間を見るか、母を見るか」の選択が成立しない");
+                }
             }
+
+            // 何も見えない配置でも上のアサーションは通る。**黙って通さない**
+            Assert.That(seenWindow && seenMother, Is.True,
+                "**首を振りきっても窓か母が一度も見えない。**配置か測り方を疑う");
         }
 
         [Test]

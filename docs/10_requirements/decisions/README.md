@@ -34,6 +34,7 @@
 | [ADR-0021](ADR-0021-mother-sits-and-dozes.md) | 母は「布団の横に座ったまま、うとうとしている」姿勢で夜を過ごす | Accepted |
 | [ADR-0022](ADR-0022-single-carry-motion.md) | 寝たふりの成否にかかわらず、母は同じ抱き上げを 1 本の動きで行う（ISS-20 決着） | Accepted |
 | [ADR-0023](ADR-0023-strategy-test-missing-policies.md) | TC-069 に「寝入りばな狙い」と「溜めて待つ」を足し、独走をバランスで崩す | Accepted（2026-09-13。委任） |
+| [ADR-0024](ADR-0024-window-vs-mother-exclusive.md) | 視界の排他を「窓 ⇔ 母」に定め、TC-122 を対象端末の縦画面で測る | Accepted（2026-09-14。委任） |
 
 **Proposed は未確定。** 人間が承認した時点で `Accepted` に書き換える。
 **2026-09-13 時点で Proposed は 0 件**（ADR-0018 / 0019 は本人から全面委任を受けて確定）。
