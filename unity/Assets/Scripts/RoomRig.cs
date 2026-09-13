@@ -28,10 +28,16 @@ namespace Ten.View
         /// <summary>初期視線。**どの対象にも向いていない**（screens.md 4.2.1: 初期視線は天井）。</summary>
         public const float InitialYawDeg = 22.5f;
 
-        private const float TargetDistance = 3f;
+        private const float TargetDistance = 4f;
 
-        /// <summary>対象の大きさ。**画角と間隔に対して、同時に 2 つ入らない大きさ**（V-3）。</summary>
-        private const float TargetSize = 0.4f;
+        /// <summary>
+        /// 対象の大きさ。**画角と間隔に対して、同時に 2 つ入らない大きさ**（V-3）。
+        ///
+        /// 視界の判定は軸に沿った箱（AABB）で行うので、**実際の形より一回り大きく見積もられる。**
+        /// 45° 間隔・水平画角 30° に対して、見積もりを含めた半径が 20° を超えないこと。
+        /// ここを大きくすると、天井を向いているのに親の手が「見えている」ことになる。
+        /// </summary>
+        private const float TargetSize = 0.35f;
         private const int ShotSize = 128;
 
         private static RoomRig _instance;
@@ -68,6 +74,12 @@ namespace Ten.View
 
         public enum GazeTargetKind { Window, ParentFace, ParentHand }
 
+        /// <summary>いまの縦横比（調べるためだけに出す）。</summary>
+        public float DebugAspect => _eye.aspect;
+
+        /// <summary>いまの縦の画角（調べるためだけに出す）。</summary>
+        public float DebugFov => _eye.fieldOfView;
+
         // ------------------------------------------------------------------
 
         public static RoomRig Instance
@@ -99,21 +111,19 @@ namespace Ten.View
             _eye.clearFlags = CameraClearFlags.SolidColor;
             _eye.backgroundColor = new Color(0.004f, 0.004f, 0.008f, 1f);
             _eye.fieldOfView = FieldOfViewDeg;
-
-            // **縦横比を固定する。**画面の比率で水平画角が変わると、
-            // 「3 対象が同時に入らない」（V-3）が端末ごとに崩れる
-            _eye.aspect = 1f;
             _eye.nearClipPlane = 0.02f;
             _eye.farClipPlane = 50f;
             _eye.allowHDR = false;
-            _eye.enabled = false;   // 撮るときだけ Render する（e2e が制御する）
+            // 画面に出す。撮るとき（e2e）は targetTexture を差し替えて Render を呼ぶ
+            _eye.enabled = true;
 
-            _targets.Add((GazeTargetKind.Window, MakeTarget("Window", WindowYawDeg, PrimitiveType.Quad,
-                new Color(0.10f, 0.10f, 0.14f, 1f))));
+            // **窓は平たい箱。**Quad は片面しか描かないので、向きによっては消える
+            _targets.Add((GazeTargetKind.Window, MakeTarget("Window", WindowYawDeg, PrimitiveType.Cube,
+                new Color(0.55f, 0.57f, 0.72f, 1f), new Vector3(1.8f, 1.2f, 0.08f))));
             _targets.Add((GazeTargetKind.ParentFace, MakeTarget("ParentFace", FaceYawDeg, PrimitiveType.Sphere,
-                new Color(0.05f, 0.045f, 0.05f, 1f))));
+                new Color(0.38f, 0.35f, 0.36f, 1f), new Vector3(1.5f, 1.5f, 1.5f))));
             _targets.Add((GazeTargetKind.ParentHand, MakeTarget("ParentHand", HandYawDeg, PrimitiveType.Cube,
-                new Color(0.045f, 0.04f, 0.045f, 1f))));
+                new Color(0.34f, 0.30f, 0.31f, 1f))));
 
             BuildEyelid();
             BuildControls();
@@ -121,7 +131,11 @@ namespace Ten.View
         }
 
         /// <summary>対象を 1 つ置く。**見た目は仮**（親の造形は後で差し替える）。</summary>
-        private Renderer MakeTarget(string name, float yawDeg, PrimitiveType shape, Color color)
+        private Renderer MakeTarget(string name, float yawDeg, PrimitiveType shape, Color color) =>
+            MakeTarget(name, yawDeg, shape, color, Vector3.one);
+
+        private Renderer MakeTarget(
+            string name, float yawDeg, PrimitiveType shape, Color color, Vector3 shapeScale)
         {
             var go = GameObject.CreatePrimitive(shape);
 
@@ -132,7 +146,7 @@ namespace Ten.View
 
             go.transform.localPosition = new Vector3(Mathf.Sin(rad) * TargetDistance, 0f, Mathf.Cos(rad) * TargetDistance);
             go.transform.localRotation = Quaternion.Euler(0f, yawDeg + 180f, 0f);
-            go.transform.localScale = Vector3.one * TargetSize;
+            go.transform.localScale = shapeScale * TargetSize;
 
             var renderer = go.GetComponent<Renderer>();
 
@@ -185,7 +199,7 @@ namespace Ten.View
             patch.transform.localPosition = new Vector3(0f, 0.1f, 0.04f);
             patch.transform.localScale = new Vector3(height * 0.8f, height * 0.5f, 1f);
 
-            _windowPatchMaterial = OpaqueMaterial(new Color(0.08f, 0.08f, 0.11f, 1f));
+            _windowPatchMaterial = OpaqueMaterial(new Color(0.20f, 0.21f, 0.30f, 1f));
 
             var patchRenderer = patch.GetComponent<Renderer>();
 
@@ -253,9 +267,28 @@ namespace Ten.View
             Apply();
         }
 
+        /// <summary>
+        /// **水平の画角を固定する。**縦横比に任せると、横長の画面で視界が広がり、
+        /// 「3 対象が同時に視界へ入らない」（V-3 / D-11）が画面の形しだいで崩れる。
+        /// 撮るとき（e2e）と画面に出すときの両方で、必ずこれを通す。
+        /// </summary>
+        private void FixHorizontalFieldOfView()
+        {
+            _eye.ResetAspect();
+            _eye.fieldOfView = Camera.HorizontalToVerticalFieldOfView(FieldOfViewDeg, _eye.aspect);
+        }
+
         private void Apply()
         {
-            _eye.transform.localRotation = Quaternion.Euler(-PitchDeg, YawDeg, 0f);
+            FixHorizontalFieldOfView();
+
+            // **元気は視線に依存せず常に分かる**（REQ-006）。自分の体なので、視界の揺れで出す。
+            // 元気が減るほど大きく揺れる（setting.md 8 節）
+            var swayAmp = _vigorStage < 0 ? 0f : (2 - _vigorStage) * 0.35f;
+            var sway = swayAmp * Mathf.Sin(Time.time * 1.9f);
+            var bob = swayAmp * 0.6f * Mathf.Sin(Time.time * 1.3f);
+
+            _eye.transform.localRotation = Quaternion.Euler(-PitchDeg + bob, YawDeg + sway, 0f);
             _eyelid.gameObject.SetActive(EyesClosed);
 
             // **閉眼中に窓の明かりが見えるのは、窓を向いているときだけ**（V-9 / D-12）
@@ -267,20 +300,25 @@ namespace Ten.View
         // ------------------------------------------------------------------
 
         /// <summary>いま視界に入っている対象の数。**実際の視錐台で測る**（V-3 / TC-122）。</summary>
-        public int VisibleTargetCount()
+        public int VisibleTargetCount() => VisibleTargets().Count;
+
+        /// <summary>いま視界に入っている対象。**実際の視錐台で測る**（V-3 / TC-122）。</summary>
+        public IReadOnlyList<GazeTargetKind> VisibleTargets()
         {
+            FixHorizontalFieldOfView();
+
             var planes = GeometryUtility.CalculateFrustumPlanes(_eye);
-            var count = 0;
+            var visible = new List<GazeTargetKind>();
 
             for (var i = 0; i < _targets.Count; i++)
             {
                 if (GeometryUtility.TestPlanesAABB(planes, _targets[i].Renderer.bounds))
                 {
-                    count++;
+                    visible.Add(_targets[i].Kind);
                 }
             }
 
-            return count;
+            return visible;
         }
 
         private bool LookingAt(GazeTargetKind kind)
@@ -313,6 +351,8 @@ namespace Ten.View
             var previous = RenderTexture.active;
 
             _eye.targetTexture = _shotTarget;
+            _eye.aspect = 1f;
+            _eye.fieldOfView = Camera.HorizontalToVerticalFieldOfView(FieldOfViewDeg, 1f);
             _eye.Render();
 
             RenderTexture.active = _shotTarget;
@@ -320,6 +360,7 @@ namespace Ten.View
             _shot.Apply(false, false);
             RenderTexture.active = previous;
             _eye.targetTexture = null;
+            FixHorizontalFieldOfView();
 
             // **撮るたびに別のテクスチャを返す。**同じ参照を返すと TC-125 が
             // 「同じものを 2 回見ただけ」になり、比較になっていないことに気づけない

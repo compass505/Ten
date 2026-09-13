@@ -51,7 +51,14 @@ public interface IInputSource
 /// </summary>
 public sealed class PointerInputSource : IInputSource
 {
-    private readonly Dictionary<int, TickInput> _inputs = new(); private int? _finger; private bool _actionFinger; private (float YawDeg,float PitchDeg) _look;
+    /// <summary>下半分を横に割る数（泣く / ぐずる / ばたつかせる / 目の開閉）。</summary>
+    private const int ZoneCount = 4;
+
+    private readonly Dictionary<int, TickInput> _inputs = new();
+
+    private int? _finger;
+    private ActionKind? _held;
+    private (float YawDeg, float PitchDeg) _look;
 
     public PointerInputSource(float screenWidth, float screenHeight, LookLimits limits)
     {
@@ -68,16 +75,143 @@ public sealed class PointerInputSource : IInputSource
 
     /// <summary>端末から来た接触を積む。**同じ tick に複数来てもよい**（捨てるのはこちらの仕事）。</summary>
     public void Feed(int tick, PointerSample sample)
-    { if (_inputs.ContainsKey(tick)) return; if (sample.Phase == PointerPhase.Down && _finger.HasValue) return; if (sample.Phase == PointerPhase.Down) { _finger=sample.FingerId; _actionFinger=IsActionArea(sample.Y); if (!_actionFinger) return; } if (_finger != sample.FingerId && sample.Phase != PointerPhase.Down) return; if (sample.Phase == PointerPhase.Move && !IsActionArea(sample.Y)) { var yaw=(sample.X/ScreenWidth-.5f)*Limits.YawMaxDeg*2f; var pitch=(sample.Y/ScreenHeight-.5f)*(Limits.PitchMaxDeg-Limits.PitchMinDeg); _look=(Math.Max(-Limits.YawMaxDeg,Math.Min(Limits.YawMaxDeg,yaw)),Math.Max(Limits.PitchMinDeg,Math.Min(Limits.PitchMaxDeg,pitch))); return; } if (sample.Phase == PointerPhase.Cancel || sample.Phase == PointerPhase.Up) { _finger=null; _actionFinger=false; _inputs[tick]=new TickInput(null,false); return; } if (IsActionArea(sample.Y)) { _actionFinger=true; _inputs[tick]=new TickInput(ActionKind.Cry,false); } }
+    {
+        // IN-1: その tick はもう埋まっている。**先着 1 件だけを採り、残りは捨てる**
+        if (_inputs.ContainsKey(tick))
+        {
+            return;
+        }
+
+        switch (sample.Phase)
+        {
+            case PointerPhase.Down:
+                // 既に 1 本が触れている間は、2 本目を採らない（REQ-005: 同時接触を要求しない）
+                if (_finger.HasValue)
+                {
+                    return;
+                }
+
+                // **上半分は首振りだけ**（IN-5 / REQ-005）
+                if (!IsActionArea(sample.Y))
+                {
+                    _finger = sample.FingerId;
+                    return;
+                }
+
+                _finger = sample.FingerId;
+                _inputs[tick] = Press(sample.X);
+                return;
+
+            case PointerPhase.Move:
+                if (_finger != sample.FingerId)
+                {
+                    return;
+                }
+
+                // 首振りのドラッグは**画面全体で受ける**（balance.md 9 節）
+                if (_held is null)
+                {
+                    _look = LookAt(sample.X, sample.Y);
+                }
+
+                return;
+
+            case PointerPhase.Up:
+            case PointerPhase.Cancel:
+                if (_finger != sample.FingerId)
+                {
+                    return;
+                }
+
+                _finger = null;
+                _held = null;
+
+                // 離した tick は「何も押していない」＝発火（ADR-0015）
+                _inputs[tick] = new TickInput(null, false);
+                return;
+        }
+    }
 
     /// <summary>
     /// その tick の入力。**先着 1 件だけを採り、残りは捨てる。**
     /// 捨てたものはキューに残さず、次の tick にも出さない（IN-1 / IN-2 / REQ-059）。
+    ///
+    /// 押しっぱなしは**毎 tick 同じ値が出る**（溜めが育つ。ADR-0015）。
     /// </summary>
-    public TickInput Sample(int tick) => _inputs.TryGetValue(tick,out var x) ? x : (_finger.HasValue && _actionFinger ? new TickInput(ActionKind.Cry,false) : new TickInput(null,false));
+    public TickInput Sample(int tick)
+    {
+        if (_inputs.TryGetValue(tick, out var explicitInput))
+        {
+            return explicitInput;
+        }
+
+        return _held is null ? new TickInput(null, false) : new TickInput(_held, false);
+    }
 
     /// <summary>画面の下半分か（IN-5 / REQ-005）。行動の操作対象はここだけ。</summary>
     public bool IsActionArea(float y) => y < ScreenHeight / 2f;
+
+    /// <summary>
+    /// 下半分のどこを押したかで、何をするかが決まる。
+    ///
+    /// **画面に印を出さない**（REQ-044 / ADR-0010）。位置だけで覚える。
+    /// 左から 泣く / ぐずる / ばたつかせる / 目の開閉。
+    /// </summary>
+    private TickInput Press(float x)
+    {
+        var zone = (int)(x / ScreenWidth * ZoneCount);
+
+        if (zone < 0)
+        {
+            zone = 0;
+        }
+
+        if (zone >= ZoneCount)
+        {
+            zone = ZoneCount - 1;
+        }
+
+        if (zone == ZoneCount - 1)
+        {
+            // 目の開閉はトグル。**押しっぱなしにならない**（行動ではない。D-03）
+            _held = null;
+
+            return new TickInput(null, true);
+        }
+
+        _held = (ActionKind)zone;
+
+        return new TickInput(_held, false);
+    }
+
+    /// <summary>ドラッグ位置を首の向きに写す。**可動範囲で丸める**（IN-6 / REQ-002）。</summary>
+    private (float YawDeg, float PitchDeg) LookAt(float x, float y)
+    {
+        var yaw = (x / ScreenWidth - 0.5f) * Limits.YawMaxDeg * 2f;
+        var pitch = (y / ScreenHeight - 0.5f) * (Limits.PitchMaxDeg - Limits.PitchMinDeg);
+
+        if (yaw < -Limits.YawMaxDeg)
+        {
+            yaw = -Limits.YawMaxDeg;
+        }
+
+        if (yaw > Limits.YawMaxDeg)
+        {
+            yaw = Limits.YawMaxDeg;
+        }
+
+        if (pitch < Limits.PitchMinDeg)
+        {
+            pitch = Limits.PitchMinDeg;
+        }
+
+        if (pitch > Limits.PitchMaxDeg)
+        {
+            pitch = Limits.PitchMaxDeg;
+        }
+
+        return (yaw, pitch);
+    }
 }
 
 /// <summary>

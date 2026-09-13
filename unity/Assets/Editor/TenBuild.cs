@@ -29,6 +29,48 @@ namespace Ten.Editor
         private const string OutputDir = "Build/Android";
         private const string PackageName = "jp.ten.app";
 
+        /// <summary>
+        /// macOS で触るためのビルド。**配布先ではない**（ADR-0001 は Android）。
+        /// 実機に挿す前に手触りを見るためだけのもの。
+        /// </summary>
+        [MenuItem("Ten/Build Mac")]
+        public static void Mac()
+        {
+            EnsureScene();
+
+            PlayerSettings.companyName = "ten";
+            PlayerSettings.productName = "Ten";
+            PlayerSettings.SplashScreen.show = false;
+            PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+
+            // 縦長の端末を模す。**片手で下半分に届く**という前提を壊さないため（REQ-005）
+            PlayerSettings.defaultScreenWidth = 480;
+            PlayerSettings.defaultScreenHeight = 960;
+            PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+            PlayerSettings.resizableWindow = true;
+            PlayerSettings.runInBackground = false;
+
+            var output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Build", "Mac"));
+
+            Directory.CreateDirectory(output);
+
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = new[] { ScenePath },
+                locationPathName = Path.Combine(output, "Ten.app"),
+                target = BuildTarget.StandaloneOSX,
+                targetGroup = BuildTargetGroup.Standalone,
+                options = BuildOptions.None,
+            });
+
+            Debug.Log($"[TenBuild] Mac {report.summary.result} / {report.summary.totalSize} bytes");
+
+            if (report.summary.result != BuildResult.Succeeded)
+            {
+                throw new InvalidOperationException($"Mac ビルドに失敗した: {report.summary.result}");
+            }
+        }
+
         [MenuItem("Ten/Build Android")]
         public static void Android()
         {
