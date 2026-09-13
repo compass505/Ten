@@ -117,7 +117,10 @@ namespace Ten.View
         private readonly List<Renderer> _motherParts = new();
         private readonly List<Transform> _rightArm = new();
         private readonly List<Transform> _bothArms = new();
+        private readonly HashSet<string> _mixed = new();
         private Transform _bottleInHand;
+        private Transform _reachBottle;
+        private Transform _reachCloth;
         private Transform _bottleInFace;
         private Transform _partner;
         private readonly Transform[] _vignette = new Transform[4];
@@ -310,10 +313,18 @@ namespace Ten.View
 
             foreach (AnimationState state in _motherAnimation)
             {
-                state.layer = state.name[0] is 'A' or 'B' ? 0 : 1;
+                state.layer = LayerOf(state.name);
                 state.blendMode = AnimationBlendMode.Blend;
                 state.enabled = false;
                 state.weight = 0f;
+            }
+
+            // 鼻をひくつかせるのは顔まわりだけ（r57 の注記: 上顔のマスクで重ねる）
+            var sniff = _motherAnimation["Sniff"];
+
+            if (sniff != null && _motherHead != null)
+            {
+                sniff.AddMixingTransform(_motherHead, true);
             }
         }
 
@@ -327,6 +338,18 @@ namespace Ten.View
 
             _bottleInHand = bottle != null ? bottle.transform : new GameObject("BottleInHand").transform;
             _bottleInHand.gameObject.SetActive(false);
+
+            // 予告の手が持つ小物（r57 の props.fbx。置き場は r57-animation-map.json の scene_controls を Unity 座標に写した）
+            var props = Spawn("Models/Mother/props", "ReachProps", transform);
+
+            if (props != null)
+            {
+                _reachBottle = FindDeep(props.transform, "Prop_Bottle");
+                _reachCloth = FindDeep(props.transform, "Prop_Cloth");
+
+                PlaceProp(_reachBottle, new Vector3(-0.47f, 0.715f, -0.16f));
+                PlaceProp(_reachCloth, new Vector3(-0.455f, 0.70f, -0.18f));
+            }
 
             // 対処「ミルク」: **視界がほぼ塞がる**（setting.md 5 節）。カメラから 0.165 m（room-r1 R-6）
             var inFace = Spawn("Models/Room/bottle", "BottleInFace", _eye.transform);
@@ -359,6 +382,20 @@ namespace Ten.View
             MakePart("PartnerBody", _partner, PrimitiveType.Cube, new Vector3(0f, 0.38f, 0f), new Vector3(0.42f, 0.62f, 0.30f), silhouette);
 
             _partner.gameObject.SetActive(false);
+        }
+
+        /// <summary>Blender で X 軸まわり 90°（底面原点）の置き方は、Unity では −90°。</summary>
+        private void PlaceProp(Transform prop, Vector3 position)
+        {
+            if (prop == null)
+            {
+                return;
+            }
+
+            prop.SetParent(transform, false);
+            prop.localPosition = position;
+            prop.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+            prop.gameObject.SetActive(false);
         }
 
         private GameObject Spawn(string resource, string name, Transform parent)
@@ -828,19 +865,26 @@ namespace Ten.View
 
             var bt = t - _bodyStarted;
 
+            // r57 の名前（presentation.md 2.1）。ループは継ぎ目なしに整形済み
             switch (p.Body)
             {
-                case BodyClip.BreathDeep: Loop("A0", t); break;
-                case BodyClip.BreathLight: Loop("A1", t); break;
-                case BodyClip.TurnAway: Loop("A1", t); break;       // 背ける動きは r57 待ち。首だけ回す（PoseHead）
-                case BodyClip.BreathHalf: Loop("A2", t); break;
+                case BodyClip.BreathDeep: Loop("Breath_Deep", t); break;
+                case BodyClip.BreathLight: Loop("Breath_Light", t); break;
+                case BodyClip.BreathHalf: Loop("Breath_Half", t); break;
+                case BodyClip.BreathAwake: Loop("Breath_Awake", t); break;
+                case BodyClip.DozeWarn: Hold("Doze_Warn", Mathf.Repeat(bt, 4.5f)); break;
+                case BodyClip.DozeDrop: Hold("Doze_Drop", Mathf.Min(bt, 1.8f)); break;
+                case BodyClip.TurnAway: Hold("TurnAway", bt); break;     // 1.5 秒で向き、そのまま保持
+            }
 
-                // 覚醒: 上体を起こしきった姿勢で止める（A3 の末尾は「消える」演出なので使わない）
-                case BodyClip.BreathAwake: Hold("A3", Mathf.Min(bt, 2.0f)); break;
+            var sniff = _motherAnimation["Sniff"];
 
-                // 寝入りばな: B の前半 4.5 秒が予兆、続く 1.8 秒がかくっと落ちる
-                case BodyClip.DozeWarn: Hold("B", Mathf.Repeat(bt, 4.5f)); break;
-                case BodyClip.DozeDrop: Hold("B", 4.5f + Mathf.Min(bt, 1.8f)); break;
+            if (sniff != null)
+            {
+                sniff.enabled = p.Sniff;
+                sniff.weight = p.Sniff ? 1f : 0f;
+                sniff.speed = 0f;
+                sniff.time = Mathf.Repeat(t, sniff.length);
             }
         }
 
@@ -863,27 +907,45 @@ namespace Ten.View
 
             switch (p.Hand)
             {
-                // 予告（REQ-006）。**来る対処の手つきの出だしで止める**（4 形の専用ポーズは r57 待ち）
+                // 予告（REQ-006）。**来る対処を手の形で持つ**（r57 の 4 形。差し出す途中で止めたポーズ）
                 case HandClip.Reach:
-                    switch (p.Reaching)
+                    clip = p.Reaching switch
                     {
-                        case Ten.Pure.CareKind.PatPat: clip = "D0"; time = 0.2f; break;
-                        case Ten.Pure.CareKind.Milk: clip = "D1"; time = 0.2f; bottle = true; bottleT = 0f; break;
-                        case Ten.Pure.CareKind.Hold: clip = "D2"; time = 0.4f; mix = _bothArms; break;
-                        case Ten.Pure.CareKind.DiaperChange: clip = "D3"; time = 0.6f; mix = _bothArms; break;
-                    }
-
+                        Ten.Pure.CareKind.PatPat => "Reach_PatPat",
+                        Ten.Pure.CareKind.Milk => "Reach_Milk",
+                        Ten.Pure.CareKind.Hold => "Reach_Hold",
+                        Ten.Pure.CareKind.DiaperChange => "Reach_Diaper",
+                        _ => null,
+                    };
+                    time = Mathf.Min(ht, 1f);
                     break;
 
-                case HandClip.PatSteady: clip = "C0"; time = Mathf.Repeat(t, 4f); break;
-                case HandClip.PatRough: clip = "C1"; time = Mathf.Repeat(t, 4f); break;
-                case HandClip.PatStall: clip = "C2"; time = Mathf.Min(ht, 3.9f); break;
-                case HandClip.CareMilk: clip = "D1"; time = Mathf.Min(ht, 2.9f); bottle = true; bottleT = ht; break;
-                case HandClip.CareHold: clip = "D2"; time = Mathf.Min(ht, 2.9f); mix = _bothArms; break;
-                case HandClip.CareDiaper: clip = "D3"; time = Mathf.Min(ht, 2.9f); mix = _bothArms; break;
+                case HandClip.PatSteady: clip = "Pat_Steady"; time = Mathf.Repeat(t, 4f); break;
+                case HandClip.PatRough: clip = "Pat_Rough"; time = Mathf.Repeat(t, 4f); break;
+                case HandClip.PatStall: clip = "Pat_Stall"; time = Mathf.Min(ht, 4f); break;
+                case HandClip.CareMilk: clip = "Care_Milk"; time = Mathf.Min(ht, 3f); bottle = true; bottleT = ht; break;
+                case HandClip.CareHold: clip = "Care_Hold"; time = Mathf.Min(ht, 3f); break;
+                case HandClip.CareDiaper: clip = "Care_Diaper"; time = Mathf.Min(ht, 3f); break;
             }
 
-            PlaceBottle(bottle && !p.BottleInFace && _motherParts.Count > 0 && _motherParts[0].enabled, bottleT);
+            if (clip != null && UsesBothArms(clip))
+            {
+                mix = _bothArms;
+            }
+
+            var motherShown = _motherParts.Count > 0 && _motherParts[0].enabled;
+
+            PlaceBottle(bottle && !p.BottleInFace && motherShown, bottleT);
+
+            if (_reachBottle != null)
+            {
+                _reachBottle.gameObject.SetActive(motherShown && clip == "Reach_Milk");
+            }
+
+            if (_reachCloth != null)
+            {
+                _reachCloth.gameObject.SetActive(motherShown && clip == "Reach_Diaper");
+            }
 
             if (_motherAnimation == null)
             {
@@ -911,8 +973,10 @@ namespace Ten.View
                 return;
             }
 
-            if (!hand.enabled)
+            if (!_mixed.Contains(clip))
             {
+                _mixed.Add(clip);
+
                 foreach (var bone in mix)
                 {
                     hand.AddMixingTransform(bone, true);
@@ -924,6 +988,16 @@ namespace Ten.View
             hand.speed = 0f;
             hand.time = time;
         }
+
+        /// <summary>体の層（0）/ 手の層（1）/ 顔まわりに重ねる層（2）。</summary>
+        private static int LayerOf(string clip) =>
+            clip == "Sniff" ? 2
+            : clip.StartsWith("Breath_") || clip.StartsWith("Doze_") || clip == "TurnAway" || clip[0] is 'A' or 'B' && clip.Length <= 2 ? 0
+            : 1;
+
+        /// <summary>両腕を使う手つき（抱っこ・オムツ替え）。</summary>
+        private static bool UsesBothArms(string clip) =>
+            clip is "Reach_Hold" or "Reach_Diaper" or "Care_Hold" or "Care_Diaper" or "D2" or "D3";
 
         private void Loop(string clip, float t)
         {
@@ -977,7 +1051,7 @@ namespace Ten.View
                 {
                     body = state;
                 }
-                else
+                else if (state.layer == 1)
                 {
                     hand = state;
                 }
@@ -989,7 +1063,7 @@ namespace Ten.View
             {
                 hand.clip.SampleAnimation(_mother, hand.time);
 
-                foreach (var root in hand.name is "D2" or "D3" ? _bothArms : _rightArm)
+                foreach (var root in UsesBothArms(hand.name) ? _bothArms : _rightArm)
                 {
                     foreach (var bone in root.GetComponentsInChildren<Transform>())
                     {
@@ -1010,12 +1084,14 @@ namespace Ten.View
             }
         }
 
-        /// <summary>寝返り（向こうを向く）と、鼻をひくつかせる。**アニメーションの後に首へ足す。**</summary>
+        /// <summary>
+        /// 寝返りと鼻のひくつきは r57 のクリップが持つ。**クリップが無い古い FBX のときだけ首で代わりをする。**
+        /// </summary>
         private void PoseHead(Presentation p, float t, float dt)
         {
             _turn = Mathf.MoveTowards(_turn, p.Body == BodyClip.TurnAway ? 1f : 0f, dt / 1.5f);
 
-            if (_motherHead == null)
+            if (_motherHead == null || _motherAnimation == null || _motherAnimation["TurnAway"] != null)
             {
                 return;
             }

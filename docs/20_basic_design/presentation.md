@@ -30,7 +30,15 @@
 
 ### 2.0 取り込み済み（2026-09-14）
 
-**母 r56-approved と寝室 room-r1 を取り込んだ。**r57 は届いていないので、足りない動きは下の代わりで出している。
+**母 r56-approved と寝室 room-r1 を取り込み、同日に母を r57 に差し替えた**（32 クリップ。`scratch/visual/parent/r57-review-report.md`）。
+クリップの切り出しは `unity/Assets/Art/Mother/animation-map.json`（Codex の対応表そのもの）を取り込み時に読む。
+**下の表の「r57 が届いたら」の列が、いま使っている名前。**r56 の代わりの列は、古い FBX に戻したときだけ使う（`PoseHead`）。
+
+| r57 で残ったもの | どうしたか |
+| --- | --- |
+| `Sniff` は鼻単独のひくつきとしては未達（Codex 自己判定） | 頭のマスクで 2 層目に重ねて使う。**実機で読めなければ Codex に鼻のシェイプを足してもらう** |
+| `Carry` のカメラ曲線は FBX に入らない（対応表の `scene_controls`） | 閉眼中は窓の明かりのずれだけが見える。**明かりのずれは従来の式のまま**（成否で同じ。TC-125） |
+| 予告の小物（`Prop_Bottle` / `Prop_Cloth`） | `Resources/Models/Mother/props.fbx`。置き場は `scene_controls` の時刻 0 を Unity 座標に写した |
 
 | | 実体 |
 | --- | --- |

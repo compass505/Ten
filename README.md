@@ -11,7 +11,7 @@
 **ストアには出していない**（夫婦への贈り物。[ADR-0006](docs/10_requirements/decisions/ADR-0006-concept.md)）。
 APK は GitHub の Releases（このリポジトリは非公開）に置く。
 
-1. Releases から `ten-<版>.apk` を端末に落とす
+1. Releases から `ten-<版>.apk`（例: `ten-1.0.apk`）を端末に落とす
 2. 端末の設定で、そのファイルを開くアプリに「提供元不明のアプリのインストール」を許可する
 3. APK を開いてインストールする。**権限は 1 つも求めない**（NFR-002 / 003。通信もしない）
 
@@ -63,7 +63,8 @@ Codex レビューを 2 周通し、A 判定 12 件のうち 10 件を反映済�
 
 ```
 docs/       フェーズごとの成果物（00_process 〜 50_review）+ _templates
-src/        実装。スタック未確定のため空
+src/        純粋層（Ten.Pure）と境界層（Ten.Boundary）。Unity に依存しない
+unity/      表示層・Android ビルド（Unity 6000.0.83f1）
 tests/      unit / harness / e2e
 tools/      検証・自動化スクリプト
 scratch/    技術検証プロトタイプ。本番コードから import しない
@@ -72,17 +73,11 @@ scratch/    技術検証プロトタイプ。本番コードから import しな
 
 ## 次にやること
 
-**フェーズ 2 / 3 は完了。**基本設計 6 本と詳細設計 16 モジュールが揃い、
-全 Must 要件が割り当て済みで、画面と状態遷移は閉じている（行き止まり 0 件）。
-**フェーズ 4 は TC-001〜164 の発番まで終わっている。**
+**実装と見た目の取り込みは終わり、v1.0 を Releases に置いた（2026-09-14）。**残りは人が端末で遊んで測るものだけ。
 
-**残っているのは 2 つ。**
-
-1. **テストコードを書く。**フェーズ 4 の DoD は「テストコードが存在し、**全て落ちる**」。
-   .NET SDK は導入済みなので、`export PATH="$HOME/.dotnet:$PATH"` で `dotnet test` が走る。
-   純粋層は Unity 不要（[harness.md](docs/40_test/harness.md) 1 節）
-2. **`scratch/mvp/` を実機で触る**（screens.md O-09）。
-   **盲目でいる 7 秒が苦痛かどうかは、触るまで判定できない**
+1. **Android 実機に入れて、PlayMode の赤 5 件を測る**（TC-145 / 146 / 147 / 150 / 151。[issues.md](docs/50_review/issues.md) ISS-26）
+2. **本人と配偶者が遊んで、3D 酔い（NFR-009）と盲目の 7 秒（O-09）を見る**
+3. 母の「鼻をひくつかせる」が読めるか（ISS-37）。読めなければ Codex に依頼する
 
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](docs/50_review/issues.md)の指摘 18 件を
 **未解決のまま受容して**確定させている。各 ADR 末尾の「承認時に受容したリスク」を先に読むこと。

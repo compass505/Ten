@@ -15,22 +15,47 @@ namespace Ten.Editor
     {
         public const string MotherPath = "Assets/Resources/Models/Mother/mother-runtime.fbx";
 
-        /// <summary>(名前, 開始, 終了, ループ)。**フレーム番号は FBX の時間軸**（r56-animation-map.json）。</summary>
-        public static readonly (string Name, int First, int Last, bool Loop)[] MotherClips =
+        /// <summary>
+        /// クリップの切り出し表。**Codex の `r57-animation-map.json` をそのまま読む**
+        /// （版が上がるとフレーム範囲がずれるので、表を手で写さない）。
+        /// </summary>
+        public const string MotherMapPath = "Assets/Art/Mother/animation-map.json";
+
+        [System.Serializable]
+        private sealed class ClipEntry
         {
-            ("A0", 1, 36, true),      // 熟睡
-            ("A1", 37, 72, true),     // 浅い
-            ("A2", 73, 108, true),    // 半分起きる
-            ("A3", 109, 144, false),  // 覚醒（末尾で消える演出は Unity 側で出さない）
-            ("B", 145, 240, false),   // 寝入りばな（前半 4.5 秒が予兆、続く 1.8 秒が本体）
-            ("C0", 241, 288, true),   // 手: 規則正しい
-            ("C1", 289, 336, true),   // 手: 乱れる
-            ("C2", 337, 384, false),  // 手: 途中で止まる
-            ("D0", 385, 420, true),   // 対処: トントン
-            ("D1", 421, 456, false),  // 対処: ミルク
-            ("D2", 457, 492, false),  // 対処: 抱っこ
-            ("D3", 493, 528, false),  // 対処: オムツ替え
-        };
+            public string clip;
+            public float[] fbx_frame_range;
+            public bool loop;
+        }
+
+        [System.Serializable]
+        private sealed class ClipMap
+        {
+            public ClipEntry[] clips;
+        }
+
+        public static (string Name, float First, float Last, bool Loop)[] MotherClips()
+        {
+            var path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(UnityEngine.Application.dataPath)!, MotherMapPath);
+
+            if (!System.IO.File.Exists(path))
+            {
+                throw new System.InvalidOperationException($"{MotherMapPath} が無い。母の FBX のクリップを切り出せない");
+            }
+
+            var map = UnityEngine.JsonUtility.FromJson<ClipMap>(System.IO.File.ReadAllText(path));
+            var clips = new (string, float, float, bool)[map.clips.Length];
+
+            for (var i = 0; i < clips.Length; i++)
+            {
+                var c = map.clips[i];
+
+                clips[i] = (c.clip, c.fbx_frame_range[0], c.fbx_frame_range[1], c.loop);
+            }
+
+            return clips;
+        }
 
         private void OnPreprocessModel()
         {
@@ -94,7 +119,7 @@ namespace Ten.Editor
             var importer = (ModelImporter)assetImporter;
             var clips = new List<ModelImporterClipAnimation>();
 
-            foreach (var (name, first, last, loop) in MotherClips)
+            foreach (var (name, first, last, loop) in MotherClips())
             {
                 clips.Add(new ModelImporterClipAnimation
                 {

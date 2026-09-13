@@ -38,6 +38,10 @@ namespace Ten.Editor
             Shot(rig, output, log, "face-turnaway", 36f, 25f, Awake(BodyClip.TurnAway), 2f);
             Shot(rig, output, log, "hand-steady", 50f, -15f, Awake(BodyClip.BreathLight, hand: HandClip.PatSteady));
             Shot(rig, output, log, "hand-reach-milk", 50f, -15f, Awake(BodyClip.BreathLight, hand: HandClip.Reach, reaching: CareKind.Milk));
+            Shot(rig, output, log, "hand-reach-patpat", 50f, -15f, Awake(BodyClip.BreathLight, hand: HandClip.Reach, reaching: CareKind.PatPat));
+            Shot(rig, output, log, "hand-reach-hold", 50f, -15f, Awake(BodyClip.BreathLight, hand: HandClip.Reach, reaching: CareKind.Hold));
+            Shot(rig, output, log, "hand-reach-diaper", 50f, -15f, Awake(BodyClip.BreathLight, hand: HandClip.Reach, reaching: CareKind.DiaperChange));
+            Shot(rig, output, log, "hand-stall", 50f, -15f, Awake(BodyClip.BreathLight, hand: HandClip.PatStall), 3.5f);
             Shot(rig, output, log, "care-milk", 20f, 0f, Awake(BodyClip.BreathLight, hand: HandClip.CareMilk), 0.6f);
             Shot(rig, output, log, "care-milk-face", 0f, 0f, Awake(BodyClip.BreathLight, hand: HandClip.CareMilk, bottleInFace: true), 2f);
             Shot(rig, output, log, "care-hold", 20f, 0f, Awake(BodyClip.BreathLight, hand: HandClip.CareHold, cameraLifted: true), 3f);
