@@ -35,9 +35,17 @@ namespace Ten.View
         private int _tick;
         private bool _hadPointer;
 
+        private float _nextReport;
+        private bool _dumpedFirstFrame;
+
         private void Start()
         {
             Application.targetFrameRate = 60;
+
+            // **ビルドに入っているシェーダーを確かめる。**実行時に `Shader.Find` で作った
+            // マテリアルは、参照が無いとビルドから落ちる（エディタでは通り、アプリで消える）
+            Debug.Log($"[TEN] Unlit/Color={(Shader.Find("Unlit/Color") != null)} " +
+                      $"Sprites/Default={(Shader.Find("Sprites/Default") != null)}");
 
             _view = new RoomView(RoomRig.Instance);
 
@@ -86,6 +94,32 @@ namespace Ten.View
             var (yaw, pitch) = _input.Look;
 
             _view.Render(_state, stages, yaw, pitch);
+
+            if (Time.time >= _nextReport)
+            {
+                _nextReport = Time.time + 2f;
+
+                var rig = RoomRig.Instance;
+                var cam = rig.DebugCamera;
+                var face = GameObject.Find("ParentFace");
+                var vp = face == null ? Vector3.zero : cam.WorldToViewportPoint(face.transform.position);
+                var mat = face == null ? null : face.GetComponent<Renderer>().sharedMaterial;
+
+                Debug.Log($"[TEN] tick={_tick} baby={_state.Baby} yaw={yaw:F1} " +
+                          $"fov={cam.fieldOfView:F1} aspect={cam.aspect:F2} " +
+                          $"screen={UScreen.width}x{UScreen.height} " +
+                          $"face.viewport={vp} shader={(mat == null ? "null" : mat.shader.name)} " +
+                          $"見えている=[{string.Join(",", rig.VisibleTargets())}]");
+
+                // **最初の 1 回だけ**画面を文字にして残す。
+                // 「起動したのに何も映らない」を、次は推測せずに切り分けられるように
+                if (!_dumpedFirstFrame)
+                {
+                    _dumpedFirstFrame = true;
+
+                    Debug.Log($"[FRAME] {rig.AsciiFrame(30, 34)}");
+                }
+            }
 
             if (_state.Over is not null)
             {

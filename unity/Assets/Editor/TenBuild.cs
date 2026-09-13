@@ -37,6 +37,7 @@ namespace Ten.Editor
         public static void Mac()
         {
             EnsureScene();
+            EnsureShaders();
 
             PlayerSettings.companyName = "ten";
             PlayerSettings.productName = "Ten";
@@ -75,6 +76,7 @@ namespace Ten.Editor
         public static void Android()
         {
             EnsureScene();
+            EnsureShaders();
             ApplyPlayerSettings();
 
             var output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", OutputDir));
@@ -98,6 +100,42 @@ namespace Ten.Editor
             {
                 throw new InvalidOperationException($"Android ビルドに失敗した: {report.summary.result}");
             }
+        }
+
+        /// <summary>
+        /// **実行時に `Shader.Find` で引くシーダーを、ビルドに必ず入れる。**
+        ///
+        /// `RoomRig` はマテリアルをコードで作る（シーンにアセットを置かない方針のため）。
+        /// シーンからもアセットからも参照されないシェーダーは**ビルドから落ちる。**
+        /// エディタでは通り、アプリでだけ物が消える——という形で出る。
+        /// </summary>
+        private static void EnsureShaders()
+        {
+            var settings = new SerializedObject(
+                AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset")[0]);
+
+            var included = settings.FindProperty("m_AlwaysIncludedShaders");
+            var want = Shader.Find("Unlit/Color");
+
+            if (want == null)
+            {
+                throw new InvalidOperationException("Unlit/Color が見つからない");
+            }
+
+            for (var i = 0; i < included.arraySize; i++)
+            {
+                if (included.GetArrayElementAtIndex(i).objectReferenceValue == want)
+                {
+                    return;
+                }
+            }
+
+            included.InsertArrayElementAtIndex(included.arraySize);
+            included.GetArrayElementAtIndex(included.arraySize - 1).objectReferenceValue = want;
+            settings.ApplyModifiedProperties();
+            AssetDatabase.SaveAssets();
+
+            Debug.Log("[TenBuild] Unlit/Color を Always Included Shaders に追加した");
         }
 
         /// <summary>

@@ -74,6 +74,9 @@ namespace Ten.View
 
         public enum GazeTargetKind { Window, ParentFace, ParentHand }
 
+        /// <summary>いまのカメラ（調べるためだけに出す）。</summary>
+        public Camera DebugCamera => _eye;
+
         /// <summary>いまの縦横比（調べるためだけに出す）。</summary>
         public float DebugAspect => _eye.aspect;
 
@@ -532,6 +535,48 @@ namespace Ten.View
                     tr.localRotation = Quaternion.Euler(Mathf.Sin(t * cycle) * 6f, HandYawDeg + 180f, 0f);
                 }
             }
+        }
+
+        /// <summary>
+        /// **いま画面に出ているものを、そのままの縦横比で文字にする。**
+        /// 撮った絵（<see cref="Capture"/>）は縦横比を 1 に固定するので、
+        /// 「アプリで見えているもの」とは別物になる。食い違いを見るためだけの口。
+        /// </summary>
+        public string AsciiFrame(int cols, int rows)
+        {
+            var rt = RenderTexture.GetTemporary(cols * 4, rows * 4, 24, RenderTextureFormat.ARGB32);
+            var tex = new Texture2D(cols * 4, rows * 4, TextureFormat.RGBA32, false);
+            var previousTarget = _eye.targetTexture;
+            var previousActive = RenderTexture.active;
+
+            _eye.targetTexture = rt;
+            _eye.Render();
+            RenderTexture.active = rt;
+            tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0, false);
+            tex.Apply(false, false);
+            RenderTexture.active = previousActive;
+            _eye.targetTexture = previousTarget;
+
+            var px = tex.GetPixels();
+            var art = new System.Text.StringBuilder();
+
+            for (var r = rows - 1; r >= 0; r--)
+            {
+                for (var c = 0; c < cols; c++)
+                {
+                    var p = px[(r * 4 + 2) * rt.width + c * 4 + 2];
+                    var l = 0.2126f * p.linear.r + 0.7152f * p.linear.g + 0.0722f * p.linear.b;
+
+                    art.Append(l > 0.12f ? '#' : l > 0.04f ? '+' : l > 0.012f ? '*' : l > 0.004f ? '.' : l > 0.0008f ? ':' : ' ');
+                }
+
+                art.Append('/');
+            }
+
+            Destroy(tex);
+            RenderTexture.ReleaseTemporary(rt);
+
+            return art.ToString();
         }
 
         /// <summary>まぶたの描画に半透明が混ざっているか（V-4 / TC-124）。</summary>
