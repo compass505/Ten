@@ -822,7 +822,9 @@ public static class Sim
     private static NightState DrawCare(
         NightState s, string seed, Tuning tuning, ActionKind kind, int strengthMilli)
     {
-        if (s.Parent is not (ParentPhase.Sleeping or ParentPhase.Up)
+        // **寝入りばなに当てた一撃も札を引かせる**（balance.md 16 節）。
+        // 除外すると、周期の読める寝入りばなだけを撃つ方針が山札も慣れも代償も踏まずに独走する（REQ-056）
+        if (s.Parent is not (ParentPhase.Sleeping or ParentPhase.Up or ParentPhase.Grace)
             || s.PendingCare is not null
             || s.Hand.Total <= 0)
         {

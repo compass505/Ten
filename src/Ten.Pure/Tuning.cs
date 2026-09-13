@@ -35,7 +35,7 @@ public readonly record struct Tuning
     public int ArousalMax { get; init; } = 100;
 
     /// <summary>再加点に必要な低下（REQ-052）。</summary>
-    public int Rearm { get; init; } = 40;
+    public int Rearm { get; init; } = 55;
 
     public int VigorMax { get; init; } = 100;
 
@@ -47,7 +47,7 @@ public readonly record struct Tuning
     public int ArousalDecaySleepTicks { get; init; } = 25;
 
     /// <summary>親がベッドを出ている間の自然低下（−1 / n tick）。</summary>
-    public int ArousalDecayUpTicks { get; init; } = 6;
+    public int ArousalDecayUpTicks { get; init; } = 12;
 
     /// <summary>覚醒行動 1 回が、親の落ち着きを止める長さ（REQ-030）。</summary>
     public int CalmBlockTicks { get; init; } = 60;
@@ -68,7 +68,7 @@ public readonly record struct Tuning
     /// <summary>上昇量が覚醒度で割り引かれる下限（**これが無いと上限に到達しない**）。</summary>
     public int ArousalFloorMilli { get; init; } = 250;
 
-    public int CryBase { get; init; } = 30;
+    public int CryBase { get; init; } = 45;
     public int CryVigor { get; init; } = 20;
     public int CryTicks { get; init; } = 40;
     public int CryCareMilli { get; init; } = 800;
@@ -84,13 +84,13 @@ public readonly record struct Tuning
     public int KickCareMilli { get; init; } = 900;
 
     /// <summary>**寝入りばな（`Grace`）に当てた一撃**（REQ-015 / 061）。その夜のどの行動より大きい。</summary>
-    public int GraceBase { get; init; } = 60;
+    public int GraceBase { get; init; } = 45;
 
     /// <summary>寝入りばなの一撃だけ、覚醒度による割引の下限が高い。</summary>
     public int GraceFloorMilli { get; init; } = 550;
 
     /// <summary>寝入りばなに当てたときの倍率（1/1000）。**軽く触れただけでも差が出る**（REQ-061）。</summary>
-    public int GraceMultiplierMilli { get; init; } = 2500;
+    public int GraceMultiplierMilli { get; init; } = 1100;
 
     // ------------------------------------------------------------------
     // 4. 長押しの強度（ADR-0015 / REQ-060）

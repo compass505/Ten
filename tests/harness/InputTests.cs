@@ -167,6 +167,54 @@ public sealed class InputTests
     }
 
     [Test]
+    public void TC178_最初のドラッグまでは注入した初期視線を向く()
+    {
+        // screens.md 4.2.1「初期視線は天井」。**角度はバランス値なので外から渡す**（ADR-0012）
+        var initial = (YawDeg: Limits.YawMaxDeg / 2f, PitchDeg: Limits.PitchMaxDeg);
+        var src = new PointerInputSource(ScreenW, ScreenH, Limits, initial);
+
+        Assert.That(src.Look, Is.EqualTo(initial),
+            "**触る前から初期視線以外を向いている**（screens.md 4.2.1）");
+
+        // 触れただけ（動かしていない）では向きが変わらない
+        src.Feed(1, new PointerSample(0, ScreenW * 0.05f, UpperY, PointerPhase.Down));
+
+        Assert.That(src.Look, Is.EqualTo(initial),
+            "**触れただけで首が跳んだ。**指の絶対位置で向きを決めている（INP-02）");
+    }
+
+    [Test]
+    public void TC179_首振りはドラッグの相対量で動き持ち替えても跳ばない()
+    {
+        var initial = (YawDeg: 0f, PitchDeg: 0f);
+        var src = new PointerInputSource(ScreenW, ScreenH, Limits, initial);
+
+        // 画面の端から触って、少しだけ右上へ動かす
+        src.Feed(1, new PointerSample(0, ScreenW * 0.9f, UpperY, PointerPhase.Down));
+        src.Feed(2, new PointerSample(0, ScreenW * 0.95f, UpperY + ScreenH * 0.05f, PointerPhase.Move));
+
+        var (yaw, pitch) = src.Look;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(yaw, Is.GreaterThan(initial.YawDeg), "右へ動かしたのに右を向いていない");
+            Assert.That(pitch, Is.GreaterThan(initial.PitchDeg), "上へ動かしたのに上を向いていない");
+
+            // 絶対位置なら画面の 95% 地点 = 可動範囲の端近くまで跳ぶ。**相対なら動かした分だけ**
+            Assert.That(yaw, Is.LessThan(Limits.YawMaxDeg / 2f),
+                $"**動かした量より大きく振れた（{yaw}°）。**指の絶対位置で向きを決めている（INP-02）");
+        });
+
+        // 離して、反対側から触り直す。**向きはそのまま**
+        src.Feed(3, new PointerSample(0, ScreenW * 0.95f, UpperY, PointerPhase.Up));
+        src.Feed(4, new PointerSample(0, ScreenW * 0.1f, UpperY, PointerPhase.Down));
+        src.Feed(5, new PointerSample(0, ScreenW * 0.1f, UpperY, PointerPhase.Move));
+
+        Assert.That(src.Look, Is.EqualTo((yaw, pitch)),
+            "**持ち替えたら首が跳んだ**（INP-02: 相対なら指を持ち替えられる）");
+    }
+
+    [Test]
     public void TC103_首振りは行動と直交する()
     {
         // ドラッグ中でも行動を受け付ける（IN-3 / REQ-038）。

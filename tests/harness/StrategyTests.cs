@@ -47,6 +47,19 @@ public sealed class StrategyTests
 
         /// <summary>何もしない</summary>
         Idle,
+
+        /// <summary>
+        /// **親の寝入りばなの周期を読んで、溜めた一撃だけを当てる**（REQ-061 の予兆は顔から読める）。
+        /// 2026-09-13 に追加。これが無いと、48 シードすべてで独走する方針を見張れていなかった（ADR-0023）
+        /// </summary>
+        GraceSnipe,
+
+        /// <summary>
+        /// **溜めて撃ち、親が起きている間は待つ。**GraceSnipe と同じ「起きている親を待つ」を持つ比較対象。
+        /// Tap / Charge は起きている親にも撃ち続けるので再加点できず、得点が 1 に張り付く。
+        /// それだけと比べると、待つ方針はどれでも独走に見えてしまう（ADR-0023）
+        /// </summary>
+        ChargeWait,
     }
 
     [Test]
@@ -109,6 +122,10 @@ public sealed class StrategyTests
                     ? SimProbe.ActFullStrength(s, board, ActionKind.Cry)
                     : TryPretend(s, board),
                 Policy.Idle => SimProbe.RunTicks(s, board, 60),
+                Policy.GraceSnipe => Snipe(s, board),
+                Policy.ChargeWait => s.Parent == ParentPhase.Up
+                    ? SimProbe.RunTicks(s, board, 30)
+                    : SimProbe.ActFullStrength(s, board, ActionKind.Cry),
                 _ => SimProbe.RunTicks(s, board, 1),
             };
 
@@ -117,6 +134,25 @@ public sealed class StrategyTests
         }
 
         return s.Score;
+    }
+
+    /// <summary>
+    /// 親が起きている間は待ち、寝ていれば次の寝入りばなに満タンの泣きが届くよう溜め始める。
+    /// **周期と溜めの長さは「いつ押すか」を決める手順としてだけ読む**（期待値には使わない。ADR-0012）。
+    /// </summary>
+    private static NightState Snipe(NightState s, BoardSpec board)
+    {
+        if (s.Parent != ParentPhase.Sleeping || s.PendingCare is not null)
+        {
+            return SimProbe.RunTicks(s, board, 30);
+        }
+
+        var period = SimProbe.Tuning.DrowsyPeriodTicks;
+        var start = (s.Tick / period + 1) * period - SimProbe.Tuning.ChargeTicks + 2;
+
+        return s.Tick < start
+            ? SimProbe.RunTicks(s, board, start - s.Tick)
+            : SimProbe.ActFullStrength(s, board, ActionKind.Cry);
     }
 
     /// <summary>目を閉じて判定を待ち、猶予に乗ったら泣く。</summary>

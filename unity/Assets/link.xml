@@ -1,0 +1,9 @@
+<!--
+  IL2CPP のコード削除（Managed Stripping）から守る。
+  FileStorage は NightState などの主コンストラクタとプロパティを反射で読み書きする（handoff.md 2 節）。
+  削除されると「続きから」が黙って Corrupt になるので、純粋層と境界層は丸ごと残す。
+-->
+<linker>
+  <assembly fullname="Ten.Pure" preserve="all" />
+  <assembly fullname="Ten.Boundary" preserve="all" />
+</linker>

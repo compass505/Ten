@@ -20,6 +20,12 @@ namespace Ten.View
         /// <summary>首の可動範囲（balance.md 9 節 / REQ-002）。</summary>
         public static readonly LookLimits Limits = new(55f, -15f, 30f);
 
+        /// <summary>
+        /// 夜の初期視線（screens.md 4.2.1「初期視線は天井」）。
+        /// 左右は**どの対象にも向かない**位置（`RoomRig.InitialYawDeg`）、上下は仰ぎいっぱい。
+        /// </summary>
+        public static readonly (float YawDeg, float PitchDeg) InitialLook = (RoomRig.InitialYawDeg, 30f);
+
         private readonly Tuning _tuning;
         private readonly RealClock _clock = new();
         private readonly PointerInputSource _input;
@@ -43,7 +49,7 @@ namespace Ten.View
             Beats = beats ?? Array.Empty<Result.Beat>();
             BoardDate = boardDate;
             _tuning = tuning;
-            _input = new PointerInputSource(screenWidth, screenHeight, Limits);
+            _input = new PointerInputSource(screenWidth, screenHeight, Limits, InitialLook);
             _clock.Reset();
         }
 

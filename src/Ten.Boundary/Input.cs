@@ -60,11 +60,22 @@ public sealed class PointerInputSource : IInputSource
     private ActionKind? _held;
     private (float YawDeg, float PitchDeg) _look;
 
-    public PointerInputSource(float screenWidth, float screenHeight, LookLimits limits)
+    /// <summary>ドラッグを始めた位置と、そのときの向き。**首振りは相対量で動く**（INP-02）。</summary>
+    private (float X, float Y) _dragFrom;
+    private (float YawDeg, float PitchDeg) _lookFrom;
+
+    /// <param name="initialLook">
+    /// 最初のドラッグまでの向き（screens.md 4.2.1「初期視線は天井」）。
+    /// **角度はバランス値なので外から渡す**（ADR-0012）。
+    /// </param>
+    public PointerInputSource(
+        float screenWidth, float screenHeight, LookLimits limits,
+        (float YawDeg, float PitchDeg) initialLook = default)
     {
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
         Limits = limits;
+        _look = Clamp(initialLook.YawDeg, initialLook.PitchDeg);
     }
 
     public float ScreenWidth { get; }
@@ -91,14 +102,16 @@ public sealed class PointerInputSource : IInputSource
                     return;
                 }
 
+                _finger = sample.FingerId;
+                _dragFrom = (sample.X, sample.Y);
+                _lookFrom = _look;
+
                 // **上半分は首振りだけ**（IN-5 / REQ-005）
                 if (!IsActionArea(sample.Y))
                 {
-                    _finger = sample.FingerId;
                     return;
                 }
 
-                _finger = sample.FingerId;
                 _inputs[tick] = Press(sample.X);
                 return;
 
@@ -111,7 +124,7 @@ public sealed class PointerInputSource : IInputSource
                 // 首振りのドラッグは**画面全体で受ける**（balance.md 9 節）
                 if (_held is null)
                 {
-                    _look = LookAt(sample.X, sample.Y);
+                    _look = Dragged(sample.X, sample.Y);
                 }
 
                 return;
@@ -184,11 +197,21 @@ public sealed class PointerInputSource : IInputSource
         return new TickInput(_held, false);
     }
 
-    /// <summary>ドラッグ位置を首の向きに写す。**可動範囲で丸める**（IN-6 / REQ-002）。</summary>
-    private (float YawDeg, float PitchDeg) LookAt(float x, float y)
+    /// <summary>
+    /// ドラッグした量を首の向きに足す。**画面の幅いっぱいで可動範囲の端から端まで**（INP-02）。
+    /// 指の絶対位置を使わないので、触れた瞬間に跳ばず、持ち替えても向きが残る。
+    /// </summary>
+    private (float YawDeg, float PitchDeg) Dragged(float x, float y)
     {
-        var yaw = (x / ScreenWidth - 0.5f) * Limits.YawMaxDeg * 2f;
-        var pitch = (y / ScreenHeight - 0.5f) * (Limits.PitchMaxDeg - Limits.PitchMinDeg);
+        var yaw = _lookFrom.YawDeg + (x - _dragFrom.X) / ScreenWidth * Limits.YawMaxDeg * 2f;
+        var pitch = _lookFrom.PitchDeg + (y - _dragFrom.Y) / ScreenHeight * (Limits.PitchMaxDeg - Limits.PitchMinDeg);
+
+        return Clamp(yaw, pitch);
+    }
+
+    /// <summary>**可動範囲で丸める**（IN-6 / REQ-002）。</summary>
+    private (float YawDeg, float PitchDeg) Clamp(float yaw, float pitch)
+    {
 
         if (yaw < -Limits.YawMaxDeg)
         {
