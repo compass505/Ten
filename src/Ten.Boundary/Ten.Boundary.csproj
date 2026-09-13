@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    境界層。**環境に触る唯一の場所**（architecture.md）。
+
+    ここも UnityEngine を参照しない。
+    Unity API を直接叩く実装（タッチの読み取り、端末の保存先、画面消灯抑止）は
+    さらに外側の Unity アセンブリに置き、**このアセンブリは口（インターフェース）と、
+    環境から受け取った値だけで完結する処理**を持つ。
+
+    そうしておくと、時間の蓄積・保存の往復・日付の規則が dotnet test で走る。
+    → docs/40_test/harness.md 1 節 / decisions_pending.md G-01
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Ten.Boundary</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Ten.Pure/Ten.Pure.csproj" />
+  </ItemGroup>
+
+</Project>

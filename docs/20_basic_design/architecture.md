@@ -2,7 +2,7 @@
 
 種別: リファレンス（規約・事実）— 理由は ADR に置く
 更新トリガー: 要件が増えたとき / 依存方向を変えたとき
-状態: 2026-09-02 起草。**フェーズ 2 進行中**（screens.md 起草済み / data_model.md は未着手）
+状態: 2026-09-02 起草 / 2026-09-04 更新。**フェーズ 2 の 4 本すべて起草済み**（screens.md / balance.md / data_model.md）
 
 制約の出典: [ADR-0002](../10_requirements/decisions/ADR-0002-test-harness.md)（決定論の 4 条件） /
 [ADR-0001](../10_requirements/decisions/ADR-0001-tech-stack.md)（Unity + Android） /
@@ -75,11 +75,46 @@
 
 - **循環なし。**右端の `MOD-Rng` は何にも依存しない
 - 純粋層（右 7 件）は Unity API を参照しない。**別アセンブリに分けて、参照を機械的に禁止する**
+
+### アセンブリの分け方（2026-09-06 追記）
+
+**境界層も `UnityEngine` を参照しない。**Unity API を直接叩く実装
+（タッチの読み取り・端末の保存先・画面消灯抑止）は**さらに外側**に置き、
+境界層は**口（インターフェース）と、環境から受け取った値だけで完結する処理**を持つ。
+
+| アセンブリ | 中身 | `dotnet test` で走るか |
+| --- | --- | --- |
+| `Ten.Pure` | 純粋層 7 件 + `BoardDateRule` | **走る** |
+| `Ten.Boundary` | 境界層の口と、値だけで完結する処理（時間の蓄積・保存の往復・日付の規則の呼び出し） | **走る** |
+| Unity 側（未作成） | `UnityEngine` を直接叩く実装、表示層 3 件 | Unity Test Runner |
+
+**この分け方が効いた例。**`IClock.Consume(double deltaSeconds)` は経過時間を引数で
+受け取るので、`RealClock` の蓄積と上限（C-2 / C-3）は Unity なしで検証できる。
+Unity 側は `Update` で `Time.deltaTime` を渡すだけになる。
+`MOD-Calendar` も同じ形にした（→ [decisions_pending.md](../00_process/decisions_pending.md) G-01）。
+
+**Unity が本当に要るのは、タッチ・描画・権限・実機の 4 つだけ。**
+
+### Unity プロジェクトからの参照（2026-09-07。本人判断）
+
+**ソースを 1 つにする。**`src/Ten.Pure` と `src/Ten.Boundary` を
+**Unity のローカルパッケージ**として参照し（`package.json` + `.asmdef`）、
+同じファイルを `.csproj` からも `dotnet test` からも見る。
+
+**DLL を焼いて `Assets/Plugins` に置く形は採らない。**
+[harness.md](../40_test/harness.md) 1 節の二重化
+（「`dotnet test` が通らなくなったら純粋層が環境に触り始めた証拠」）は、
+**両方が同じソースを見ていて初めて成立する。**DLL 経由だと、古いまま気づかない経路ができる。
+
+**`.asmdef` の `noEngineReferences: true` が効く。**
+純粋層・境界層に `using UnityEngine` を書いた時点で、**Unity 側のコンパイルが落ちる。**
+TC-006 の静的検査と二重に見張ることになる。
 - `MOD-End` → `MOD-Score` の向きは REQ-051（最後の 1 枚の得点は終了判定より先）から決まる
 
 ## 要件の割り当て（DoD）
 
-全 58 要件の割り当て先。**未割り当ては 0 件。**
+全 62 要件の割り当て先。**未割り当ては 0 件。**
+REQ-060〜062 は **2026-09-06 に確定**（ADR-0015 / 0016 承認）。
 
 | REQ | モジュール | REQ | モジュール |
 | --- | --- | --- | --- |
@@ -112,6 +147,8 @@
 | REQ-027 | Share | REQ-056 | Sim |
 | REQ-028 | Result | REQ-057 | Sim |
 | REQ-029 | Sim | REQ-058 | Display |
+| REQ-059 | Input / Sim | REQ-060 | Input / Sim |
+| REQ-061 | Sim / Display / View | REQ-062 | Sim / Result |
 
 非機能要件:
 
@@ -128,4 +165,4 @@
 | ファイル | 内容 |
 | --- | --- |
 | `data_model.md` | データ構造と、永続化するもの / しないものの線引き |
-| 数値の確定 | 覚醒度の増減量・山札の枚数・圧縮率・可動角度・段階の粗さ。**ISS-10 と衝突する場所** |
+| （数値の確定は [balance.md](balance.md) に移した。**全て仮の初期値**） | |

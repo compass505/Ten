@@ -1,0 +1,16 @@
+{
+  "name": "Ten.Boundary",
+  "rootNamespace": "Ten.Boundary",
+  "references": [
+    "Ten.Pure"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": true
+}

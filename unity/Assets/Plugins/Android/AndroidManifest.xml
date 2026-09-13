@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  要求権限を 0 件にするための追加マニフェスト（NFR-003 / TC-119）。
+
+  androidx.core が `${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` を
+  自分のマニフェストで宣言し、マージで本体へ入ってくる。
+  **署名レベルの自己定義権限で、端末の機能には触らない**が、
+  NFR-003 は「要求権限 0 件」と書いている。成果物に 1 件でも残さない。
+
+  この 2 行が消えると TC-119 が落ちるので、消すときは NFR-003 側を先に変える。
+-->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="preferExternal">
+
+  <permission
+      android:name="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      tools:node="remove" />
+
+  <uses-permission
+      android:name="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      tools:node="remove" />
+
+  <application android:icon="@mipmap/app_icon" android:label="@string/app_name" />
+
+  <supports-screens
+      android:smallScreens="true"
+      android:normalScreens="true"
+      android:largeScreens="true"
+      android:xlargeScreens="true"
+      android:anyDensity="true" />
+</manifest>

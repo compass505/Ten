@@ -23,17 +23,36 @@
 | [ADR-0010](ADR-0010-no-numbers.md) | 状態を数値で表示せず、粗い固定段階の見た目で表す | Accepted |
 | [ADR-0011](ADR-0011-per-play-randomness.md) | 判定用乱数の通番にプレイ回数を含める（盤面は日固定、運は毎回変わる） | Accepted |
 | [ADR-0012](ADR-0012-balance-vs-tests.md) | テストは要件が言っていることだけを検証する（バランス値を期待値に書かない） | Accepted |
+| [ADR-0013](ADR-0013-pretend-requires-closed-eyes.md) | 寝たふりは「目を閉じている間」にだけ成立させる（REQ-059 を発番） | Accepted |
+| [ADR-0014](ADR-0014-closed-eyes-information.md) | REQ-006 の「知ることができる」は目を開けている間について言う | Accepted |
+| [ADR-0015](ADR-0015-input-intensity-and-timing.md) | 行動の入力を「強度」と「タイミング」の 2 軸にする（REQ-060 / 061 を発番） | Accepted |
+| [ADR-0016](ADR-0016-diagnosis-parameters.md) | 一晩を 7 つのパラメータで測り、カタログから近い診断を選ぶ（REQ-062 を発番） | Accepted |
+| [ADR-0017](ADR-0017-parent-moves-on-failure.md) | 寝たふりに失敗しても親は赤ちゃんを動かす（盲目区間に手触りを戻す） | Accepted（**リスク受容あり**） |
+| [ADR-0018](ADR-0018-parent-is-mother.md) | 親を「母」として確定し、姿を 1 つに固定する | Accepted（2026-09-13。委任） |
+| [ADR-0019](ADR-0019-parent-model-acceptance.md) | 親モデルの合格条件を「ゲーム内の見え方」に置き、作り込みをそこで止める（SET-01 決着） | Accepted（2026-09-13。委任） |
+| [ADR-0020](ADR-0020-test-defects-found-in-implementation.md) | 実装で判明したテストケースの欠陥 8 件を、テスト側を直して解消する | Accepted |
+| [ADR-0021](ADR-0021-mother-sits-and-dozes.md) | 母は「布団の横に座ったまま、うとうとしている」姿勢で夜を過ごす | Accepted |
+| [ADR-0022](ADR-0022-single-carry-motion.md) | 寝たふりの成否にかかわらず、母は同じ抱き上げを 1 本の動きで行う（ISS-20 決着） | Accepted |
+| [ADR-0023](ADR-0023-strategy-test-missing-policies.md) | TC-069 に「寝入りばな狙い」と「溜めて待つ」を足し、独走をバランスで崩す | Accepted（2026-09-13。委任） |
+| [ADR-0024](ADR-0024-window-vs-mother-exclusive.md) | 視界の排他を「窓 ⇔ 母」に定め、TC-122 を対象端末の縦画面で測る | Accepted（2026-09-14。委任） |
 
 **Proposed は未確定。** 人間が承認した時点で `Accepted` に書き換える。
+**2026-09-13 時点で Proposed は 0 件**（ADR-0018 / 0019 は本人から全面委任を受けて確定）。
 
 ADR-0001 / 0006 / 0007 は、[Codex レビュー](../../50_review/issues.md)の指摘 18 件
 （うち 9 件が「決定を覆すべき」）を**未解決のまま**、ユーザー判断で Accepted にしている。
 各 ADR 末尾の「承認時に受容したリスク」を必ず読むこと。
+ADR-0017 は [ISS-20](../open_issues.md)（判別不能性を実際に作れるか）を
+未解決のまま Accepted にしたが、2026-09-13 に ADR-0022 で決着した。
 Accepted は書き換えない。覆すときは新規発番して旧を `Superseded by` にする。
 
 ADR-0008〜0011 は、確定前に Codex レビュー（28 件 / 24 件）を通し、
 A 判定 12 件のうち 10 件を反映してから Accepted にした。
 ADR-0009 は決め手が「ユーザー判断」であり、3〜5 分という数値は**未検証の仮説**である。
+
+ADR-0018 は ADR-0007 を覆すものではない。**ADR-0007 は親の性別を決めていない。**
+覆しているのは [setting.md](../../20_basic_design/setting.md) 2 節の記述であり、
+後戻りコストが 1 日を超えるため ADR に上げている。
 
 ADR-0008 / 0009 は、ADR-0007 の確定事項のうち
 **乱数の適用範囲（確定事項 5）と時間の進み方**を差し替えるために起案したもの。

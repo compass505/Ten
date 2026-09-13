@@ -1,0 +1,687 @@
+<title>Ten P1</title>
+<style>
+  :root { --fg:#cfc7bd; --dim:#7d7469; }
+  html,body { margin:0; height:100%; background:#000; overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;
+    color:var(--fg); -webkit-user-select:none; user-select:none;
+    -webkit-tap-highlight-color:transparent; }
+  #app { position:fixed; inset:0; touch-action:none; }
+  canvas { display:block; }
+
+  /* 目を閉じたときの暗幕。窓の明かりだけ薄く残す */
+  #lid { position:fixed; inset:0; background:#000; opacity:0;
+    transition:opacity .18s linear; pointer-events:none; }
+
+  /* 操作は画面の下半分だけ（REQ-005） */
+  #pad { position:fixed; left:0; right:0; bottom:0; height:110px;
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:7px; padding:7px 7px calc(7px + env(safe-area-inset-bottom)); box-sizing:border-box; }
+  button { font:inherit; font-size:15px; color:var(--fg); background:#14120fd0;
+    backdrop-filter:blur(3px); border:1px solid #3a332b; border-radius:12px; padding:0; }
+  button:disabled { opacity:.32; }
+  button.on { background:#2a2118; border-color:#5a4a36; }
+  button { position:relative; overflow:hidden; }
+  button u { position:absolute; left:0; bottom:0; height:4px; width:0; background:#d9694f;
+    text-decoration:none; transition:width .05s linear; }
+  button.charging { border-color:#d9694f; }
+  button b { display:block; font-size:15px; font-weight:600; }
+  button span { display:block; font-size:10px; color:var(--dim); margin-top:2px; }
+
+  #hud { position:fixed; top:96px; left:0; right:0; padding:8px 10px; transition:opacity .18s;
+    font-size:11px; line-height:1.5; font-variant-numeric:tabular-nums;
+    pointer-events:none; white-space:pre; color:#6f675c; }
+  #hud.off { display:none; }
+  #toggle { position:fixed; top:6px; right:8px; width:auto; height:auto;
+    font-size:11px; padding:5px 9px; z-index:5; }
+  #banner { position:fixed; inset:0; display:none; place-items:center; text-align:center;
+    background:#000c; z-index:6; padding:24px; }
+  #banner div { max-width:22em; }
+  #banner h1 { font-size:20px; margin:0 0 10px; }
+  #banner p { font-size:13px; color:var(--dim); line-height:1.7; margin:0 0 18px; white-space:pre-line; }
+  #banner button { padding:11px 20px; }
+
+  /* 目的と覚醒度。プロトタイプなので堂々と出す（本番は REQ-044 で禁止） */
+  #top { position:fixed; top:0; left:0; right:0; padding:10px 12px 12px; transition:opacity .18s;
+    background:linear-gradient(#000e,#000a 60%,#0000); pointer-events:none; }
+  #goal { font-size:12px; color:#a49a8d; margin-bottom:7px; }
+  #bars { display:grid; gap:5px; }
+  .row { display:grid; grid-template-columns:56px 1fr 42px; align-items:center; gap:8px;
+    font-size:11px; color:#a49a8d; font-variant-numeric:tabular-nums; }
+  .bar { height:9px; background:#ffffff14; border-radius:5px; overflow:hidden; }
+  .bar i { display:block; height:100%; width:0; border-radius:5px; transition:width .12s linear; }
+  #ar i { background:#d9694f; } #vi i { background:#5f9e78; } #tm i { background:#4d6b96; }
+  #ar.max i { background:#ffca57; }
+  #goal em { font-style:normal; color:#7d7469; font-size:11px; }
+  .row.masked { opacity:.34; }
+  .row.masked .bar i { width:0 !important; }
+  .txt { font-size:11px; color:#cfc7bd; }
+  .row.masked .txt { color:#7d7469; }
+  #look { position:fixed; left:50%; top:34%; width:34px; height:34px; margin:-17px 0 0 -17px;
+    border:1px solid #ffffff22; border-radius:50%; pointer-events:none; opacity:0;
+    transition:opacity .15s; }
+  #look.on { opacity:1; border-color:#ffca5788; }
+
+  /* 何が起きたかの一言。これが無いと何も分からない */
+  #coach { position:fixed; left:10px; right:10px; bottom:122px; text-align:center;
+    font-size:13px; line-height:1.6; color:#e6ddd1; pointer-events:none;
+    text-shadow:0 2px 8px #000, 0 0 20px #000; }
+  #coach b { color:#ffca57; }
+  #pop { position:fixed; left:0; right:0; top:38%; text-align:center; font-size:34px;
+    font-weight:700; color:#ffca57; opacity:0; pointer-events:none;
+    text-shadow:0 3px 14px #000; transition:opacity .1s; }
+</style>
+
+<div id="app"></div>
+<div id="lid"></div>
+<div id="top">
+  <div id="goal">親の覚醒度を <b>100</b> にすると <b>+1 点</b>。一晩（4分30秒）で何回できるか<br>
+    <em>ドラッグで首を振る。<b>見ているものしか分からない</b></em></div>
+  <div id="bars">
+    <div class="row" id="r-ar"><span>親の顔</span><div class="bar" id="ar"><i></i></div><span id="ar-n">？</span></div>
+    <div class="row" id="r-ca"><span>親の手</span><div class="txt" id="ca">？</div><span></span></div>
+    <div class="row"><span>元気</span><div class="bar" id="vi"><i></i></div><span id="vi-n">0</span></div>
+    <div class="row" id="r-tm"><span>窓</span><div class="bar" id="tm"><i></i></div><span id="tm-n">？</span></div>
+  </div>
+</div>
+<div id="look"></div>
+<div id="pop"></div>
+<div id="coach"></div>
+<div id="hud"></div>
+<button id="toggle">詳細 ON</button>
+<div id="pad">
+  <button id="b-cry"><b>泣く</b><span>押している間ずっと強くなる</span><u></u></button>
+  <button id="b-fuss"><b>ぐずる</b><span>押している間ずっと強くなる</span><u></u></button>
+  <button id="b-kick"><b>ばたつく</b><span>押している間ずっと強くなる</span><u></u></button>
+  <button id="b-eye"><b>目を閉じる</b><span>寝たふり</span></button>
+</div>
+<div id="banner"><div>
+  <h1 id="b-title"></h1><p id="b-body"></p><button id="b-again">もう一度</button>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script>
+// ============================================================================
+// scratch/mvp — Ten P1 プロトタイプ
+//   docs/20_basic_design/screens.md（案 A）と balance.md の初期値を実装したもの。
+//   目的は「駆け引きが成立するか」「盲目 7 秒が緊張か退屈か」を測ること。
+//   ★ 使い捨て。src/ から import しない。テストの対象にしない。
+// ============================================================================
+
+// ---- 定数（balance.md）----------------------------------------------------
+const HZ = 20, NIGHT = 5400;              // 20Hz / 一晩 5400 tick = 4分30秒
+const SEC = t => t * HZ;
+const AROUSAL_MAX = 100, REARM = 40;      // REQ-052
+const T_CLOSED = 60, T_SETTLE = 60, T_GRACE = 20;   // 寝たふり（合計 140t = 7秒）
+let DOZE_FROM = 600, DOZE_EVERY = 80, DOZE_P = 0.01;   // ← 掃引で決めた
+let FALL_ASLEEP_P = 0.04;
+let AROUSAL_DECAY_EVERY = 25;   // 覚醒度 −1 の間隔（親が寝ているとき）
+let UP_DECAY_EVERY = 6;         // 親がベッドを出ているときは速く落ち着く
+let UP_ACT_PENALTY = 60;        // REQ-030「行動しない状態が続くと再び寝る」
+                                //   → 行動すると、その分だけ落ち着きが止まる
+let VIGOR_EVERY = 10;           // 元気 +1 の間隔
+// REQ-013: どの対処も、赤ちゃんの状態を少なくとも 1 つ改善し、少なくとも 1 つ悪化させる
+const CARE = [
+  { k:'patpat', name:'トントン',  ar:5,  vig:15, hab:25, dur:100,
+    bad:'手を封じられる', lock:['kick'], lockFor:140 },
+  { k:'milk',   name:'ミルク',    ar:10, vig:40, hab:20, dur:160,
+    bad:'飲んでいる間は動けない', lock:['cry','fuss','kick'], lockFor:160 },
+  { k:'hold',   name:'抱っこ',    ar:25, vig:10, hab:30, dur:120,
+    bad:'落ち着いて泣きにくくなる', damp:0.5, dampFor:240 },
+  { k:'diaper', name:'オムツ替え',ar:30, vig:5,  hab:15, dur:140,
+    bad:'終わると親が寝直しやすい', arAfter:-12 },
+];
+const ACT = {
+  cry:  { name:'泣く',    base:30, vig:20, dur:40, draw:0.50 },
+  fuss: { name:'ぐずる',  base:15, vig:11, dur:24, draw:0.35 },
+  kick: { name:'ばたつく', base:14, vig:12, dur:32, draw:0.75 },
+};
+const PRETEND_BASE = 60;                  // REQ-015: その夜のどの行動より大きい
+let PRETEND_FLOOR = 0.55;                 // 覚醒度が高くても効く＝「最後の一撃」の役割
+// --- 新要素（要件外。scratch で検証中）---
+let CHARGE_MAX = 70;        // 最大まで引っ張るのに要る tick（実時間 3.5 秒）
+let CHARGE_MIN_K = 0.35;    // 押してすぐ離したときの効き
+let CHARGE_EXP = 1.7;       // 元気の消費は強度に対して**加速する**（強く出すほど割に合わない）
+let HOLD_DRAIN = 12;        // 満タンで持ち続けると元気が減る間隔（tick）
+let DIP_WINDOW = 36;        // 寝入りばなの窓（実時間 1.8 秒）
+let DIP_BONUS = 2.5;        // 窓に当てたときの倍率（掃引で決定）
+let DIP_EVERY = 300;        // 寝入りばなが訪れる間隔の目安
+let DIP_WARN = 90;          // その予兆（呼吸が深くなる）。**顔を見ていれば分かる**
+// --- 診断パラメータ（検証中）。各軸は「量」ではなく「起こし方の質」で分ける ---
+const PARAMS = ['いらだち','疲労','徒労','寝不足','不安','翻弄','いとおしさ'];
+const EVENTS = [
+  { k:'diaper',  name:'オムツが汚れた',      note:'山札にオムツ替えが 1 枚' },
+  { k:'partner', name:'もう一人の親が起きた', note:'山札が 2 枚増えた' },
+  { k:'phone',   name:'親のスマホが鳴った',   note:'覚醒度が少し上がった' },
+  { k:'roll',    name:'親が寝返りを打った',   note:'しばらく顔が見えない' },
+  { k:'hungry',  name:'おなかが空いた',       note:'しばらく元気が減り続ける' },
+];
+
+// ---- 決定論的乱数（ADR-0008: Hash(seed, 用途, 通番)）------------------------
+function rng(seed, purpose, n) {
+  let h = 2166136261 >>> 0;
+  const s = seed + '|' + purpose + '|' + n;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  h ^= h >>> 15; h = Math.imul(h, 2246822507) >>> 0; h ^= h >>> 13;
+  return (h >>> 0) / 4294967296;
+}
+const pretendRate = n => Math.max(0.10, 0.70 * Math.pow(0.6, n - 1));   // REQ-017
+
+// ---- 状態（data_model.md 4 節）---------------------------------------------
+function newRun(seed) {
+  const total = 8 + Math.floor(rng(seed, 'parent_hand', 0) * 7);        // 8〜14 枚
+  const hand = [1, 1, 1, 1];                                            // 各種 1 枚以上
+  for (let i = 0; i < total - 4; i++) hand[Math.floor(rng(seed, 'parent_hand', i + 1) * 4)]++;
+  // その夜の出来事: 3〜5 回。時刻と種類はシードで決まる（REQ-043）
+  const evN = 3 + Math.floor(rng(seed, 'night_event', 0) * 3);
+  const events = [];
+  for (let i = 0; i < evN; i++) {
+    const lo = Math.floor(NIGHT * (i + .35) / (evN + 1)), hi = Math.floor(NIGHT * (i + 1.1) / (evN + 1));
+    events.push({ tick: lo + Math.floor(rng(seed, 'night_event', i * 2 + 1) * (hi - lo)),
+                  kind: Math.floor(rng(seed, 'night_event', i * 2 + 2) * EVENTS.length) });
+  }
+  return {
+    seed, tick:0, events, eventsFired:0, rollUntil:0, hungryUntil:0, lastEvent:null, calmBlock:0,
+    lockKinds:[], lockUntil:0, dampUntil:0, damp:1, partnerHere:false,
+    charge:0, chargeKind:null, dipUntil:0, dipWarnAt:DIP_EVERY, dipNext:1e9, lastGain:0, lastDip:false,
+    baby:'Open', actKind:null, actRemain:0, vigor:100,
+    parent:'Sleep', arousal: 30 + Math.floor(rng(seed, 'parent_initial', 0) * 30),
+    careKind:null, careRemain:0, careDelay:0, pendingCare:null,
+    habit:[0,0,0,0], hand, handTotal: hand.reduce((a,b)=>a+b,0),
+    tIdle:0, tClosed:0, tSettle:0, tGrace:0,
+    pretendN:0, dozeN:0, choiceN:0,
+    score:0, scoredEdge:false, pretendPrimed:false,
+    P:[0,0,0,0,0,0,0], lastActTick:-999, quietRun:0, lastCareEnd:-999,
+    over:null, log:[],
+  };
+}
+
+// ---- 1 tick 進める（screens.md 4.5 の順 1〜11。純関数的に扱う）--------------
+function step(s, input) {
+  if (s.over) return s;
+  const say = m => { s.log.push(m); if (s.log.length > 4) s.log.shift(); };
+
+  // 順1: 入力。{held: 押しっぱなしの行動, tap: 'eye'}
+  const held = input && input.held, tap = input && input.tap;
+  if (s.baby === 'Closed') {
+    if (tap === 'eye') { s.baby = 'Open'; s.tClosed = 0; }            // 目を開ける
+    // 閉眼中の覚醒行動は捨てる（REQ-059）
+  } else if (s.baby === 'Charge') {
+    if (held === s.chargeKind) {                                      // 引っ張り続ける
+      s.charge = Math.min(1, s.charge + 1 / CHARGE_MAX); s.tIdle = 0;
+      // 満タンのまま溜め続けると元気が減る（寝入りばなを待つのはタダではない）
+      if (s.charge >= 1 && s.tick % HOLD_DRAIN === 0) s.vigor = Math.max(0, s.vigor - 1);
+      if (s.vigor <= 0) release(s);
+    } else { release(s); }                                            // 離した → 発火
+  } else if (s.baby === 'Open') {
+    if (tap === 'eye') { s.baby = 'Closed'; s.tClosed = 0; }
+    else if (held && ACT[held] && s.vigor >= ACT[held].vig * CHARGE_MIN_K
+             && !(s.tick < s.lockUntil && s.lockKinds.includes(held))) {
+      s.baby = 'Charge'; s.chargeKind = held; s.tIdle = 0;
+      // 猶予中（背中スイッチ）は溜めない。反射なので押した時点で最大
+      s.charge = (s.parent === 'Grace') ? 1 : 0;
+      if (s.parent === 'Grace') release(s);
+    }
+  }
+  // Act 中は別の行動を受け付けない（REQ-003）
+
+  // 順2: その時刻の出来事（REQ-043 / 055）
+  while (s.eventsFired < s.events.length && s.events[s.eventsFired].tick <= s.tick) {
+    const e = EVENTS[s.events[s.eventsFired].kind]; s.eventsFired++;
+    s.lastEvent = e;
+    if (e.k === 'diaper')  { s.hand[3]++; s.handTotal++; }
+    if (e.k === 'partner') { s.hand[0]++; s.hand[1]++; s.handTotal += 2; s.partnerHere = true; }
+    if (e.k === 'phone')   s.arousal = Math.min(AROUSAL_MAX, s.arousal + 8);
+    if (e.k === 'roll')    s.rollUntil = s.tick + 200;
+    if (e.k === 'hungry')  s.hungryUntil = s.tick + 400;
+    say(e.name);
+  }
+  if (s.tick < s.hungryUntil && s.tick % 40 === 0) s.vigor = Math.max(0, s.vigor - 1);
+
+  // 順3: 覚醒度に依存しない親の遷移
+  if (s.baby === 'Act' && --s.actRemain <= 0) { s.baby = 'Open'; s.actKind = null; s.didFire = false; s.actStr = undefined; }
+
+  if (s.parent === 'Settle') {
+    if (s.baby !== 'Closed') {                                        // 早すぎ → 気づかれる
+      s.parent = 'Care'; startCare(s, true); say('気づかれた');
+    } else if (++s.tSettle >= T_SETTLE) { s.parent = 'Grace'; s.tGrace = 0; }
+  } else if (s.parent === 'Grace') {
+    if (s.pretendPrimed) { /* 順7で解決 */ }
+    else if (++s.tGrace >= T_GRACE) { s.parent = 'Sleep'; say('猶予を逃した'); }
+  } else if (s.parent === 'Care') {
+    if (--s.careRemain <= 0) {
+      const c = CARE[s.careKind];
+      s.arousal = Math.min(AROUSAL_MAX, s.arousal + c.ar);
+      s.vigor = Math.min(100, s.vigor + c.vig);
+      s.habit[s.careKind] = Math.min(100, s.habit[s.careKind] + c.hab);
+      if (c.arAfter) s.arousal = Math.max(0, s.arousal + c.arAfter);   // 寝直しやすい
+      if (s.careKind === 0 && s.baby !== 'Act') s.P[6] += 14;          // いとおしさ: トントンで収まった
+      s.parent = 'Sleep'; s.careKind = null; s.lastCareEnd = s.tick;
+    }
+  } else if (s.pendingCare !== null && --s.careDelay <= 0 && s.parent === 'Sleep') {
+    s.careKind = s.pendingCare; s.pendingCare = null; startCare(s, false);
+  }
+
+  // 順4: 時計
+  if (s.baby !== 'Act') s.tIdle++;
+  if (s.baby === 'Closed') s.tClosed++;
+
+  // 順5: 寝たふりの判定（親が Sleep のときだけ。fall_asleep → sleep_pretend、同じ n）
+  let drewPretend = false;
+  if (s.baby === 'Closed' && s.tClosed >= T_CLOSED && s.parent === 'Sleep') {
+    const n = s.pretendN + 1; drewPretend = true; s.tClosed = 0;
+    if (rng(s.seed, 'fall_asleep', n) < FALL_ASLEEP_P) { s.pretendN = n; return end(s, 'fellAsleep'); }
+    if (rng(s.seed, 'sleep_pretend', n) < pretendRate(n)) { s.parent = 'Settle'; s.tSettle = 0; }
+    s.pretendN = n;
+  }
+
+  // 寝入りばな: 予兆（呼吸が深くなる）→ 窓 の 2 段。**予兆は顔を見ていれば分かる**
+  if (s.parent === 'Sleep' && s.tick >= s.dipWarnAt && s.dipNext > 1e8) {
+    s.dipNext = s.tick + DIP_WARN;                       // 予兆が始まった
+  }
+  if (s.dipNext <= 1e8 && s.tick >= s.dipNext) {
+    s.dipUntil = s.tick + DIP_WINDOW;                    // 窓が開いた
+    s.dipNext = 1e9;
+    s.dipWarnAt = s.tick + DIP_EVERY + Math.floor(rng(s.seed, 'parent_choice', 9000 + s.tick) * 180);
+  }
+
+  // 順6: 待機中の寝落ち（Settle / Grace 中は停止。判定した tick はスキップ）
+  if (!drewPretend && s.parent !== 'Settle' && s.parent !== 'Grace'
+      && s.tIdle >= DOZE_FROM && s.tIdle % DOZE_EVERY === 0) {
+    s.dozeN++;
+    if (rng(s.seed, 'doze_off', s.dozeN) < DOZE_P) return end(s, 'fellAsleep');
+  }
+
+  // 順7: 状態値の更新（予約した最大の一撃もここで適用）
+  if (s.pretendPrimed && s.parent === 'Grace') {
+    s.arousal = Math.min(AROUSAL_MAX, s.arousal + gain(s, PRETEND_BASE, -1, PRETEND_FLOOR));
+    s.pretendPrimed = false; s.parent = 'Sleep'; say('★ 背中スイッチ');
+    s.P[2] += 130; s.P[3] += 20;                       // 徒労（大）+ 寝不足
+  }
+  if (s.baby === 'Act' && !s.didFire) {
+    s.didFire = true;
+    const str = s.actStr === undefined ? 1 : s.actStr;      // 引っ張った強さ（0.35〜1.0）
+    const dip = s.tick < s.dipUntil;                        // 寝入りばなの窓
+    if (s.parent === 'Care' || s.pendingCare !== null) s.P[5] += 34;   // 翻弄: 手を出させて空振り
+    // REQ-049「親が対処を返すまでの間」は、対処中だけでなく**予告中も含む**
+    if (s.parent !== 'Care' && s.pendingCare === null) {
+      const g = Math.max(1, Math.round(gain(s, ACT[s.actKind].base, -1) * str * (dip ? DIP_BONUS : 1)));
+      s.arousal = Math.min(AROUSAL_MAX, s.arousal + g);
+      s.lastGain = g; s.lastDip = dip;
+      if (dip) say('★ 寝入りばな');
+      // --- 診断パラメータ。1 行動で複数の軸に乗る ---
+      const S10 = Math.round(str * 10);
+      const seq = (s.tick - s.lastActTick) < 120;                    // 直前も行動していた
+      s.P[0] += seq ? S10 * 2 : S10;                                 // いらだち: 強く・連続で
+      if (s.arousal < 30) s.P[3] += S10 * 2;                         // 寝不足: 熟睡を起こす
+      if (dip)            s.P[3] += 30;                              // 寝不足: 寝入りばなを潰す
+      if (Math.max(...s.habit) > 50) s.P[4] += 10;                   // 不安: 慣れているのに泣く
+      if (s.tick - s.lastCareEnd < 80) s.P[4] += 14;                 // 不安: 対処の直後に再び泣く
+      // ランダムに 3 つ目が乗る（用途 diagnosis。決定論を壊さない）
+      const r = rng(s.seed, 'diagnosis', s.tick);
+      if (r < 0.25) s.P[Math.floor(rng(s.seed,'diagnosis', s.tick+7) * 7)] += 8;
+      s.lastActTick = s.tick; s.quietRun = 0;
+    }
+    // 対処を引き出す。**強く引っ張るほど出やすい**
+    if (s.parent === 'Sleep' && s.pendingCare === null && s.handTotal > 0
+        && rng(s.seed, 'parent_choice', ++s.choiceN) < ACT[s.actKind].draw * str) {
+      const avail = [0,1,2,3].filter(i => s.hand[i] > 0);
+      s.pendingCare = avail[Math.floor(rng(s.seed, 'parent_choice', s.choiceN + 5000) * avail.length)];
+      s.careDelay = 20 + (14 - s.handTotal) * 6;                       // REQ-046
+    }
+  }
+  if (s.calmBlock > 0) s.calmBlock--;
+  const decayEvery = s.parent === 'Up' ? UP_DECAY_EVERY : AROUSAL_DECAY_EVERY;
+  const canCalm = s.parent !== 'Care' && !(s.parent === 'Up' && s.calmBlock > 0);
+  if (canCalm && s.tick % decayEvery === 0) s.arousal = Math.max(0, s.arousal - 1);
+  if (s.tIdle > 0 && s.tIdle % VIGOR_EVERY === 0) s.vigor = Math.min(100, s.vigor + 1);
+  if (s.tIdle > 0 && s.tIdle % 60 === 0 && s.vigor >= 45) { s.P[6] += 5; s.quietRun++; }
+  // ↑ いとおしさ: **元気があるのに**静かにした時間だけ数える（元気切れの待機は意図ではない）
+  if (s.tick % 60 === 0) s.habit = s.habit.map(h => Math.max(0, h - 1));
+
+  // 順8: 覚醒度に依存する親の遷移
+  if (s.arousal >= AROUSAL_MAX && s.parent !== 'Up') { s.parent = 'Up'; }
+  else if (s.parent === 'Up' && s.arousal <= REARM) { s.parent = 'Sleep'; }
+
+  // 順9: 得点（上限到達のエッジ。REQ-052）
+  if (s.arousal >= AROUSAL_MAX && !s.scoredEdge) { s.score++; s.scoredEdge = true; say('+1 点'); }
+  if (s.arousal <= REARM) s.scoredEdge = false;
+
+  // 順10: 終了（夜明け → 寝落ち → 山札切れ）
+  s.tick++;
+  if (s.tick >= NIGHT) return end(s, 'dawn');
+  if (s.handTotal <= 0 && s.parent !== 'Care') return end(s, 'handEmpty');
+  return s;
+}
+
+let GAIN_FLOOR = 0.25;   // これが無いと覚醒度 100 に到達できない（REQ-011 が達成不能）
+// 長押しを離した瞬間に発火する。引っ張った長さが強度になる
+function release(s) {
+  const k = s.chargeKind, a = ACT[k];
+  const str = CHARGE_MIN_K + (1 - CHARGE_MIN_K) * s.charge;           // 0.35〜1.0
+  s.baby = 'Act'; s.actKind = k; s.actRemain = Math.round(a.dur * (0.5 + 0.5 * str));
+  s.didFire = false;   // この行動はまだ発火していない
+  s.actStr = str; s.charge = 0; s.chargeKind = null;
+  s.vigor = Math.max(0, s.vigor - a.vig * Math.pow(str, CHARGE_EXP));
+  if (s.parent === 'Up') s.calmBlock = UP_ACT_PENALTY;
+  if (k === 'cry' && s.parent === 'Grace') s.pretendPrimed = true;
+}
+
+function gain(s, base, careIdx, floor) {
+  const hab = careIdx >= 0 ? s.habit[careIdx] : Math.max(...s.habit);
+  const k = Math.max(floor || GAIN_FLOOR, 1 - s.arousal / AROUSAL_MAX);   // 単調非増加は保つ（REQ-012）
+  const d = s.tick < s.dampUntil ? s.damp : 1;                   // 抱っこの後は効きが落ちる
+  return Math.max(1, Math.ceil(base * k * d * (1 - hab / 200)));
+}
+function startCare(s, forced) {
+  if (forced) { s.careKind = 2; }                                      // 気づかれたら「抱っこ」
+  s.hand[s.careKind]--; s.handTotal--;
+  const c = CARE[s.careKind];
+  s.careRemain = c.dur; s.parent = 'Care';
+  s.P[1] += Math.round(c.dur / 4);                     // 疲労: 重い対処ほど
+  if (s.baby === 'Charge') { s.baby = 'Open'; s.charge = 0; s.chargeKind = null; }  // 溜めが飛ぶ
+  if (c.lock) { s.lockKinds = c.lock; s.lockUntil = s.tick + c.lockFor; }   // 行動が使えなくなる
+  if (c.damp) { s.damp = c.damp; s.dampUntil = s.tick + c.dampFor; }        // 効きが落ちる
+}
+function end(s, kind) { s.over = kind; return s; }
+
+// ============================================================================
+// 見た目（一人称・仰向け。首はドラッグで振る）
+// ============================================================================
+const app = document.getElementById('app');
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+app.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, 1, 0.05, 40);
+
+// 仰向けの首: Z 軸まわりが左右、X 軸まわりが上下（頭側 / 足側）
+const neck = new THREE.Object3D();      // rotation.z = yaw
+const pitch = new THREE.Object3D();     // rotation.x = PI/2 + pitch → 天井を向く
+neck.add(pitch); pitch.add(camera); scene.add(neck);
+neck.position.set(0, 0.28, 0);
+const YAW = THREE.MathUtils.degToRad(55), P_UP = THREE.MathUtils.degToRad(30), P_DN = THREE.MathUtils.degToRad(-15);
+let yaw = 0, pit = 0;
+
+const mat = (c, o={}) => new THREE.MeshStandardMaterial(Object.assign({ color:c, roughness:.95 }, o));
+const box = (w,h,d,c,x,y,z,o) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat(c,o)); m.position.set(x,y,z); scene.add(m); return m; };
+
+// 部屋（内側から見る）
+const room = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, 5.2), mat(0x6f6353, { side:THREE.BackSide }));
+room.position.y = 1.15; scene.add(room);
+box(4.4, .02, 5.2, 0x8a7259, 0, -.2, 0);                                  // 床（布団）
+
+// 天井のディテール。これが無いと首を振っても動いた感じがしない
+const shade = new THREE.Mesh(new THREE.ConeGeometry(.42, .3, 20, 1, true), mat(0xa08a6c, { side:THREE.DoubleSide }));
+shade.position.set(.75, 2.34, -.75); shade.rotation.x = Math.PI; scene.add(shade);
+const bulb = new THREE.Mesh(new THREE.SphereGeometry(.08, 12, 10),
+  new THREE.MeshBasicMaterial({ color:0x2a2622 })); bulb.position.set(.75, 2.18, -.75); scene.add(bulb);
+for (let i = -1; i <= 1; i++)                                             // 天井の板目
+  box(4.3, .015, .04, 0x4d4436, 0, 2.48, i * 1.3);
+
+// 窓（時刻で明るさが変わる。閉眼中もこれだけ分かる — REQ-008）
+const win = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.3),
+  new THREE.MeshBasicMaterial({ color:0x2b3a52 }));
+win.position.set(2.19, 1.5, -.3); win.rotation.y = -Math.PI/2; scene.add(win);
+
+// 親（赤ちゃんから見た顔と手。プリミティブのみ）
+const parent = new THREE.Object3D(); parent.position.set(-.30, 0, .15); scene.add(parent);
+const head = new THREE.Mesh(new THREE.SphereGeometry(.24, 26, 20), mat(0xe4c9ad));
+head.position.set(0, 1.15, 0); parent.add(head);
+const eyeL = new THREE.Mesh(new THREE.SphereGeometry(.042, 14, 12), mat(0x120e0a));
+const eyeR = eyeL.clone(); parent.add(eyeL, eyeR);
+const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.22, .62, 6, 14), mat(0x6a6678));
+torso.position.set(-.34, .62, -.30); torso.rotation.z = .60; parent.add(torso);
+const hand = new THREE.Mesh(new THREE.SphereGeometry(.115, 16, 12), mat(0xd9bda1));
+hand.scale.set(1, .62, 1.15); parent.add(hand);
+
+// もう一人の親（出来事で現れる。反対側に座る）
+const partner = new THREE.Object3D(); partner.position.set(1.05, 0, .35);
+partner.visible = false; scene.add(partner);
+const pHead = new THREE.Mesh(new THREE.SphereGeometry(.20, 20, 16), mat(0xc9a98f));
+pHead.position.set(0, 1.05, 0); partner.add(pHead);
+const pTorso = new THREE.Mesh(new THREE.CapsuleGeometry(.20, .55, 6, 12), mat(0x4a5560));
+pTorso.position.set(.22, .58, -.2); pTorso.rotation.z = -.5; partner.add(pTorso);
+
+scene.add(new THREE.AmbientLight(0x8ea0c4, 3.4));
+const moon = new THREE.DirectionalLight(0xc3d4ee, 2.2); moon.position.set(3, 2, -1); scene.add(moon);
+const lamp = new THREE.PointLight(0xffd9a8, 0, 6); lamp.position.set(.75, 2.18, -.75); scene.add(lamp);
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+// ドラッグで首を振る（行動中でも受け付ける — REQ-038）
+let drag = null;
+app.addEventListener('pointerdown', e => { drag = { x:e.clientX, y:e.clientY, yaw, pit }; });
+addEventListener('pointermove', e => {
+  if (!drag) return;
+  yaw = THREE.MathUtils.clamp(drag.yaw - (e.clientX - drag.x) / innerWidth * 2.0, -YAW, YAW);
+  pit = THREE.MathUtils.clamp(drag.pit - (e.clientY - drag.y) / innerHeight * 1.2, P_DN, P_UP);
+});
+addEventListener('pointerup', () => drag = null);
+
+// ============================================================================
+// ループ
+// ============================================================================
+let S = newRun(new Date().toISOString().slice(0, 10));
+let held = null, tap = null, acc = 0, last = performance.now(), showNum = true;
+let shake = 0, popT = 0, lastEvShown = null, upT = 0;
+let closedYaw = null;   // 目を閉じた瞬間の首の向き（D-12。抱き上げられても変えない）
+
+const $ = id => document.getElementById(id);
+const btn = { cry:$('b-cry'), fuss:$('b-fuss'), kick:$('b-kick'), eye:$('b-eye') };
+for (const k of ['cry','fuss','kick']) {
+  btn[k].addEventListener('pointerdown', e => { e.preventDefault(); held = k; });
+  btn[k].addEventListener('pointerup',   () => { if (held === k) held = null; });
+  btn[k].addEventListener('pointercancel', () => { if (held === k) held = null; });
+  btn[k].addEventListener('pointerleave', () => { if (held === k) held = null; });
+}
+btn.eye.addEventListener('pointerdown', e => { e.preventDefault(); tap = 'eye'; });
+$('toggle').onclick = () => { showNum = !showNum; $('hud').classList.toggle('off', !showNum);
+  $('toggle').textContent = showNum ? '詳細 ON' : '詳細 OFF'; };
+$('b-again').onclick = () => { S = newRun(S.seed + '#' + (Math.random()*1e6|0)); $('banner').style.display = 'none'; };
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  acc += Math.min(now - last, 250); last = now;
+  while (acc >= 1000 / HZ) {                       // 固定 tick。実フレームレートに依存させない
+    acc -= 1000 / HZ;
+    const b0 = S.baby;
+    const a0 = S.arousal, p0 = S.parent, s0 = S.score;
+    S = step(S, { held, tap }); tap = null;
+    if (b0 !== 'EyesClosed' && S.baby === 'Closed') closedYaw = yaw;   // 閉じた向きを凍結
+    if (S.baby !== 'Closed') closedYaw = null;
+    if (S.arousal > a0) { shake = Math.min(1, (S.arousal - a0) / 22);
+      pop((S.lastDip ? '★ ' : '') + '+' + (S.arousal - a0)); }
+    if (S.score > s0) pop('★ +1 点');
+    if (p0 !== 'Care' && S.parent === 'Care') pop(CARE[S.careKind].name);
+    if (S.lastEvent && S.lastEvent !== lastEvShown) { lastEvShown = S.lastEvent; pop(S.lastEvent.name); }
+    if (S.over) { showEnd(); break; }
+  }
+  draw();
+  renderer.render(scene, camera);
+}
+
+// 「今どこを見ているか」。一人称の必然性はここに宿る。
+// 親の顔・親の手・窓は同時に視界へ入らない（首の可動範囲より離れている）
+const _f = new THREE.Vector3(), _t = new THREE.Vector3(), _c = new THREE.Vector3(), _p = new THREE.Vector3();
+function lookingAt() {
+  camera.getWorldPosition(_c); camera.getWorldDirection(_f);
+  let best = null, bestAng = 0.35;                     // 約 20 度以内
+  for (const [k, obj] of [['face', head], ['hand', hand], ['window', win]]) {
+    if ((k === 'face' || k === 'hand') && !parent.visible) continue;
+    obj.getWorldPosition(_p);
+    _t.copy(_p).sub(_c).normalize();
+    const ang = Math.acos(Math.max(-1, Math.min(1, _f.dot(_t))));
+    if (ang < bestAng) { bestAng = ang; best = k; }
+  }
+  return best;
+}
+
+function pop(txt) { $('pop').textContent = txt; popT = 0.9; }
+
+function draw() {
+  // 揺れ。泣いたことが体で分かるようにする
+  shake = Math.max(0, shake - 0.045);
+  const sh = shake * 0.055;
+  neck.rotation.z = yaw + Math.sin(performance.now() / 26) * sh;
+  pitch.rotation.x = Math.PI / 2 + pit + Math.cos(performance.now() / 19) * sh;
+  popT = Math.max(0, popT - 0.016);
+  $('pop').style.opacity = popT > 0 ? Math.min(1, popT * 2.2) : 0;
+
+  const closed = S.baby === 'Closed';
+  $('lid').style.opacity = closed ? 1 : 0;
+  $('top').style.opacity = closed ? 0 : 1;
+  $('hud').style.opacity = closed ? 0 : 1;
+  for (const k of ['cry','fuss','kick']) {
+    btn[k].disabled = closed || S.baby === 'Act' || S.vigor < ACT[k].vig * CHARGE_MIN_K
+      || (S.tick < S.lockUntil && S.lockKinds.includes(k));
+    const on = S.baby === 'Charge' && S.chargeKind === k;
+    btn[k].classList.toggle('charging', on);
+    btn[k].querySelector('u').style.width = on ? (S.charge * 100) + '%' : '0';
+  }
+  btn.eye.classList.toggle('on', closed);
+  btn.eye.querySelector('b').textContent = closed ? '目を開ける' : '目を閉じる';
+
+  // 夜明けに向けて窓が明るくなる（閉眼中もこれだけは見える）
+  const p = S.tick / NIGHT;
+  const bright = Math.pow(Math.max(0, p - .62) / .38, 1.6);
+  win.material.color.setRGB(.09 + bright * .85, .12 + bright * .78, .2 + bright * .6);
+  // 暗幕は完全に不透明。窓の明かりも「不透明な色」で描く。
+  // ここに alpha を混ぜると寝室が透けて、REQ-004 と賭けの前提が壊れる
+  // D-12: 明かりが出るのは「閉じた瞬間に窓を向いていた」ときだけ。
+  //       抱き上げられても動かさない（動かすと寝たふり成功の通知になり REQ-016 が壊れる）
+  if (!closed) { $('lid').style.background = '#000'; }
+  else {
+    const winYaw = THREE.MathUtils.degToRad(-48);           // 窓のだいたいの中心
+    const off = (closedYaw === null ? 99 : (closedYaw - winYaw));
+    const halfFov = THREE.MathUtils.degToRad(30);
+    if (Math.abs(off) > halfFov) {
+      $('lid').style.background = '#000';                   // 窓を向いていない → 完全な暗闇
+    } else {
+      const x = 50 - (off / halfFov) * 45;                  // 画面上の窓の位置
+      $('lid').style.background =
+        `radial-gradient(70% 46% at ${x.toFixed(0)}% 38%, `
+        + `rgb(${14+bright*150|0},${19+bright*140|0},${34+bright*115|0}), #000 60%)`;
+    }
+  }
+
+  // 親の見え方（P1 では姿勢だけ。段階表示はまだ入れていない）
+  const up = S.parent === 'Up';
+  // 親がベッドを出ると**視界から消える**。部屋が空になり、顔が読めなくなる
+  const gone = up ? Math.min(1, (upT += 0.035)) : (upT = Math.max(0, upT - 0.05));
+  parent.position.y = gone * 1.05;
+  parent.position.z = .15 - gone * 1.1;
+  parent.visible = gone < 0.97;
+  // もう一人の親（出来事）
+  partner.visible = S.partnerHere;
+  // 部屋の照明: 親が起きている間と、終盤（山札が残りわずか）
+  lamp.intensity = (up ? 1.6 : 0) + (S.handTotal <= 3 ? 1.0 : 0);
+  // 寝返り: 顔が向こうを向く
+  parent.rotation.y = S.tick < S.rollUntil ? -1.5 : 0;
+  // 寝入りばな。予兆＝呼吸が深くなる / 窓＝かくっと力が抜ける。**顔を見ていないと分からない**
+  const dip = S.tick < S.dipUntil;
+  const warn = S.dipNext <= 1e8 && S.tick < S.dipNext;
+  const breath = warn ? Math.sin(S.tick / 11) * .045 : Math.sin(S.tick / 26) * .012;
+  head.position.y = 1.15 + (up ? .45 : 0) + breath - (dip ? .05 : 0);
+  head.scale.set(1, dip ? .90 : 1 + breath * .4, 1);
+  torso.scale.set(1, 1 + breath * .5, 1);
+  const closedEyes = (S.parent === 'Sleep' || S.parent === 'Settle');
+  eyeL.position.set(.105, head.position.y - .205, .075);
+  eyeR.position.set(.105, head.position.y - .205, -.075);
+  eyeL.scale.z = eyeR.scale.z = closedEyes ? .18 : 1;
+  eyeL.scale.y = eyeR.scale.y = closedEyes ? .3 : 1;
+  // 対処中と抱き上げ中は手が伸びてくる
+  const reach = S.parent === 'Care' ? 1 : S.parent === 'Settle' ? 1 - S.tSettle / T_SETTLE : 0;
+  hand.position.set(-.20 + reach * .32, .73 - reach * .18, -.33 + reach * .20);
+  parent.position.x = -.30 + (S.parent === 'Settle' ? .12 : 0);
+
+  // 見ているものだけ分かる
+  const look = closed ? null : lookingAt();
+  $('look').classList.toggle('on', !!look);
+  const rolling = S.tick < S.rollUntil;                 // 寝返り中は顔が見えない
+  const seeFace = look === 'face' && !rolling;
+  const seeHand = look === 'hand';
+  const seeWin  = look === 'window';
+  const setBar = (id, v, label) => {
+    document.querySelector('#' + id + ' i').style.width = Math.max(0, Math.min(100, v)) + '%';
+    if ($(id + '-n')) $(id + '-n').textContent = label;
+  };
+  $('r-ar').classList.toggle('masked', !seeFace);
+  $('r-ca').classList.toggle('masked', !seeHand);
+  $('r-tm').classList.toggle('masked', !seeWin);
+  setBar('ar', seeFace ? S.arousal : 0, seeFace ? S.arousal : (rolling && look === 'face' ? '寝返り' : '？'));
+  setBar('vi', S.vigor, S.vigor);                       // 自分の体なので常に分かる
+  setBar('tm', seeWin ? S.tick / NIGHT * 100 : 0, seeWin ? gameClock(S.tick) : '？');
+  $('ca').textContent = !seeHand ? '？'
+    : S.parent === 'Care'        ? CARE[S.careKind].name + '中'
+    : S.pendingCare !== null     ? CARE[S.pendingCare].name + 'に手を伸ばしている'
+    : S.parent === 'Settle' || S.parent === 'Grace' ? '—'
+    : '動いていない（残り ' + S.handTotal + ' 枚）';
+  $('ar').classList.toggle('max', seeFace && S.arousal >= AROUSAL_MAX);
+
+  // コーチ。今どういう状況で、何を試せるかを言う
+  $('coach').innerHTML = coachText();
+
+  if (showNum) {
+    const c = S.careKind !== null ? CARE[S.careKind].name : (S.pendingCare !== null ? '…来る' : '—');
+    $('hud').textContent =
+      `tick ${String(S.tick).padStart(4)} / ${NIGHT}   ${gameClock(S.tick)}   得点 ${S.score}\n` +
+      `覚醒度 ${String(S.arousal).padStart(3)}   元気 ${String(S.vigor).padStart(3)}   山札 ${S.handTotal}  [${S.hand.join(' ')}]\n` +
+      `親 ${S.parent.padEnd(6)} 対処 ${c}   慣れ ${S.habit.join('/')}\n` +
+      `tIdle ${S.tIdle}  tClosed ${S.tClosed}  寝たふり ${S.pretendN} 回目（次の成功率 ${(pretendRate(S.pretendN+1)*100)|0}%）\n` +
+      S.log.join('  ');
+  }
+}
+function coachText() {
+  const S_ = S;
+  if (S_.baby === 'Closed') {
+    // ★ 親の状態を絶対に出さない。出した瞬間に REQ-016（成否を事前に知らされない）が壊れる
+    const lit = closedYaw !== null
+      && Math.abs(closedYaw - THREE.MathUtils.degToRad(-48)) <= THREE.MathUtils.degToRad(30);
+    return '何も見えない。<b>いつ目を開けるか</b>が賭け。<br>'
+         + '置かれた直後に泣けば最大の一撃、早すぎれば気づかれる'
+         + (lit ? '<br><b>窓を向いて閉じたので、明るさで時間帯だけ分かる</b>' : '');
+  }
+  if (S_.parent === 'Grace')  return '<b>置かれた！ いま泣く！</b>';
+  if (S_.parent === 'Settle') return '抱き上げられている（目を開けたので気づかれる）';
+  if (S_.parent === 'Up')     return '<b>親がベッドを出て部屋からいなくなった。</b>顔が見えないので覚醒度も読めない<br>'
+                                    + '静かにしていれば戻ってきて、また寝る（<b>行動すると戻りが遅れる</b>）';
+  if (S_.parent === 'Care')   return CARE[S_.careKind].name + '中。<b>この間は泣いても覚醒度が上がらない</b>';
+  if (S_.pendingCare !== null) return '親が手を伸ばしている。<b>対処が返るまで泣いても覚醒度は上がらない</b><br>'
+                                    + '（親の手を見れば、何が来るか分かる）';
+  if (S_.vigor < 20)          return '元気が尽きた。<b>何もしないと回復する</b>';
+  if (S_.arousal > 78)        return 'あと少しで起こせる。強い一撃がほしい';
+  if (S_.baby === 'Charge')   return '押している間ずっと強くなる。<b>離した瞬間の強さで決まる</b><br>'
+                                    + '引っ張るほど元気を食い、<b>親が対処を出してくる</b>';
+  if (S_.tick < S_.dipUntil && lookingAt() === 'face')
+    return '<b>かくっと力が抜けた。寝入りばな — いま当てれば 2.5 倍</b>';
+  if (S_.dipNext <= 1e8 && S_.tick < S_.dipNext && lookingAt() === 'face')
+    return '<b>親の呼吸が深くなった。</b>もうすぐ寝入りばなが来る<br>いまから溜め始めれば間に合う';
+  if (S_.arousal < 35)        return '親は深く寝ている。<b>いま泣くと一番効く</b>';
+  if (S_.pretendN === 0 && S_.tick > 600)
+    return '<b>目を閉じる</b>＝寝たふり。うまくいけば抱き上げて布団に置かれ、<br>その直後に目を開けて泣くと<b>この夜で最大の一撃</b>';
+  if (S_.tick < S_.rollUntil) return '親が寝返りを打った。<b>顔が見えないので覚醒度が読めない</b>';
+  if (S_.tick < S_.hungryUntil) return 'おなかが空いている。<b>元気が減り続ける</b>';
+  const look = lookingAt();
+  if (look === null && S_.tick > 200)
+    return '天井を見ている。<b>首を振って親の顔・親の手・窓を見る</b><br>顔＝覚醒度 / 手＝次に来る対処 / 窓＝残り時間';
+  return '待つほど親の覚醒度が下がり、次の一撃が効く。<br>でも待ちすぎると<b>自分が寝てしまう</b>';
+}
+
+const gameClock = t => {
+  const m = 21 * 60 + Math.floor(t * 6 / 60);
+  return `${String(Math.floor(m / 60) % 24).padStart(2,'0')}:${String(m % 60).padStart(2,'0')}`;
+};
+function showEnd() {
+  const kind = { dawn:'夜が明けた', fellAsleep:'寝てしまった', handEmpty:'親が諦めた' }[S.over];
+  $('b-title').textContent = `${kind} — ${S.score} 点`;
+  $('b-body').textContent =
+    `${gameClock(S.tick)}まで。寝たふり ${S.pretendN} 回、山札 残り ${S.handTotal} 枚、出来事 ${S.eventsFired} 件。\n\n` +
+    `測っているのは「7 秒の盲目が緊張か退屈か」と「待つか泣くかで迷ったか」。`;
+  $('banner').style.display = 'grid';
+}
+requestAnimationFrame(frame);
+</script>

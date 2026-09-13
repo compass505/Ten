@@ -12,3 +12,38 @@ playwright-report/
 .venv/
 __pycache__/
 .claude/settings.local.json
+
+# モデル制作の中間ファイル（248MB）。Git に入れると後から取り除けない
+# 必要になったら Git LFS を検討する
+scratch/visual/
+
+# .NET のビルド生成物
+bin/
+obj/
+*.user
+
+# Unity が bin/ obj/ に対して作る .meta（中身自体を無視しているので不要）
+src/**/bin.meta
+src/**/obj.meta
+
+# Unity の生成物（開いた時点で作られる。Git に入れない）
+unity/Library/
+unity/Temp/
+unity/Logs/
+unity/Obj/
+unity/Build/
+unity/Builds/
+unity/UserSettings/
+unity/MemoryCaptures/
+unity/Recordings/
+*.csproj.user
+*.unityproj
+*.sln.DotSettings.user
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
+
+# Unity のビルド中間物（バッチビルドが作る）
+unity/.utmp/
+unity/Build/

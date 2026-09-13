@@ -11,10 +11,14 @@
             "id": "5c08bd6d26d34df0",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "docs/50_review/issues.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新規タブ"
+              "title": "issues"
             }
           }
         ]
@@ -95,6 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "docs/50_review/issues.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -113,6 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "docs/50_review/issues.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -155,6 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "docs/50_review/issues.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -181,23 +188,53 @@
       "bases:新規ベースを作成": false
     }
   },
-  "active": "c84fd24f3dcbbd4b",
+  "active": "5c08bd6d26d34df0",
   "lastOpenFiles": [
-    "docs/10_requirements/decisions/ADR-0001-tech-stack.md",
-    "docs/10_requirements/decisions/ADR-0007-game-design.md",
-    "docs/10_requirements/decisions/ADR-0006-concept.md",
-    "docs/10_requirements/research/first_person.md",
-    "docs/10_requirements/research/action_game.md",
-    "docs/10_requirements/research/game_mechanic_4.md",
-    "docs/10_requirements/research/game_mechanic_3.md",
-    "docs/10_requirements/research/game_mechanic_2.md",
-    "docs/10_requirements/research/game_mechanic.md",
-    "docs/10_requirements/research/game_direction.md",
-    "docs/10_requirements/research/hook_options.md",
-    "docs/10_requirements/research/ai_video.md",
-    "docs/10_requirements/research/info_sources.md",
-    "docs/10_requirements/research/existing_apps.md",
-    "docs/10_requirements/decisions/ADR-0005-agent-roles.md",
-    "tools/check_docs.py"
+    "unity/Library/ShaderCache/builtin/unity_builtin_extra0000/00/624b1a41f59f196acf1589258b4da265.bin",
+    "unity/Library/ShaderCache/builtin/unity_builtin_extra0000/00/d96dd348685a531bbbe4efde58a6a20b.bin",
+    "unity/Library/ShaderCache/temp",
+    "unity/Temp/__Backupscenes/0.backup",
+    "unity/Temp/__Backupscenes",
+    "unity/Assets/InitTestScene41f120ef-f08c-44f5-ba74-cb6c4685d2c1.unity.meta",
+    "unity/Assets/InitTestScene41f120ef-f08c-44f5-ba74-cb6c4685d2c1.unity",
+    "unity/Library/UndoStack.bin",
+    "unity/Library/UndoData.bin",
+    "unity/Logs/shadercompiler-UnityShaderCompiler-0.log",
+    "unity/Temp/ProcessJobs",
+    "unity/Library/Bee/Android/Prj/IL2CPP/Gradle/launcher/build/intermediates/packaged_res/release/packageReleaseResources/mipmap-mdpi-v4/ic_launcher_foreground.png",
+    "unity/Library/Bee/Android/Prj/IL2CPP/Gradle/launcher/build/intermediates/packaged_res/release/packageReleaseResources/mipmap-mdpi-v4/ic_launcher_background.png",
+    "unity/Library/Bee/Android/Prj/IL2CPP/Gradle/launcher/build/intermediates/packaged_res/release/packageReleaseResources/mipmap-mdpi-v4/app_icon.png",
+    "unity/Library/Bee/Android/Prj/IL2CPP/Gradle/launcher/src/main/res/mipmap-mdpi/ic_launcher_foreground.png",
+    "unity/Library/Bee/Android/Prj/IL2CPP/Gradle/launcher/src/main/res/mipmap-mdpi/ic_launcher_background.png",
+    "unity/Library/Bee/Android/Prj/IL2CPP/Gradle/launcher/src/main/res/mipmap-mdpi/app_icon.png",
+    "docs/10_requirements/decisions/ADR-0020-test-defects-found-in-implementation.md",
+    "docs/10_requirements/decisions/ADR-0019-parent-model-acceptance.md",
+    "docs/10_requirements/decisions/ADR-0018-parent-is-mother.md",
+    "scratch/visual/parent/parent-hand-sheet-v2.png",
+    "scratch/visual/parent/parent-hand-sheet-v1.png",
+    "scratch/visual/parent/parent-model-sheet-v4-e2-long-cute-30s.png",
+    "scratch/visual/parent/parent-model-sheet-v4-e-long-cute.png",
+    "scratch/visual/parent/ASTRA-PROMPT-r56.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/index.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-wrapping.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-uv-mapping.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-text.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-spacing.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-main-settings.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-legend.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-font.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-extra-settings-ui.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-extra-settings-3d.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-color.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-tmpobject-alignment.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/include-rich-text-tags.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/exportdoc.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/TextMeshPro.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/TMPObjects.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/TMPObjectUIText.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/TMPObject3DText.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/StyleSheets.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/Sprites.md",
+    "unity/Library/PackageCache/com.unity.ugui@4433950e33ba/Documentation~/TextMeshPro/ShadersDistanceFieldSurfaceMobile.md"
   ]
 }

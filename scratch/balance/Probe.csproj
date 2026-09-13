@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    純粋層のソースを直接コンパイルする。**src/Ten.Pure.csproj を参照しない。**
+    参照すると src/Ten.Pure/obj/Release/ に AssemblyInfo.cs が生成され、
+    Unity が src/ をパッケージとして読むときに二重定義で落ちる（2026-09-13 に踏んだ）。
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="../../src/Ten.Pure/*.cs" Exclude="../../src/Ten.Pure/IsExternalInit.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+{
+  "name": "Ten.View",
+  "rootNamespace": "Ten.View",
+  "references": [
+    "Ten.Pure",
+    "Ten.Boundary"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
