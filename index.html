@@ -188,7 +188,7 @@
   </div>
 </main>
 
-<script src="Build/WebGL.loader.js"></script>
+<script src="Build/WebGL.loader.js?v=202609140814"></script>
 <script>
   // GitHub Pages はバイナリをそのまま配るので、分けずに直接読む
   const fill = document.getElementById("fill");
@@ -204,9 +204,9 @@
   async function start() {
     const canvas = document.getElementById("unity-canvas");
     await createUnityInstance(canvas, {
-      dataUrl: "Build/WebGL.data",
-      frameworkUrl: "Build/WebGL.framework.js",
-      codeUrl: "Build/WebGL.wasm",
+      dataUrl: "Build/WebGL.data?v=202609140814",
+      frameworkUrl: "Build/WebGL.framework.js?v=202609140814",
+      codeUrl: "Build/WebGL.wasm?v=202609140814",
       companyName: "ten",
       productName: "Ten",
       productVersion: "1.0",
