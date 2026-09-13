@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ten 寝かしつけの夜</title>
+<meta name="theme-color" content="#0B1219">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+  /* 暗い寝室で遊ぶゲーム（NFR-007）なので、あえて夜の 1 テーマに固定する。色はゲーム内 UI（palette.json）から */
+  :root {
+    --night: #0B1219;
+    --frame: #101821;
+    --line: #22313E;
+    --text: #C4CDD5;
+    --muted: #8795A3;
+    --moon: #A9BCD6;
+    --lamp: #E7C48A;
+    --button: #344D60;
+    --mincho: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --gothic: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--night);
+    color: var(--text);
+    font-family: var(--gothic);
+    font-size: 15px;
+    line-height: 1.75;
+    color-scheme: dark;
+  }
+  .stage {
+    min-height: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 22rem) auto;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5rem);
+    padding: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  /* 左: 名前と遊び方 */
+  .notes { display: grid; gap: 1.75rem; max-width: 22rem; }
+  .name { display: grid; gap: .35rem; }
+  .name h1 {
+    margin: 0;
+    font-family: var(--mincho);
+    font-weight: 700;
+    font-size: 3.25rem;
+    line-height: 1;
+    letter-spacing: .04em;
+    color: var(--text);
+  }
+  .name p { margin: 0; color: var(--muted); text-wrap: balance; }
+  .label {
+    margin: 0 0 .6rem;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--moon);
+  }
+  .how p { margin: 0; }
+
+  /* 画面の下半分を横に 4 つに割った押し場所。実際の並び（左から）そのまま */
+  .phone-map {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    aspect-ratio: 9 / 8;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: .8rem;
+    margin-top: .9rem;
+  }
+  .phone-map .upper {
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    background: linear-gradient(180deg, #0E1720, var(--frame));
+    border-bottom: 1px dashed var(--line);
+  }
+  .phone-map .lower { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .phone-map .zone {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: .25rem;
+    background: var(--frame);
+    line-height: 1.35;
+  }
+  .phone-map .zone + .zone { border-left: 1px solid var(--line); }
+  .phone-map .zone.eyes { color: var(--moon); }
+  .tips { margin: 0; padding: 0; list-style: none; display: grid; gap: .5rem; color: var(--muted); }
+  .tips li { padding-left: 1rem; position: relative; }
+  .tips li::before { content: ""; position: absolute; left: 0; top: .78em; width: .35rem; height: 1px; background: var(--muted); }
+  .tips b { color: var(--text); font-weight: 500; }
+  .fine { margin: 0; font-size: .8rem; color: var(--muted); }
+  .fine a { color: var(--moon); text-underline-offset: .2em; }
+  .fine a:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
+
+  /* 右: 縦長の端末の枠 */
+  .device {
+    position: relative;
+    height: min(88vh, 860px);
+    aspect-ratio: 9 / 19.5;
+    border-radius: 28px;
+    background: #000;
+    box-shadow: 0 0 0 1px var(--line), 0 0 0 9px #060A0E, 0 30px 80px -30px rgba(169, 188, 214, .18);
+    overflow: hidden;
+  }
+  #unity-canvas { width: 100%; height: 100%; display: block; background: var(--frame); outline: none; }
+  #unity-canvas:focus-visible { box-shadow: inset 0 0 0 2px var(--moon); }
+
+  .loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 1.1rem;
+    padding: 2rem;
+    background: radial-gradient(120% 60% at 30% 18%, rgba(169, 188, 214, .10), transparent 60%), var(--frame);
+    text-align: center;
+  }
+  .loading[hidden] { display: none; }
+  .loading h2 { margin: 0; font-family: var(--mincho); font-weight: 500; font-size: 1.15rem; letter-spacing: .08em; }
+  .loading .bar { width: 70%; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .loading .fill { height: 100%; width: 0; background: var(--lamp); transition: width .2s linear; }
+  .loading .pct { font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .loading.error h2 { color: var(--lamp); }
+  .loading.error .bar, .loading.error .pct { display: none; }
+  .loading .detail { margin: 0; font-size: .8rem; color: var(--muted); max-width: 18rem; }
+
+  @media (max-width: 760px) {
+    .stage { grid-template-columns: 1fr; justify-items: center; gap: 1.5rem; padding: 1rem; }
+    .device { order: -1; height: auto; width: min(100%, 430px); border-radius: 22px; }
+    .notes { max-width: 430px; }
+    .name h1 { font-size: 2.4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .loading .fill { transition: none; } }
+</style>
+
+</head>
+<body>
+<main class="stage">
+  <section class="notes" aria-label="遊び方">
+    <div class="name">
+      <h1>Ten</h1>
+      <p>赤ちゃんになって、寝かしつけるお母さんを朝まで起こし続ける一夜。</p>
+    </div>
+
+    <div class="how">
+      <p class="label">押す場所</p>
+      <p>数字もゲージも出ません。お母さんの顔と手と、窓の明るさだけが手がかりです。</p>
+      <div class="phone-map" aria-hidden="true">
+        <div class="upper">上半分をドラッグ ─ 首を振る</div>
+        <div class="lower">
+          <div class="zone">泣く</div>
+          <div class="zone">ぐずる</div>
+          <div class="zone">ばた<br>つく</div>
+          <div class="zone eyes">目を<br>閉じる</div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="tips">
+      <li><b>長く押すほど強く</b>出る。そのぶん元気を使う</li>
+      <li>お母さんが<b>うとうとした瞬間</b>に当てると大きく効く</li>
+      <li>目を閉じて寝たふりをすると、布団へ運ばれる</li>
+      <li>夜明け・寝落ち・お母さんの手札切れで夜が終わる</li>
+    </ul>
+
+    <p class="fine">ブラウザ版は手触りを見るためのもの。マウスでも遊べます。共有と画面消灯の抑止は <a href="https://github.com/compass505/Ten/releases">Android 版</a>だけです。</p>
+  </section>
+
+  <div class="device">
+    <canvas id="unity-canvas" tabindex="-1" aria-label="Ten のゲーム画面"></canvas>
+    <div class="loading" id="loading" role="status">
+      <h2 id="loading-title">部屋の明かりを落としています</h2>
+      <div class="bar"><div class="fill" id="fill"></div></div>
+      <div class="pct" id="pct">0%</div>
+      <p class="detail" id="detail" hidden></p>
+    </div>
+  </div>
+</main>
+
+<script src="Build/WebGL.loader.js"></script>
+<script>
+  // GitHub Pages はバイナリをそのまま配るので、分けずに直接読む
+  const fill = document.getElementById("fill");
+  const pct = document.getElementById("pct");
+  const loading = document.getElementById("loading");
+
+  function show(ratio) {
+    const p = Math.floor(ratio * 100);
+    fill.style.width = p + "%";
+    pct.textContent = p + "%";
+  }
+
+  async function start() {
+    const canvas = document.getElementById("unity-canvas");
+    await createUnityInstance(canvas, {
+      dataUrl: "Build/WebGL.data",
+      frameworkUrl: "Build/WebGL.framework.js",
+      codeUrl: "Build/WebGL.wasm",
+      companyName: "ten",
+      productName: "Ten",
+      productVersion: "1.0",
+      matchWebGLToCanvasSize: true,
+      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+    }, (progress) => show(progress));
+
+    loading.hidden = true;
+    canvas.focus();
+  }
+
+  start().catch((err) => {
+    loading.classList.add("error");
+    document.getElementById("loading-title").textContent = "起動できませんでした";
+    const detail = document.getElementById("detail");
+    detail.hidden = false;
+    detail.textContent = String(err && err.message || err) + "。ページを再読み込みしてください。直らなければ WebGL 2 に対応したブラウザで開いてください。";
+  });
+</script>
+
+</body>
+</html>
