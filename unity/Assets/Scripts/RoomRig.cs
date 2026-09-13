@@ -118,16 +118,67 @@ namespace Ten.View
             _eye.enabled = true;
 
             // **窓は平たい箱。**Quad は片面しか描かないので、向きによっては消える
+            BuildRoom();
+
             _targets.Add((GazeTargetKind.Window, MakeTarget("Window", WindowYawDeg, PrimitiveType.Cube,
                 new Color(0.55f, 0.57f, 0.72f, 1f), new Vector3(1.8f, 1.2f, 0.08f))));
             _targets.Add((GazeTargetKind.ParentFace, MakeTarget("ParentFace", FaceYawDeg, PrimitiveType.Sphere,
-                new Color(0.38f, 0.35f, 0.36f, 1f), new Vector3(1.5f, 1.5f, 1.5f))));
+                new Color(0.42f, 0.38f, 0.39f, 1f), new Vector3(2f, 2f, 2f))));
             _targets.Add((GazeTargetKind.ParentHand, MakeTarget("ParentHand", HandYawDeg, PrimitiveType.Cube,
                 new Color(0.34f, 0.30f, 0.31f, 1f))));
 
             BuildEyelid();
             BuildControls();
             Apply();
+        }
+
+        /// <summary>
+        /// 寝室そのもの（天井・壁・床）。
+        ///
+        /// **これが無いと「暗い部屋」ではなく「虚空」になる。**
+        /// 一人称で寝室にいること（REQ-001）は、視線を向けた先に何かがあることで初めて成り立つ。
+        /// 首を振っても何も動かなければ、振っている実感も出ない。
+        ///
+        /// **暗いままにする**（NFR-007: 画面全体の相対輝度の平均が 0.1 以下）。
+        /// 面は広いので、1 面の明るさは対象よりずっと低く取る。
+        /// </summary>
+        private void BuildRoom()
+        {
+            MakeSurface("Ceiling", new Vector3(0f, 4f, 2f), new Vector3(30f, 0.4f, 30f),
+                new Color(0.17f, 0.17f, 0.20f, 1f));
+
+            MakeSurface("Floor", new Vector3(0f, -3f, 2f), new Vector3(30f, 0.4f, 30f),
+                new Color(0.085f, 0.08f, 0.085f, 1f));
+
+            MakeSurface("BackWall", new Vector3(0f, 0f, 9f), new Vector3(30f, 14f, 0.4f),
+                new Color(0.13f, 0.125f, 0.145f, 1f));
+
+            MakeSurface("LeftWall", new Vector3(-9f, 0f, 2f), new Vector3(0.4f, 14f, 30f),
+                new Color(0.11f, 0.10f, 0.125f, 1f));
+
+            MakeSurface("RightWall", new Vector3(9f, 0f, 2f), new Vector3(0.4f, 14f, 30f),
+                new Color(0.11f, 0.10f, 0.125f, 1f));
+
+            // ベビーベッドの柵。**自分がどこに寝ているかが分かる**（REQ-001）
+            MakeSurface("CribRail", new Vector3(0f, -1.1f, 1.6f), new Vector3(6f, 0.12f, 0.12f),
+                new Color(0.25f, 0.22f, 0.20f, 1f));
+        }
+
+        /// <summary>部屋の面を 1 枚置く。**視線の対象ではない**（数に入れない）。</summary>
+        private void MakeSurface(string name, Vector3 position, Vector3 scale, Color color)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+            go.name = name;
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = position;
+            go.transform.localScale = scale;
+
+            var renderer = go.GetComponent<Renderer>();
+
+            renderer.sharedMaterial = OpaqueMaterial(color);
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
         }
 
         /// <summary>対象を 1 つ置く。**見た目は仮**（親の造形は後で差し替える）。</summary>
